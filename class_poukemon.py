@@ -1,8 +1,8 @@
 
 class Pou:
-    def __init__(self, name, hp, max_hp, atk, nickname = None):
+    def __init__(self, owner, name, hp, atk):
+        self.owner = owner
         self.name = name
-        self.nickname = nickname
         self.hp = hp
         self.max_hp = hp
         self.atk = atk
