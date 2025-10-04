@@ -1,60 +1,12 @@
 import time
 import random
-<<<<<<< HEAD
-from class_poukemon import *
-'''
-=======
 import class_poukemon
 
->>>>>>> 7fffcfca88e6d2b6d633f0300a05a72260d6ae88
 def start():
     player1 = input('Veuillez définir le nom du Joueur1 s\'il vous plait.   ')
     player2 = input('Veuillez définir le nom du Joueur2 s\'il vous plait.   ')
     print('')
 
-<<<<<<< HEAD
-    print(player1, player2)
-
-team1 = {'Pou1' : P.Pou1}
-team2 = {'Pou2' : P.Pou2}
-
-teams = [team1, team2]'''
-
-def is_alive(self):
-    return self.hp > 0 
-
-def t_damage(self, x): #take_damage
-    self.hp -= x  
-    if self.hp < 0:
-        self.hp = 0
-
-def use_c(self, Pou): #use_comps
-    if self.sign == "*":
-        return Pou.atk * self.mult
-    if self.sign == "+":
-        return Pou.atk + self.mult
-    #Prend en entree une competence et verifie le signe afin de faire le calcul adéquat
-
-def malus(self, P):
-    if self.sign == "-":    
-        return P.atk - self.mult
-    if self.sign == "/":    
-        return P.atk / self.mult
-    #Meme principe que use_c mais pour les debuff
-
-def apply_c(self, user, target = None):
-    if self.sign == "*":
-        return user.atk * self.mult
-    elif self.sign == "+":
-        return user.atk + self.mult
-    elif self.sign == "-":
-        if target:
-            return target.atk - self.mult
-    elif self.sign == "/":    
-        if target:
-            return target.atk / self.mult
-    
-=======
     Pou1 = class_poukemon.Pou(player1, "Pou", 30, 10)
     Pou2 = class_poukemon.Pou(player2, "Pou", 30, 10)
 
@@ -146,20 +98,10 @@ def game_choice(team1, team2, state):
             break
         else:
             print("Choix invalide, veuillez réessayer.\n")
->>>>>>> 7fffcfca88e6d2b6d633f0300a05a72260d6ae88
 
 
-def test():
-    print(f"Les hp de Pou1 sont {Pou1.hp}")
-    t_damage(Pou1, malus(chidori3, Pou2))
-    print(f"Et maintenant {Pou1.hp}")
-    is_alive(Pou1)
 
-<<<<<<< HEAD
-test()
-=======
 def print_combat_log(state):
     print("\nRésumé du combat :")
     for entry in state['log']:
         print('   ', entry)
->>>>>>> 7fffcfca88e6d2b6d633f0300a05a72260d6ae88
