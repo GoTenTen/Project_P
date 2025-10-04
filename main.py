@@ -1,12 +1,64 @@
-def game_start():
-
-    print("Jouer?")
-    start = input("Yes or No")
-
-    if start == "yes":
-        print("go")
-    else:
-        print('nique ta grand mere')
+import time
+#import battle
+# ------------------------------------
 
 
-game_start()
+def start_ecran():
+    print('_________________________________________________')
+    print('')
+    print('')
+    print('     █▀▀█ █▀▀█ █░░█ █░█ █▀▀ █▀▄▀█ █▀▀█ █▀▀▄')
+    print('     █░░█ █░░█ █░░█ █▀▄ █▀▀ █░▀░█ █░░█ █░░█')
+    print('     █▀▀▀ ▀▀▀▀ ░▀▀▀ ▀░▀ ▀▀▀ ▀░░░▀ ▀▀▀▀ ▀░░▀')
+    print('')
+    print('')
+    print('                1 - COMMENCER')
+    print('                2 - REGLES DU JEU')
+    print('                3 - QUITTER')
+    print('')
+    print('_________________________________________________')
+
+    time.sleep(1)
+
+    x = int(input())
+
+    if x == 1:
+        battle.start()
+    if x == 2:
+        regles()
+    if x == 3:
+        exit()
+
+
+def regles():
+    print('                    REGLES                 ')
+    print('')
+    print('  Deux joueurs s\'affrontent dans un combat de ')
+    print('poukemon, chacun de ces joueurs possède une ')
+    print('équipe de 4 poukemon. ')
+    print('  Chaque tour, les joueur doivent faire attaquer')
+    print('à tour de rôle chacun de leurs poukemons.')
+    print('  L\'ordre de passage des joueurs est defini au tout')
+    print('début du jeu, aléatoirement.')
+    print('')
+    print('La partie est terminé lorsqu\'un joueur a tout ses')
+    print('poukemons K.O .')
+
+    time.sleep(2)
+
+    def choix_regle():
+        x = input('Retourner au menu ? (Oui/Non) : ')
+
+        if x == 'Oui':
+            start_ecran()
+        elif x == 'Non':
+            print('une nouvelle fenêtre s\'afichera dans 5 seconde')
+            time.sleep(5)
+            choix_regle()
+        else:
+            print('repondez uniquement par "Oui" ou par "Non" svp.')
+
+    choix_regle()
+
+
+start_ecran()
