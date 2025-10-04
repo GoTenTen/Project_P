@@ -1,14 +1,14 @@
 import time
 import random
-import class_poukemon
+from class_poukemon import *
 
 def start():
     player1 = input('Veuillez définir le nom du Joueur1 s\'il vous plait.   ')
     player2 = input('Veuillez définir le nom du Joueur2 s\'il vous plait.   ')
     print('')
 
-    Pou1 = class_poukemon.Pou(player1, "Pou", 30, 10)
-    Pou2 = class_poukemon.Pou(player2, "Pou", 30, 10)
+    Pou1 = Pou(player1, "Pou", 30, 10, [tapefort])
+    Pou2 = Pou(player2, "Pou", 30, 10, [tapefort])
 
     team1 = {'poukemon1': Pou1}
     team2 = {'poukemon1': Pou2}
@@ -75,9 +75,8 @@ def game_choice(team1, team2, state):
     while True:
         choice = input("Votre choix : ")
         if choice == '1':
-            damage = attacker.atk
-            defender.hp -= damage
-            action = f"{attacker.owner} attaque et inflige {damage} dégâts."
+            damage = attacker.comp[0].comp_atk(attacker, defender)
+            action = f"{attacker.owner} utilise {attacker.comp[0].name} et inflige {damage} dégâts."
             print("\n")
             print(action)
             print(f"PV de {attacker.owner} : {attacker.hp}/{attacker.max_hp}")

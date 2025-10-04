@@ -1,11 +1,12 @@
 
 class Pou:
-    def __init__(self, owner, name, hp, atk):
+    def __init__(self,owner,  name, hp, atk, comp):
         self.owner = owner
         self.name = name
         self.hp = hp
         self.max_hp = hp
         self.atk = atk
+        self.comp = comp
 
     def is_alive(self):
         return self.hp > 0
@@ -24,42 +25,26 @@ class comps:
         self.sign = sign # '*', '+', '-', '/'
         self.type = type #buff/debuff/attaque/heal
 
-    def use_c(self, user, target = None):
+    def comp_stats(self, user, target):
         if self.type != "heal":
             if self.sign == "*":
                 return user.atk * self.mult
-            elif self.sign == "+":
-                return user.atk + self.mult
-            elif self.sign == "-":
-                if target:
-                    target.atk = target.atk - self.mult
-                    return target.atk
             elif self.sign == "/":    
                 if target:
                     target.atk = target.atk / self.mult
                     return target.atk
         else:
-            if self.hp < self.max_hp:
-                return self.hp + (self.max_hp / 3)
-
-
-Pou1 = P("Pou", 35, 5)
-Pou2 = P("Pou", 35, 5)
+            if user.hp < user.max_hp:
+                return user.hp + (user.max_hp / 3)
+    
+    def comp_atk(self, user, target):    
+        target.hp -= (user.atk * self.mult)
+        return (user.atk * self.mult)
+        
 
 chidori = comps("chi", 2, "*", 'buff')
 chidori2 = comps("chi2", 2, "+",'buff')
 chidori3 = comps("chi3", 2, "/",'debuff')
-'''chidori4 = comps("chi4", None, "+", 'heal')'''
+chidori4 = comps("chi4", 0, "+", 'heal')
+tapefort = comps("tape", 2.5, "*", 'attaque')
 
-
-def test():
-    print(f"Les hp de Pou1 sont {Pou1.hp}\n")
-    print(f"Les hp de Pou2 sont {Pou2.hp}\n")
-    chidori3.use_c(Pou1, Pou2)
-    print(f"L'attaque de pou2 baisse de 5 a {Pou2.atk}\n")
-    Pou1.t_damage(Pou2.atk)
-    print(f"Les hp de Pou1 sont {Pou1.hp}\n")
-    '''chidori4.use_c(Pou1, Pou1)
-    print(f"Les hp de Pou1 sont {Pou1.hp}\n")'''
-    
-test()
