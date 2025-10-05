@@ -1,0 +1,18 @@
+Ajouts:                                                                                                                 -- AIDE POUR LES COMMITS --
+
+[05/10/25] - Modification du fichier "competences.py" -> "skills" et création du fichiers "skills_list" pour faciliter  (skills.py & skills_list.py)
+             la création de nouvelles compétences;
+[05/10/25] - Création du fichiers "class_poukemon_list" pour faciliter la création de nouveaux poux;                    (class_poukemon_list.py)
+[05/10/25] - Messages bonus (au choix) spécifique pour chaques compétences;                                             (skills.py & skills_list.py)
+[05/10/25] - Précision du nom des propriétaire lors des utilisations de compétences et des morts de poux;               (skills.py)
+[05/10/25] - Modification des messages affichés pour éviter d'écrire "coup" lors de compétences à coup unique;          (skills.py)
+[05/10/25] - Ajout de la compétences jackpot;                                                                           (skills_list.py)
+[05/10/25] - Ajout du fichier "team_creation" pour gerer la conception de team en debut de partie pour chaque joueur;   (team_creation.py)
+[05/10/25] - Changement de nom pour Pou -> Pou Soldat, Gros Pou -> Pou Sergent et Pipou pou -> Pou Kamikaze;            (class_poukemon_list.py)
+[05/10/25] - Ajout et Réglage du problème sur le calcul des probabilité pour la précision des compétences (simplifié);  (class_poukemon.py)
+[05/10/25] - Ajout des buff temporaire avec un nombre de tour defini;                                                   (class_poukemon.py & skills.py)
+[05/10/25] - Ajout du skill "jab", "bandit manchot" et "cire chaude";                                                   (skills_list.py)
+[05/10/25] - Ajout de "Pou Accro au Casino" et "Pou BDSM" (pas encore utilisable sans choix de team);                   (class_poukemon_list.py)
+[05/10/25] - Ajout d'un fichier "Ajouts.txt" et "A_ajouter.txt" pour suivre l'évolution de projet et apporter les       (Ajouts.txt & A_ajouter.txt)
+             amélioration voulue
+

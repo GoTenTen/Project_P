@@ -1,0 +1,8 @@
+A ajouter:
+
+    - Ajouter la possibilité de laisser le joueur choisir les poux qu'il souhaite;
+    - Ajouter une rareté pour les poux;
+    - Ajouter plus de poux avec des compétences signature cohérente;
+    - Ajouter une compétence qui tue le lanceur
+    - Ajouter une compétence qui blesse le lanceur;
+    - Ajouter une compétence de heal qui agit sur plusieurs tours;
