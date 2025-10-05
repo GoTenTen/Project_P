@@ -1,11 +1,12 @@
-#competences.py
+#skills.py
 import random
 import time
 
 class Skill:
-    def __init__(self, name, description):
+    def __init__(self, name, description, **kwargs):
         self.name = name
         self.description = description
+        self.kwargs = kwargs
 
     def apply(self, user, target):
         raise NotImplementedError("Cette compétence n'est pas encore définie.")
@@ -20,19 +21,57 @@ class AttackSkill(Skill):
         total_damage = 0
         messages = []
         hits = self.kwargs.get("multi_hit", 1)
+        bonus_message = self.kwargs.get("bonus_message", None)
+
+        # message standard
+        print(f"{user.owner} utilise {self.name} !")
+
+        # message bonus optionnel
+        if bonus_message:
+            time.sleep(1)
+            print(f"\n{bonus_message}\n")
+            time.sleep(1)
 
         for i in range(hits):
             damage, crit = user.deal_damage(target, **self.kwargs)
             total_damage += damage
             crit_txt = " (Critique!)" if crit else ""
-            messages.append(f"Coup {i+1}: {damage} dmg{crit_txt}")
+            # Texte différent selon si multi-hit ou non
+            if hits > 1:
+                print(f"Coup {i + 1}: {damage} dmg{crit_txt}")
+                time.sleep(1)
+            else:
+                print(crit_txt)
 
-        return (
-            f"{user.owner} utilise {self.name} !\n"
-            + "\n".join(messages)
-            + f"\nTotal: {total_damage} dégâts."
-        )
+        return f"{user.name} de {user.owner} à infligé {total_damage} dégâts à {target.name} de {target.owner}."
 
+
+class BuffSkill(Skill):
+    """Compétence de buff."""
+    def apply(self, user, target=None):
+        stat = self.kwargs.get("stat", "atk")
+        factor = self.kwargs.get("factor", 2.0)
+        before = getattr(user, stat)
+        setattr(user, stat, int(before * factor))
+        return f"{user.owner} utilise {self.name} : {stat.upper()} passe de {before} à {getattr(user, stat)} !"
+
+class TimedBuffSkill(BuffSkill):
+    def apply(self, user, target=None):
+        stat = self.kwargs.get("stat", "atk")
+        factor = self.kwargs.get("factor", 1.5)
+        duration = self.kwargs.get("duration", 3)
+
+        user.add_buff(stat, factor, duration)
+        return f"{user.name} de {user.owner} utilise {self.name} : {stat.upper()} augmenté pour {duration} tours !"
+
+class HealSkill(Skill):
+    """Compétence de soin."""
+    def __init__(self, name, description, amount):
+        super().__init__(name, description)
+        self.amount = amount
+
+    def apply(self, user, target=None):
+        return user.heal(self.amount)
 
 
 
