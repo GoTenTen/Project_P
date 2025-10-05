@@ -1,8 +1,8 @@
 # main.py
 import time
 
-from class_poukemon import Pou
-from competences import TapeFort, DanseLame, SlapThatAss
+from team_creation import create_team
+from class_poukemon_list import *
 from battle import random_order, game_turn
 from team import *
 import random
@@ -11,13 +11,8 @@ def start():
     player1 = input("\nVeuillez définir le nom du Joueur 1 s\'il vous plait. :  ")
     player2 = input("Veuillez définir le nom du Joueur 2 s\'il vous plait. :  ")
 
-    team1 = Team(player1, [Pou(player1, "Pou", 30, 10, [TapeFort(), DanseLame(), SlapThatAss()]),
-                           Pou(player1, "Gros Pou", 50, 7, [TapeFort(), DanseLame(), SlapThatAss()]),
-                           Pou(player1, "Pipou Pou", 20, 15, [TapeFort(), DanseLame(), SlapThatAss()])])
-
-    team2 = Team(player2, [Pou(player2, "Pou", 30, 10, [TapeFort(), DanseLame(), SlapThatAss()]),
-                           Pou(player2, "Gros Pou", 50, 7, [TapeFort(), DanseLame(), SlapThatAss()]),
-                           Pou(player2, "Pipou Pou", 20, 15, [TapeFort(), DanseLame(), SlapThatAss()])])
+    team1 = create_team(player1)
+    team2 = create_team(player2)
 
     pou1 = team1.get_active_pou()
     pou2 = team2.get_active_pou()
