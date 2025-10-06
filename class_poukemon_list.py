@@ -1,24 +1,24 @@
 #class_poukemon_list
-from skills_list import *
+from skills_list import SKILLS
 
 PouModels = {
     "Pou Soldat": {
         "name": "Pou Soldat",
         "hp": 30,
         "atk": 10,
-        "skills": [TapeFort, DanseLame, SlapThatAss, Jackpot]
+        "skills": [SKILLS["Tape Fort"], SKILLS["Danse Lame"], SKILLS["Slap That Ass"], SKILLS["Soin"]]
     },
     "Pou Sergent": {
         "name": "Pou Sergent",
         "hp": 50,
         "atk": 7,
-        "skills": [TapeFort, DanseLame, SlapThatAss, Heal]
+        "skills": [SKILLS["Tape Fort"], SKILLS["Danse Lame"], SKILLS["Slap That Ass"], SKILLS["Soin"]]
     },
     "Pou Kamikaze": {
         "name": "Pou Kamikaze",
         "hp": 20,
         "atk": 15,
-        "skills": [TapeFort, DanseLame, SlapThatAss, Heal]
+        "skills": [SKILLS["Tape Fort"], SKILLS["Danse Lame"], SKILLS["Slap That Ass"], SKILLS["Soin"]]
     }
 }
 
