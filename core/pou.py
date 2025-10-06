@@ -13,6 +13,17 @@ class Pou:
         self.crit_chance = crit_chance
         self.active_buffs = {}  # stocke les buffs temporaires
 
+    @classmethod
+    def from_model(cls, owner, model_data):
+        """Crée un Pou à partir d’un modèle de données."""
+        return cls(
+            owner,
+            model_data["name"],
+            model_data["hp"],
+            model_data["atk"],
+            model_data["skills"].copy()
+        )
+
     def take_damage(self, amount):
         self.hp = max(self.hp - amount, 0)
 
