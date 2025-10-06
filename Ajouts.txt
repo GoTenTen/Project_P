@@ -21,5 +21,6 @@ Ajouts:                                                                         
 ----------
 [06/10/25] - Ajout du dictionnaire "SKIILS" pour centraliser l'ensemble des compétences, ce qui donne plus de           (skills_list.py, class_poukemon_list.py)
              flexibilitée et de contrôle sur les données;
-[06/10/25] - Ajout d'une nouvelle structure propre pour l'organisation des fichiers;                                           (all)
-
+[06/10/25] - Ajout d'une nouvelle structure propre pour l'organisation du projet;                                       (all)
+[06/10/25] - Allègements de la fonction "game_turn()" en créant des sous fonctions spécifiques;                         (battle.py)
+[06/10/25] - Modification de la façon de créer des teams, réglage du problème d'instance avec l'assignation des pous;   (team_creation.py, pou.py)

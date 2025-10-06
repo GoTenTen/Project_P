@@ -6,3 +6,4 @@ A ajouter:
     - Ajouter une compétence qui tue le lanceur
     - Ajouter une compétence qui blesse le lanceur;
     - Ajouter une compétence de heal qui agit sur plusieurs tours;
+    - Modifier battle.py qui gère encore du print et du input() : il faudra séparer la logique du rendu plus tard.
