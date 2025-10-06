@@ -1,5 +1,5 @@
 import time
-import main
+from Project_P.core.main import start
 # ------------------------------------
 
 
@@ -23,7 +23,7 @@ def start_ecran():
     x = int(input())
 
     if x == 1:
-        main.start()
+        start()
     if x == 2:
         regles()
     if x == 3:

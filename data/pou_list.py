@@ -1,5 +1,5 @@
 #class_poukemon_list
-from skills_list import SKILLS
+from Project_P.data.skills_list import SKILLS
 
 PouModels = {
     "Pou Soldat": {

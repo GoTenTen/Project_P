@@ -1,4 +1,4 @@
-#class_poukemon.py
+#pou.py
 import random
 
 class Pou:

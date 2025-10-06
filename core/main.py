@@ -1,10 +1,9 @@
 # main.py
 import time
 
-from team_creation import create_team
-from class_poukemon_list import *
-from battle import random_order, game_turn
-from team import *
+from systems.team_creation import create_team
+from core.battle import random_order, game_turn
+from core.team import *
 import random
 
 def start():

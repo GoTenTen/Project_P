@@ -1,7 +1,6 @@
 # skills_list.py
 import random
-
-from skills import AttackSkill, BuffSkill, HealSkill, TimedBuffSkill
+from Project_P.core.skills import AttackSkill, BuffSkill, HealSkill, TimedBuffSkill
 
 SKILLS = {
     "Tape Fort" : AttackSkill(
