@@ -16,6 +16,53 @@ def random_order(p1, p2, state):
     else:
         print(f"{p2} commence !\n")
 
+# Affichage du menu d'action
+def choose_action(attacker, team_attacker):
+    print(f"C'est au tour de {team_attacker.owner} avec {attacker.name} !\n")
+    print("  1 - Attaquer")
+    print("  2 - Description des compétences")
+    print("  3 - Changer de Pou\n")
+    choice = input("Votre choix : ")
+    print('')
+    return choice
+
+def choose_comp(attacker, defender, state, action=None):
+    for i in range(4):
+        print(f"  {i + 1} - {attacker.comp[i].name}")
+    print('')
+    while True:
+        choice = input("Votre choix : ")
+        print('')
+        for i in range(4):
+            if choice == str(i + 1):
+                action = attacker.comp[i].apply(attacker, defender)
+                state['log'].append(action)
+        break
+    return action
+
+def select_action(attacker, defender, team_attacker, state):
+    while True:
+        choice = choose_action(attacker, team_attacker)
+        if choice == '1':
+            return choose_comp(attacker, defender, state)
+        elif choice == '4':
+            describe_skills(attacker)
+        elif choice == '5':
+            # Forcer le changement de Pou actif
+            team_attacker.choose_next_pou()
+            # Fin du tour après le switch
+            return
+        else:
+            print("Choix invalide, réessaie.")
+
+def describe_skills(attacker):
+    print("\nDescriptions des compétences :\n")
+    for i, comp in enumerate(attacker.comp, start=1):
+        print(f"{i}. {comp.name} : {comp.description}")
+    print("")
+
+
+
 def game_turn(team_attacker, team_defender, state):
     """
     team_attacker, team_defender sont des instances de Team.
@@ -43,41 +90,7 @@ def game_turn(team_attacker, team_defender, state):
         # Après le switch, on arrête ici le tour (le joueur a juste switché)
         return
 
-    # Affichage du menu d'action
-    print(f"C'est au tour de {team_attacker.owner} avec {attacker.name} !\n")
-    print("  1 - Attaquer")
-    print("  2 - Description des compétences")
-    print("  3 - Changer de Pou\n")
-
-    while True:
-        choice = input("Votre choix : ")
-        print('')
-        if choice == '1':
-            for i in range(4):
-                print(f"  {i+1} - {attacker.comp[i].name}")
-            print('')
-            while True:
-                choice = input("Votre choix : ")
-                print('')
-                for i in range(4):
-                    if choice == str(i+1):
-                        action = attacker.comp[i].apply(attacker, defender)
-                        state['log'].append(action)
-                break
-            break
-        elif choice == '4':
-            print("\nDescriptions des compétences :\n")
-            for i, comp in enumerate(attacker.comp, start=1):
-                print(f"{i}. {comp.name} : {comp.description}")
-            print("")
-        elif choice == '5':
-            # Forcer le changement de Pou actif
-            team_attacker.choose_next_pou()
-            # Fin du tour après le switch
-            return
-        else:
-            print("Choix invalide, réessaie.")
-
+    action = select_action(attacker, defender, team_attacker, state)
 
     time.sleep(1)
     print(action)
