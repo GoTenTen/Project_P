@@ -45,12 +45,12 @@ class AttackSkill(Skill):
             else:
                 print(crit_txt)
 
-        if self_damage > 1:
-            user.hp -= self_damage
+        if self_damage >= 1:
+            user.take_damage(self_damage)
             if user.hp <= 0:
                 print(f"En utilisant {self.name}  Il prend {self_damage} dégats de contrecoup le mettant ko ! \n")
             else:
-                print(f"{user.owner} utilise {self.name} ! \n Il prend {self_damage} de dégats de contre coup... Tdc va \n")
+                print(f"{user.owner} utilise {self.name} ! \nIl prend {self_damage} de dégats de contre coup... Tdc va \n")
 
         return f"{user.name} de {user.owner} à infligé {total_damage} dégâts à {target.name} de {target.owner}."
 

@@ -96,6 +96,8 @@ def game_turn(team_attacker, team_defender, state):
     print(action)
     time.sleep(1)
 
+    team_attacker.handle_death_and_switch()
+
     # mettre à jour les buffs des deux Pous
     attacker.update_buffs()
 
