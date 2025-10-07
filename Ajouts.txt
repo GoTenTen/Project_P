@@ -24,3 +24,5 @@ Ajouts:                                                                         
 [06/10/25] - Ajout d'une nouvelle structure propre pour l'organisation du projet;                                       (all)
 [06/10/25] - Allègements de la fonction "game_turn()" en créant des sous fonctions spécifiques;                         (battle.py)
 [06/10/25] - Modification de la façon de créer des teams, réglage du problème d'instance avec l'assignation des pous;   (team_creation.py, pou.py)
+[07/10/25] - Ajout du paramètre self_damage, de la compétence Vidange sanguine, 
+                maj des comps de pou soldat pour test et màj des imports dans "main.py"                                  (main.py, skills.py, data file)

@@ -6,7 +6,7 @@ PouModels = {
         "name": "Pou Soldat",
         "hp": 30,
         "atk": 10,
-        "skills": [SKILLS["Tape Fort"], SKILLS["Danse Lame"], SKILLS["Slap That Ass"], SKILLS["Soin"]]
+        "skills": [SKILLS["Tape Fort"], SKILLS["Vidage Sanguin"], SKILLS["Slap That Ass"], SKILLS["Soin"]]
     },
     "Pou Sergent": {
         "name": "Pou Sergent",
