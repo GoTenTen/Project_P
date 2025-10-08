@@ -50,6 +50,12 @@ SKILLS = {
         name="Cire Chaude",
         description="De la cire chaude coule sur le dos de l'utilisateur et fais monter son adrénaline pour booster son atk de 50% pendant 4 tours.",
         factor=1.5,
-        duration=4
+        duration=4,
+    ),
+    "Vidage Sanguin" : AttackSkill(
+        name = "Vidage sanguin",
+        description = "Dans un ultime élant, le pou décide d'aspirer l'entièreté du sang de son adversaire le laissant à 1hp, causant au passage sa propre mort",
+        multiplier=1.0,
+        self_damage=9999
     )
 }

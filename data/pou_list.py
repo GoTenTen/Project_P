@@ -6,35 +6,32 @@ PouModels = {
         "name": "Pou Soldat",
         "hp": 30,
         "atk": 10,
-        "rarity": "commun",
-        "skills": [SKILLS["Tape Fort"], SKILLS["Danse Lame"], SKILLS["Slap That Ass"], SKILLS["Soin"]]
+        "skills": [SKILLS["Tape Fort"], SKILLS["Vidage Sanguin"], SKILLS["Slap That Ass"], SKILLS["Soin"]]
     },
     "Pou Sergent": {
         "name": "Pou Sergent",
         "hp": 50,
         "atk": 7,
-        "rarity": "commun",
         "skills": [SKILLS["Tape Fort"], SKILLS["Danse Lame"], SKILLS["Slap That Ass"], SKILLS["Soin"]]
     },
     "Pou Kamikaze": {
         "name": "Pou Kamikaze",
         "hp": 20,
         "atk": 15,
-        "rarity": "commun",
         "skills": [SKILLS["Tape Fort"], SKILLS["Danse Lame"], SKILLS["Slap That Ass"], SKILLS["Soin"]]
-    },
-    "Pou Accro Au Casino": {
-        "name": "Pou Accro Au Casino",
-        "hp": 20,
-        "atk": 15,
-        "rarity": "légendaire",
-        "skills": [SKILLS["Jab"], SKILLS["Bandit Manchot"], SKILLS["Jackpot"], SKILLS["Soin"]]
-    },
-    "Pou BDSM": {
-        "name": "Pou BDSM",
-        "hp": 20,
-        "atk": 15,
-        "rarity": "rare",
-        "skills": [SKILLS["Jab"], SKILLS["Slap That Ass"], SKILLS["Cire Chaude"], SKILLS["Tape Fort"]]
     }
 }
+
+""",
+    "Pou Accro Au Casino": {
+        "name": "Pou Kamikaze",
+        "hp": 20,
+        "atk": 15,
+        "skills": [Jab, BanditManchot, Jackpot, Heal]
+    },
+    "Pou BDSM": {
+        "name": "Pou Kamikaze",
+        "hp": 20,
+        "atk": 15,
+        "skills": [Jab, SlapThatAss, CireChaude, TapeFort]
+    }"""

@@ -23,6 +23,8 @@ class AttackSkill(Skill):
         hits = self.kwargs.get("multi_hit", 1)
         bonus_message = self.kwargs.get("bonus_message", None)
 
+        self_damage = self.kwargs.get("self_damage", 0)
+
         # message standard
         print(f"{user.owner} utilise {self.name} !")
 
@@ -42,6 +44,13 @@ class AttackSkill(Skill):
                 time.sleep(1)
             else:
                 print(crit_txt)
+
+        if self_damage >= 1:
+            user.take_damage(self_damage)
+            if user.hp <= 0:
+                print(f"En utilisant {self.name}  Il prend {self_damage} dégats de contrecoup le mettant ko ! \n")
+            else:
+                print(f"{user.owner} utilise {self.name} ! \nIl prend {self_damage} de dégats de contre coup... Tdc va \n")
 
         return f"{user.name} de {user.owner} à infligé {total_damage} dégâts à {target.name} de {target.owner}."
 
