@@ -1,9 +1,9 @@
 # main.py
 import time
 
-from systems.team_creation import create_team
-from core.battle import random_order, game_turn
-from core.team import *
+from Project_P.systems.team_creation import create_team
+from Project_P.core.battle import random_order, game_turn
+from Project_P.core.team import *
 import random
 
 def start():

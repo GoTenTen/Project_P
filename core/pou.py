@@ -2,7 +2,7 @@
 import random
 
 class Pou:
-    def __init__(self, owner, name, hp, atk, comp_list, crit_chance=0.1):
+    def __init__(self, owner, name, hp, atk, comp_list, rarity, crit_chance=0.1):
         self.owner = owner
         self.name = name
         self.hp = hp
@@ -11,18 +11,22 @@ class Pou:
         self.base_atk = atk
         self.comp = comp_list
         self.crit_chance = crit_chance
+        self.rarity = rarity
         self.active_buffs = {}  # stocke les buffs temporaires
 
     @classmethod
-    def from_model(cls, owner, model_data):
+    def from_model(cls, model_data, owner):
         """Crée un Pou à partir d’un modèle de données."""
-        return cls(
-            owner,
-            model_data["name"],
-            model_data["hp"],
-            model_data["atk"],
-            model_data["skills"].copy()
+        pou = cls(
+            owner=owner,
+            name=model_data["name"],
+            hp=model_data["hp"],
+            atk=model_data["atk"],
+            comp_list=model_data["skills"],
+            rarity=model_data.get("rarity", "commun")  # ✅ Ajouté ici !
         )
+
+        return pou
 
     def take_damage(self, amount):
         self.hp = max(self.hp - amount, 0)
