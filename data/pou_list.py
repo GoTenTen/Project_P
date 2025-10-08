@@ -12,26 +12,24 @@ PouModels = {
         "name": "Pou Sergent",
         "hp": 50,
         "atk": 7,
-        "skills": [SKILLS["Tape Fort"], SKILLS["Danse Lame"], SKILLS["Slap That Ass"], SKILLS["Soin"]]
+        "skills": [SKILLS["Jab"], SKILLS["Danse Lame"], SKILLS["Tape Fort"], SKILLS["Soin"]]
     },
     "Pou Kamikaze": {
         "name": "Pou Kamikaze",
         "hp": 20,
         "atk": 15,
-        "skills": [SKILLS["Tape Fort"], SKILLS["Danse Lame"], SKILLS["Slap That Ass"], SKILLS["Soin"]]
-    }
-}
-
-""",
+        "skills": [SKILLS["Jab"], SKILLS["Danse Lame"], SKILLS["Slap That Ass"], SKILLS["Soin"]]
+    },
     "Pou Accro Au Casino": {
-        "name": "Pou Kamikaze",
+        "name": "Pou Accro Au Casino",
         "hp": 20,
         "atk": 15,
-        "skills": [Jab, BanditManchot, Jackpot, Heal]
+        "skills": [SKILLS["Jab"], SKILLS["Bandit Manchot"], SKILLS["Jackpot"], SKILLS["Soin"]]
     },
     "Pou BDSM": {
-        "name": "Pou Kamikaze",
+        "name": "Pou BDSM",
         "hp": 20,
         "atk": 15,
-        "skills": [Jab, SlapThatAss, CireChaude, TapeFort]
-    }"""
+        "skills": [SKILLS["Jab"], SKILLS["Slap That Ass"], SKILLS["Cire Chaude"], SKILLS["Tape Fort"]]
+    }
+}
