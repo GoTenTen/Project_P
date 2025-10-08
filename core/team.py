@@ -8,7 +8,6 @@ class Team:
         self.pous = pou_list
         self.active_index = 0 #index de quel pou est actif dans la liste
 
-
     def show_all_pou_stats(self):
         print(f"\n    [[{self.owner}]]")
         for pou in self.pous:
@@ -31,7 +30,7 @@ class Team:
             return False
 
     def choose_next_pou(self):
-        print("choisissez un autre Pou :\n")
+        print(f"{self.get_active_pou().owner} choisissez un autre Pou :\n")
         for i, pou in enumerate(self.pous):
             status = "(ACTIF)" if i == self.active_index else ""
             print(f"{i + 1}. {pou.name} {status} - PV: {pou.hp}/{pou.max_hp}")
@@ -46,7 +45,7 @@ class Team:
 
     def handle_death_and_switch(self):
         if not self.get_active_pou().is_alive():
-            print(f"{self.get_active_pou().name} perd connaissance.")
+            print(f"{self.get_active_pou().name} de {self.get_active_pou().owner} perd connaissance.\n")
             time.sleep(1)
             self.choose_next_pou()
 
