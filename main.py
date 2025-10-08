@@ -1,64 +1,63 @@
+# main.py
 import time
-import battle
-# ------------------------------------
 
+from class_poukemon import Pou
+from competences import TapeFort, DanseLame, SlapThatAss
+from battle import random_order, game_turn
+from team import *
+import random
 
-def start_ecran():
-    print('_________________________________________________')
-    print('')
-    print('')
-    print('     █▀▀█ █▀▀█ █░░█ █░█ █▀▀ █▀▄▀█ █▀▀█ █▀▀▄')
-    print('     █░░█ █░░█ █░░█ █▀▄ █▀▀ █░▀░█ █░░█ █░░█')
-    print('     █▀▀▀ ▀▀▀▀ ░▀▀▀ ▀░▀ ▀▀▀ ▀░░░▀ ▀▀▀▀ ▀░░▀')
-    print('')
-    print('')
-    print('                1 - COMMENCER')
-    print('                2 - REGLES DU JEU')
-    print('                3 - QUITTER')
-    print('')
-    print('_________________________________________________')
+def start():
+    player1 = input("\nVeuillez définir le nom du Joueur 1 s\'il vous plait. :  ")
+    player2 = input("Veuillez définir le nom du Joueur 2 s\'il vous plait. :  ")
 
-    time.sleep(1)
+    team1 = Team(player1, [Pou(player1, "Pou", 30, 10, [TapeFort(), DanseLame(), SlapThatAss()]),
+                           Pou(player1, "Gros Pou", 50, 7, [TapeFort(), DanseLame(), SlapThatAss()]),
+                           Pou(player1, "Pipou Pou", 20, 15, [TapeFort(), DanseLame(), SlapThatAss()])])
 
-    x = int(input())
+    team2 = Team(player2, [Pou(player2, "Pou", 30, 10, [TapeFort(), DanseLame(), SlapThatAss()]),
+                           Pou(player2, "Gros Pou", 50, 7, [TapeFort(), DanseLame(), SlapThatAss()]),
+                           Pou(player2, "Pipou Pou", 20, 15, [TapeFort(), DanseLame(), SlapThatAss()])])
 
-    if x == 1:
-        battle.start()
-    if x == 2:
-        regles()
-    if x == 3:
-        exit()
+    pou1 = team1.get_active_pou()
+    pou2 = team2.get_active_pou()
 
+    game_state = {
+        'random_number': random.randint(1, 2),
+        'tour': 1,
+        'log': []
+    }
 
-def regles():
-    print('                    REGLES                 ')
-    print('')
-    print('  Deux joueurs s\'affrontent dans un combat de ')
-    print('poukemon, chacun de ces joueurs possède une ')
-    print('équipe de 4 poukemon. ')
-    print('  Chaque tour, les joueur doivent faire attaquer')
-    print('à tour de rôle chacun de leurs poukemons.')
-    print('  L\'ordre de passage des joueurs est defini au tout')
-    print('début du jeu, aléatoirement.')
-    print('')
-    print('La partie est terminé lorsqu\'un joueur a tout ses')
-    print('poukemons K.O .')
+    random_order(player1, player2, game_state)
 
-    time.sleep(2)
+    while team1.is_alive() and team2.is_alive():
+        time.sleep(1.5)
+        print(f"\n-------------- TOUR {game_state['tour']} --------------")
+        team1.show_all_pou_stats()
+        team2.show_all_pou_stats()
+        print("\n------------------------------------\n")
+        time.sleep(2)
 
-    def choix_regle():
-        x = input('Retourner au menu ? (Oui/Non) : ')
-
-        if x == 'Oui':
-            start_ecran()
-        elif x == 'Non':
-            print('une nouvelle fenêtre s\'afichera dans 5 seconde')
-            time.sleep(5)
-            choix_regle()
+        if game_state['random_number'] == 1:
+            game_turn(team1, team2, game_state)
+            team2.handle_death_and_switch()  # Si un Pou de team2 est mort, il change
+            game_state['random_number'] = 2
         else:
-            print('repondez uniquement par "Oui" ou par "Non" svp.')
+            game_turn(team2, team1, game_state)
+            team1.handle_death_and_switch()  # Si un Pou de team1 est mort, il change
+            game_state['random_number'] = 1
 
-    choix_regle()
+        pou1 = team1.get_active_pou()
+        pou2 = team2.get_active_pou()
+
+        game_state['tour'] += 1
+
+    winner = pou1 if pou1.is_alive() else pou2
+    print(f"\n{winner.owner} a gagné !")
+    print("\nRésumé du combat :")
+    for entry in game_state['log']:
+        print(" -", entry)
 
 
-start_ecran()
+if __name__ == "__main__":
+    start()
