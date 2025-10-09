@@ -47,10 +47,15 @@ def create_team(owner_name ): #lenT à rajouter
                 break
     return Team(owner_name,pou_list)
 
+
+
 def show_team(pou_list):
     for pou in pou_list:
         print(f"- {pou.name}")
 
+
+
+#Affiche un message différent par rapport à la rareté la plus haute + affiche la team
 def show_more(pou_list, cas):
     cas2 = recup_flag(pou_list, TAUX_DROP)
     match cas:
@@ -72,19 +77,23 @@ def show_more(pou_list, cas):
             print("\nVoici votre équipe :\n")
             show_team(pou_list)
 
+#Cette fonction vient déterminer la rareté la plus haute dans la team
 def recup_flag(pou_list, TAUX_D):
     f = 1
     for pou in pou_list:
         rarity = getattr(pou, 'rarity', None)
         match rarity:
-            case 'commun' if TAUX_D.get(rarity, 0) < f:
-                f == 0.5
-            case 'rare' if TAUX_D.get(rarity, 0) < f:
-                f == 0.35
-            case 'épic' if TAUX_D.get(rarity, 0) < f:
-                f == 0.1
-            case 'légendaire' if TAUX_D.get(rarity, 0) < f:
-                f == 0.05
+            # Pour chaque pou, on associe un niveau de rareté à un chiffre :
+            # commun = 1, rare = 2, épic = 3, légendaire = 4
+            # puis on garde la valeur la plus élevée rencontrée avec max(f, valeur)
+            case 'commun':
+                f = max(f, 1)
+            case 'rare':
+                f = max(f, 2)
+            case 'épic':
+                f = max(f, 3)
+            case 'légendaire':
+                f = max(f, 4)
     return f
 
 
