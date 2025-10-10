@@ -58,7 +58,7 @@ def show_team(pou_list):
 
 #Affiche un message différent par rapport à la rareté la plus haute + affiche la team
 def show_more(pou_list, cas):
-    cas2 = recup_flag(pou_list, TAUX_DROP)
+    cas2 = recup_flag(pou_list)
     match cas:
         case 1: #le premier match est à remplir à la main dans les fonction car c'est si on décide d'une random team ou juste d'une création lambda
             match cas2:
@@ -79,7 +79,7 @@ def show_more(pou_list, cas):
             show_team(pou_list)
 
 #Cette fonction vient déterminer la rareté la plus haute dans la team
-def recup_flag(pou_list, TAUX_D):
+def recup_flag(pou_list):
     f = 1
     for pou in pou_list:
         rarity = getattr(pou, 'rarity', None)
