@@ -108,7 +108,7 @@ def random_team(pou_list, TAUX_D, lenT):#lenT -> variable pour len Team
         for pou in pou_list:
             #regarde si l'objet pou est déjà dans la list, pas de name car 
             #Il faisait une erreur vu qu'il se retrouvait à comparer des str avec object
-            #Et du coup si il est déjà dedans la méthod continue est l'équivalent d'un i+1, il passe au pou suivant
+            #Et du coup si il est déjà dedans, la méthod 'continue' est l'équivalent d'un i+1, il passe au pou suivant
             if pou in random_list:
                 continue
             else:                   #possible opti avec un match / case cela dit
