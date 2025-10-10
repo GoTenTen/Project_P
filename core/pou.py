@@ -15,7 +15,7 @@ class Pou:
         self.active_buffs = {}  # stocke les buffs temporaires
 
     @classmethod
-    def from_model(cls, model_data, owner):
+    def from_model(cls, owner, model_data):
         """Crée un Pou à partir d’un modèle de données."""
         pou = cls(
             owner=owner,
@@ -64,7 +64,7 @@ class Pou:
 
     def add_buff(self, stat, factor, duration):
         """Applique un buff temporaire sur une statistique."""
-        if stat not in ["atk", "hp"]:
+        if stat not in ["stat", "atk"]:
             return
 
         # Applique immédiatement l’effet
@@ -79,19 +79,46 @@ class Pou:
             "original": original
         }
 
+
     def update_buffs(self):
         """À appeler à chaque tour pour diminuer la durée des buffs."""
         expired = []
 
-        for stat, buff in self.active_buffs.items():
+        for effect_type, buff in self.active_buffs.items():
             buff["duration"] -= 1
-            if buff["duration"] <= 0:
-                # Expiration → on restaure la valeur d’origine
-                setattr(self, stat, buff["original"])
-                expired.append(stat)
-                print(f"L’effet sur {stat.upper()} de {self.name} s’est dissipé.")
+            #Passage à match/case pour rendre l'ajout d'effets (buffs, soins, états spéciaux) plus flexible
+            #Ex : new effect -> burn -> case 'burn' et c'est finit, pas de nouveaux param à rentrer ou quoi
+            match effect_type:    
+                case 'atk':
+                    if buff["duration"] <= 0:
+                        # Expiration → on restaure la valeur d’origine
+                        setattr(self, stat, buff["original"])
+                        expired.append(effect_type)
+                        print(f"L’effet sur {stat.upper()} de {self.name} s’est dissipé.\n")
+                
+                case 'regen':
+                    amount2 = buff['amount']
+                    #Pour éviter de dépasser la limite d'hp
+                    self.hp = min(self.hp + amount2, self.max_hp)
+                    print(f"{self.name} récupère {amount2} PV grâce à {buff.get('skill_name', 'sa compétence')}\n")
+                    if buff["duration"] <= 0:
+                        expired.append(effect_type)
+                        print(f"La régénération de {self.name} est terminée.")
 
         # Supprimer les buffs expirés
         for stat in expired:
-            del self.active_buffs[stat]
+            del self.active_buffs[effect_type]
+
+
+    def add_heal(self, stat, amount, duration, skill_name=""):
+        '''Heal qui dure sur plusieurs tours'''
+        if stat not in ["stat", "hp"]:
+                    return
+        
+        self.active_buffs['regen'] = {
+            "amount": amount,
+            "duration": duration,
+            "skill_name": skill_name #sinon je vois pas comment récup le nom de la compétence ici, si tu sais faire modifies
+        }
+
 

@@ -22,9 +22,10 @@ TAUX_DROP={
     'légendaire':0.05
 }
 
-def create_team(owner_name ): #lenT à rajouter
+def create_team(owner_name): #lenT à rajouter -> 1 pour mes tests de comp plus rapide
+    #Si tu veux implémenter le taux de drop sur la création de team juste créer une list = random_team(choice_list, TAUX_DROP, et len que tu veux)
     choice_list = [Pou.from_model(owner_name, model) for model in PouModels.values()]
-    lenT = 5
+    lenT = 1
     x = str(input("Voulez vous créer votre propre équipe ou en générer une aléatoirement ?\n\n     1 : Créez votre propre équipe !\n\n     2 : Générer une équipe (En dev)\n\n"))
     while (x != '1') and (x != '2'):
         x = int(input("Veuillez choisir une valeur valide : 1 ou 2.\n"))
@@ -53,13 +54,13 @@ def show_team(pou_list):
     for pou in pou_list:
         print(f"- {pou.name}")
 
-
+#show_more et recup_flag purement optionnel mais rajoute un petit truc quand tu random_team
 
 #Affiche un message différent par rapport à la rareté la plus haute + affiche la team
 def show_more(pou_list, cas):
     cas2 = recup_flag(pou_list, TAUX_DROP)
     match cas:
-        case 1:
+        case 1: #le premier match est à remplir à la main dans les fonction car c'est si on décide d'une random team ou juste d'une création lambda
             match cas2:
                 case 1:
                     print("\nLes étoiles se sont alignées... Ou pas...\nVoici ton équipe :\n")
@@ -97,20 +98,24 @@ def recup_flag(pou_list, TAUX_D):
     return f
 
 
-def random_team(pou_list, TAUX_D, lenT):
+def random_team(pou_list, TAUX_D, lenT):#lenT -> variable pour len Team
     random_list = []
-    nb_tours = 100
+    nb_tours = 100 #je mets une limite de tour dans le cas ou y'a rien qui drop pour pas qu'il galère pdnt 100ans,
+                   # (sujet à être màj 100t est suffisant pour le moment)
     cpt_tours = 0
     while (len(random_list) < lenT) and cpt_tours < nb_tours:
         cpt_tours += 1
         for pou in pou_list:
+            #regarde si l'objet pou est déjà dans la list, pas de name car 
+            #Il faisait une erreur vu qu'il se retrouvait à comparer des str avec object
+            #Et du coup si il est déjà dedans la méthod continue est l'équivalent d'un i+1, il passe au pou suivant
             if pou in random_list:
                 continue
-            else:
-                rarity = getattr(pou, 'rarity', None)
-                if random.random() < TAUX_D.get(rarity, 0):
+            else:                   #possible opti avec un match / case cela dit
+                rarity = getattr(pou, 'rarity', None) #ici on vient récuperer la rareté du pou et return None si elle existe pas
+                if random.random() < TAUX_D.get(rarity, 0): #condition qui conclue si oui ou non on drop
                     random_list.append(pou)
-                    if (len(random_list) >= lenT) or (nb_tours <= cpt_tours):
+                    if (len(random_list) >= lenT) or (nb_tours <= cpt_tours):#Et ici on break si nb de tours trop haut ou si la list est pleine
                         break
     return random_list
 
