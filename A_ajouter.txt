@@ -6,6 +6,4 @@ A ajouter:
     - Ajouter une compétence de heal qui agit sur plusieurs tours;
     - Modifier battle.py qui gère encore du print et du input() : il faudra séparer la logique du rendu plus tard.
     - Passif + 3 comps
-    - !BUG! : team_creation -> après une saisie invalide (ex : 12), même les saisies valides suivantes (1 ou 2) sont rejetées 
-                        et le prog reste dans la boucle d'une valeuur invalide
                         
