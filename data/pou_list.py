@@ -7,7 +7,7 @@ PouModels = {
         "hp": 30,
         "atk": 10,
         "rarity": 'commun',
-        "skills": [SKILLS["Tape Fort"], SKILLS["Vidage Sanguin"], SKILLS["Slap That Ass"], SKILLS["TimedSoin"]]
+        "skills": [SKILLS["Tape Fort"], SKILLS["Vidage Sanguin"], SKILLS["Slap That Ass"], SKILLS["Baume visqueux"]]
     },
     "Pou Sergent": {
         "name": "Pou Sergent",

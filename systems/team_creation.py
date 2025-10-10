@@ -28,7 +28,7 @@ def create_team(owner_name): #lenT à rajouter -> 1 pour mes tests de comp plus 
     lenT = 1
     x = str(input("Voulez vous créer votre propre équipe ou en générer une aléatoirement ?\n\n     1 : Créez votre propre équipe !\n\n     2 : Générer une équipe (En dev)\n\n"))
     while (x != '1') and (x != '2'):
-        x = int(input("Veuillez choisir une valeur valide : 1 ou 2.\n"))
+        x = str(input("Veuillez choisir une valeur valide : 1 ou 2.\n"))
     if x == '2':
         pou_list = random_team(choice_list, TAUX_DROP, lenT)
         show_more(pou_list,1)
