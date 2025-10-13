@@ -7,7 +7,7 @@ def random_order(p1, p2, state):
     print(f"\nQui commence entre {p1} et {p2} ?")
 
     for _ in range(3):
-        print(".", end="", flush=True)
+        print(".", end="", flush=True)#-> display_sleep
         time.sleep(1)
     print("\n")
 
@@ -16,7 +16,7 @@ def random_order(p1, p2, state):
     else:
         print(f"{p2} commence !\n")
 
-# Affichage du menu d'action
+# Affichage du menu d'action -> display_action
 def choose_action(attacker, team_attacker):
     print(f"C'est au tour de {team_attacker.owner} avec {attacker.name} !\n")
     print("  1 - Attaquer")
@@ -53,7 +53,7 @@ def select_action(attacker, defender, team_attacker, state):
             # Fin du tour après le switch
             return
         else:
-            print("Choix invalide, réessaie.")
+            print("Choix invalide, réessaie.") # -> display_invalid
 
 def describe_skills(attacker):
     print("\nDescriptions des compétences :\n")
