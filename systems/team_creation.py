@@ -41,6 +41,8 @@ def create_team(owner_name): #lenT à rajouter -> 1 pour mes tests de comp plus 
                 print(f"{i} : {pou.name} | {RED}Hp : {pou.hp}{RESET} | {BLUE}Atk : {pou.atk}{RESET}")
             while len(pou_list) < lenT:
                 c = int(input('Choississez le pou que vous voulez : \n')) - 1
+                while (c < 1) or (c > 5):
+                    c = int(input('Veuillez choisir une valeur valide, un chiffre de 1 à 5 : \n')) - 1
                 pou_list.append(choice_list[c])
             show_more(pou_list,2)
             #si 'o' on retourne dans le 'while true' et ça vide la pou_list, si 'n' on break et on renvoie la team comme la fonction se doit de le faire

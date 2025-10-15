@@ -2,65 +2,33 @@
 
 import time
 import random
+from Project_P.ui.display import display_manager
 
-def random_order(p1, p2, state):
-    print(f"\nQui commence entre {p1} et {p2} ?")
-
-    for _ in range(3):
-        print(".", end="", flush=True)#-> display_sleep
-        time.sleep(1)
-    print("\n")
-
-    if state['random_number'] == 1:
-        print(f"{p1} commence !\n")
-    else:                             #Faudrait return si possible seulement celui commence pour opti l'affichage, si c'est pas possible pas grave
-        print(f"{p2} commence !\n")
-
-# Affichage du menu d'action -> display_action
-def choose_action(attacker, team_attacker):
-    print(f"C'est au tour de {team_attacker.owner} avec {attacker.name} !\n")
-    print("  1 - Attaquer")
-    print("  2 - Description des compétences")
-    print("  3 - Changer de Pou\n")
-    choice = input("Votre choix : ")
-    print('')
-    return choice
-
-def choose_comp(attacker, defender, state, action=None):
-    for i in range(4):
-        print(f"  {i + 1} - {attacker.comp[i].name}")
-    print('')
-    while True:
-        choice = input("Votre choix : ")
-        print('')
-        for i in range(4):
-            if choice == str(i + 1):
-                action = attacker.comp[i].apply(attacker, defender)
-                state['log'].append(action)
-        break
+#appeler -> display_comp
+def choose_comp(choice, attacker, defender, state, action=None):
+    match choice:
+        case '1':
+            action = attacker.comp[0].apply(attacker, defender)
+            state['log'].append(action)
+        case '2':
+            action = attacker.comp[1].apply(attacker, defender) #Askip c'est plus rapide en match case mais j'avoue que j'ai l'impression d'en faire trop pour la fonction que c'est mdr
+            state['log'].append(action)
+        case '3':
+            action = attacker.comp[2].apply(attacker, defender)
+            state['log'].append(action)
+        case '4':
+            action = attacker.comp[3].apply(attacker, defender)
+            state['log'].append(action)
     return action
 
-def select_action(attacker, defender, team_attacker, state):
-    while True:
-        choice = choose_action(attacker, team_attacker)
-        if choice == '1':
-            return choose_comp(attacker, defender, state)
-        elif choice == '4':
-            describe_skills(attacker)
-        elif choice == '5':
-            # Forcer le changement de Pou actif
-            team_attacker.choose_next_pou()
-            # Fin du tour après le switch
-            return
-        else:
-            print("Choix invalide, réessaie.") # -> display_invalid
-
-def describe_skills(attacker):
-    print("\nDescriptions des compétences :\n") #ça fait un peu chier une fonction pour ça mais au moins 0 print ici dans le futur -> display_description
-    for i, comp in enumerate(attacker.comp, start=1):
-        print(f"{i}. {comp.name} : {comp.description}")
-    print("")
-
+def select_action(choice):
+    match choice:
+        case '1':
+            return {'next_step' : 'Attaquer'}
+        case '2':
+            return {'next_step' : 'Description'}
+        case '3':
+            return {'next_step' : 'Changer_pou'}
 
 
 def game_turn(team_attacker, team_defender, state):

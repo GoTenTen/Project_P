@@ -35,3 +35,7 @@ Ajouts:                                                                         
 [10/10/25]  - Ajout de la class TimedHealSkill,add_heal, skill : Baume Visqueux et modif de update_buffs                 (skills.py, pou.py, data file)
 ----------
 [13/10/25]  - Début de la séparation rendu/logique de battle.py                                                          (battle.py *NEW*-> ui/display.py)
+----------
+[16/10/25]  - Continuité du 13/10/25, implémentation de + de fonc display, et commencé à trier 
+            battle.py pour le ré-agencer et le rendre fonctionnel avec le display_manager, battle_copy en back up        (battle.py, battle_copy.py, team_creation.py, display.py)
+
