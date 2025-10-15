@@ -25,7 +25,7 @@ TAUX_DROP={
 def create_team(owner_name): #lenT à rajouter -> 1 pour mes tests de comp plus rapide
     #Si tu veux implémenter le taux de drop sur la création de team juste créer une list = random_team(choice_list, TAUX_DROP, et len que tu veux)
     choice_list = [Pou.from_model(owner_name, model) for model in PouModels.values()]
-    lenT = 1
+    lenT = 2
     x = str(input("Voulez vous créer votre propre équipe ou en générer une aléatoirement ?\n\n     1 : Créez votre propre équipe !\n\n     2 : Générer une équipe (En dev)\n\n"))
     while (x != '1') and (x != '2'):
         x = str(input("Veuillez choisir une valeur valide : 1 ou 2.\n"))

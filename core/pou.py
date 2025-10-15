@@ -92,7 +92,7 @@ class Pou:
                 case 'atk':
                     if buff["duration"] <= 0:
                         # Expiration → on restaure la valeur d’origine
-                        setattr(self, stat, buff["original"])
+                        setattr(self, effect_type, buff["original"])
                         expired.append(effect_type)
                         print(f"L’effet sur {stat.upper()} de {self.name} s’est dissipé.\n")
                 
