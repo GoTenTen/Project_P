@@ -34,7 +34,7 @@ class Pou:
     def is_alive(self):
         return self.hp > 0
 
-    def heal(self, ampount):
+    def heal(self, amount):
         healed = min(amount, self.max_hp - self.hp)
         self.hp += healed
         return f"{self.name} récupère {healed} PV. (PV actuels: {self.hp})"
