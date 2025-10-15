@@ -13,7 +13,7 @@ def random_order(p1, p2, state):
 
     if state['random_number'] == 1:
         print(f"{p1} commence !\n")
-    else:
+    else:                             #Faudrait return si possible seulement celui commence pour opti l'affichage, si c'est pas possible pas grave
         print(f"{p2} commence !\n")
 
 # Affichage du menu d'action -> display_action
@@ -56,7 +56,7 @@ def select_action(attacker, defender, team_attacker, state):
             print("Choix invalide, réessaie.") # -> display_invalid
 
 def describe_skills(attacker):
-    print("\nDescriptions des compétences :\n")
+    print("\nDescriptions des compétences :\n") #ça fait un peu chier une fonction pour ça mais au moins 0 print ici dans le futur -> display_description
     for i, comp in enumerate(attacker.comp, start=1):
         print(f"{i}. {comp.name} : {comp.description}")
     print("")

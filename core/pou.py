@@ -17,13 +17,13 @@ class Pou:
     @classmethod
     def from_model(cls, owner, model_data):
         """Crée un Pou à partir d’un modèle de données."""
-        pou = cls(
+        pou =  cls(
             owner=owner,
             name=model_data["name"],
             hp=model_data["hp"],
             atk=model_data["atk"],
             comp_list=model_data["skills"],
-            rarity=model_data.get("rarity", "commun")  # ✅ Ajouté ici !
+            rarity=model_data.get("rarity", "commun") 
         )
 
         return pou
@@ -34,7 +34,7 @@ class Pou:
     def is_alive(self):
         return self.hp > 0
 
-    def heal(self, amount):
+    def heal(self, ampount):
         healed = min(amount, self.max_hp - self.hp)
         self.hp += healed
         return f"{self.name} récupère {healed} PV. (PV actuels: {self.hp})"
@@ -46,6 +46,7 @@ class Pou:
         element_bonus = kwargs.get("element_bonus", 1.0)
         flat_bonus = kwargs.get("flat_bonus", 0)
         accuracy = kwargs.get("accuracy", 1)
+        self_damage = kwargs.get("self_damage", 0)
 
         # Calcul du critique
         is_crit = random.random() < crit_chance
@@ -120,5 +121,3 @@ class Pou:
             "duration": duration,
             "skill_name": skill_name #sinon je vois pas comment récup le nom de la compétence ici, si tu sais faire modifies
         }
-
-

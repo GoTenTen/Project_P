@@ -1,3 +1,4 @@
+#display.py
 from Project_P.core.battle import *
 import time
 
@@ -44,3 +45,30 @@ def display_sleep(cas):
 
 def display_description(dispaply_all):
     display_all(["\nDescriptions des compétences :\n"])
+
+def display_text_drop(cas):
+    match cas:
+        case 1:
+            print("\nLes étoiles se sont alignées... Ou pas...\nVoici ton équipe :\n")
+        case 2:
+            print("\nLes étoiles se sont alignées... Ou presque...\nVoici ton équipe :\n")
+        case 3:
+            print("\nLes étoiles se sont alignées ! Regarde moi cette équipe :\n")
+        case 4:
+            print("\nDios mio abberant le taux de drop guette :\n")
+
+def show_team(pou_list):
+    text = [f"- {pou.name}" for pou in pou_list]
+    display_all(text)
+
+#Affiche un message différent par rapport à la rareté la plus haute + affiche la team
+def show_more(pou_list, cas):
+    from Project_P.systems.team_creation import recup_flag 
+    cas2 = recup_flag(pou_list)
+    match cas:
+        case 1: #Ce match est à remplir à la main dans les fonction car c'est si on décide d'une random team ou juste d'une création lambda
+            display_text_drop(cas2)
+            show_team(pou_list)
+        case 2:
+            print("\nVoici votre équipe :\n")
+            show_team(pou_list)
