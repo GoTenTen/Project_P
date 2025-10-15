@@ -2,6 +2,7 @@
 from Project_P.core.pou import Pou
 from Project_P.data.pou_list import PouModels
 from Project_P.core.team import Team
+from Project_P.ui.display import *
 import random
 
 '''
@@ -49,34 +50,7 @@ def create_team(owner_name): #lenT à rajouter -> 1 pour mes tests de comp plus 
     return Team(owner_name,pou_list)
 
 
-
-def show_team(pou_list):
-    for pou in pou_list:
-        print(f"- {pou.name}")
-
 #show_more et recup_flag purement optionnel mais rajoute un petit truc quand tu random_team
-
-#Affiche un message différent par rapport à la rareté la plus haute + affiche la team
-def show_more(pou_list, cas):
-    cas2 = recup_flag(pou_list)
-    match cas:
-        case 1: #le premier match est à remplir à la main dans les fonction car c'est si on décide d'une random team ou juste d'une création lambda
-            match cas2:
-                case 1:
-                    print("\nLes étoiles se sont alignées... Ou pas...\nVoici ton équipe :\n")
-                    show_team(pou_list)
-                case 2:
-                    print("\nLes étoiles se sont alignées... Ou presque...\nVoici ton équipe :\n")
-                    show_team(pou_list)
-                case 3:
-                    print("\nLes étoiles se sont alignées ! Regarde moi cette équipe :\n")
-                    show_team(pou_list)
-                case 4:
-                    print("\nDios mio abberant le taux de drop guette :\n")
-                    show_team(pou_list)
-        case 2:
-            print("\nVoici votre équipe :\n")
-            show_team(pou_list)
 
 #Cette fonction vient déterminer la rareté la plus haute dans la team
 def recup_flag(pou_list):
@@ -100,8 +74,8 @@ def recup_flag(pou_list):
 
 def random_team(pou_list, TAUX_D, lenT):#lenT -> variable pour len Team
     random_list = []
-    nb_tours = 100 #je mets une limite de tour dans le cas ou y'a rien qui drop pour pas qu'il galère pdnt 100ans,
-                   # (sujet à être màj 100t est suffisant pour le moment)
+    nb_tours = 100  #je mets une limite de tour dans le cas ou y'a rien qui drop pour pas qu'il galère pdnt 100ans,
+                    # (sujet à être màj 100t est suffisant pour le moment)
     cpt_tours = 0
     while (len(random_list) < lenT) and cpt_tours < nb_tours:
         cpt_tours += 1
@@ -115,7 +89,7 @@ def random_team(pou_list, TAUX_D, lenT):#lenT -> variable pour len Team
                 rarity = getattr(pou, 'rarity', None) #ici on vient récuperer la rareté du pou et return None si elle existe pas
                 if random.random() < TAUX_D.get(rarity, 0): #condition qui conclue si oui ou non on drop
                     random_list.append(pou)
-                    if (len(random_list) >= lenT) or (nb_tours <= cpt_tours):#Et ici on break si nb de tours trop haut ou si la list est pleine
+                    if (len(random_list) >= lenT) or (nb_tours <= cpt_tours):#Et ici on break si cpt tours trop haut ou si la list est pleine
                         break
     return random_list
 

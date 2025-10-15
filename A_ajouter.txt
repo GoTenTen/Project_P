@@ -1,9 +1,8 @@
 A ajouter:
 
-    - Ajouter la possibilité de laisser le joueur choisir les poux qu'il souhaite;
-    - Ajouter une rareté pour les poux;
+    - Essayer d'implenter un cache afin de faire certian calculs récurents instantanément (from functools import lru_cache);
     - Ajouter plus de poux avec des compétences signature cohérente;
-    - Ajouter une compétence de heal qui agit sur plusieurs tours;
     - Modifier battle.py qui gère encore du print et du input() : il faudra séparer la logique du rendu plus tard.
     - Passif + 3 comps
+    - Retirer les prints de battle.py -> Fonction/fichier orchestreur qui s'occupera de mettre dans l'ordre les display et les appels de fonction
                         
