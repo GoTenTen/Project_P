@@ -11,7 +11,7 @@ class Pou:
         self.base_atk = atk
         self.comp = comp_list
         self.crit_chance = crit_chance
-        self.rarity = []
+        self.rarity = rarity
         self.active_buffs = {}  # stocke les buffs temporaires
 
     @classmethod

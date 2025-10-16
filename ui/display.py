@@ -1,7 +1,5 @@
 #display.py
-from Project_P.core.battle import *
 from Project_P.core.pou import *
-from Project_P.data.pou_list import *
 import time
 
 def display_all(text):
