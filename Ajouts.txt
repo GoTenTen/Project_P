@@ -24,6 +24,18 @@ Ajouts:                                                                         
 [06/10/25] - Ajout d'une nouvelle structure propre pour l'organisation du projet;                                       (all)
 [06/10/25] - Allègements de la fonction "game_turn()" en créant des sous fonctions spécifiques;                         (battle.py)
 [06/10/25] - Modification de la façon de créer des teams, réglage du problème d'instance avec l'assignation des pous;   (team_creation.py, pou.py)
+----------
 [07/10/25] - Ajout du paramètre self_damage, de la compétence Vidange sanguine, 
                 maj des comps de pou soldat pour test et màj des imports dans "main.py"                                  (main.py, skills.py, data file)
+----------
 [08/10/25]  - Ajout de create et random team                                                                             (team_creation.py)
+----------
+[09/10/25]  - Modification de create/random tem avec les raretés/taux, ajout de : recup_flag et show_more                (team_creation.py)
+----------
+[10/10/25]  - Ajout de la class TimedHealSkill,add_heal, skill : Baume Visqueux et modif de update_buffs                 (skills.py, pou.py, data file)
+----------
+[13/10/25]  - Début de la séparation rendu/logique de battle.py                                                          (battle.py *NEW*-> ui/display.py)
+----------
+[16/10/25]  - Continuité du 13/10/25, implémentation de + de fonc display, et commencé à trier 
+            battle.py pour le ré-agencer et le rendre fonctionnel avec le display_manager, battle_copy en back up        (battle.py, battle_copy.py, team_creation.py, display.py)
+

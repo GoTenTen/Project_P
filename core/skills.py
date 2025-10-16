@@ -81,6 +81,15 @@ class HealSkill(Skill):
 
     def apply(self, user, target=None):
         return user.heal(self.amount)
+        
+class TimedHealSkill(Skill):
+    def apply(self, user, target=None):  #un truc que j'ai pas compris c'est tes init et super init, ici ça fonctionne ça, si tu penses que c'est mieux avec modifies
+        amount = self.kwargs.get("amount", 0)
+        duration = self.kwargs.get("duration", 0)
+        stat = self.kwargs.get("stat", "hp")
+        user.add_heal(stat, amount, duration, self.name)
+        return f"{user.name} de {user.owner} utilise {self.name} : régénère {amount} PV par tours, pendant {duration} tours !"
+
 
 
 

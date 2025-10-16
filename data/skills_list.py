@@ -1,6 +1,6 @@
 # skills_list.py
 import random
-from Project_P.core.skills import AttackSkill, BuffSkill, HealSkill, TimedBuffSkill
+from Project_P.core.skills import *
 
 SKILLS = {
     "Tape Fort" : AttackSkill(
@@ -56,6 +56,12 @@ SKILLS = {
         name = "Vidage sanguin",
         description = "Dans un ultime élant, le pou décide d'aspirer l'entièreté du sang de son adversaire le laissant à 1hp, causant au passage sa propre mort",
         multiplier=1.0,
-        self_damage=9999
+        self_damage=9999,
+    ),
+    "Baume visqueux" : TimedHealSkill(
+        name="Baume visqueux",
+        description="Génère un baume à partir de sa bave à étaler sur ses blessures. Rend 5 PV par tours pendant 2 tours",
+        amount=5,
+        duration=2
     )
 }
