@@ -2,7 +2,7 @@
 import time
 
 from Project_P.systems.team_creation import create_team
-from Project_P.core.battle import random_order, game_turn
+from Project_P.core.battle_copy import random_order, game_turn
 from Project_P.core.team import *
 import random
 
@@ -17,7 +17,7 @@ def start():
     pou2 = team2.get_active_pou()
 
     game_state = {
-        'random_number': random.randint(1, 2),
+        'random_number' : 0,
         'tour': 1,
         'log': []
     }

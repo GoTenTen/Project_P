@@ -1,8 +1,46 @@
 #display.py
-from Project_P.core.battle import *
 from Project_P.core.pou import *
-from Project_P.data.pou_list import *
 import time
+
+
+
+def display_manager(event, **data):
+    cas = data['cas']
+    pou_list = data['pou_list']
+    attacker = data['attacker']
+    team_attacker = data['team_attacker']
+    p1, p2 = data['p1'], data['p2'] 
+    match event:
+        case 'choose_action':
+            display_action(attacker, team_attacker)
+        
+        case 'show_team':
+            show_team(pou_list)
+        
+        case 'show_more':
+            show_more(pou_list, cas)
+        
+        case 'display_text_drop':
+            display_text_drop(cas)
+        
+        case 'description':
+            display_description(attacker)
+        
+        case 'invalid':
+            display_invalid()
+        
+        case 'display_sleep':
+            display_sleep(cas)
+
+        case 'display_comp':
+            display_comp(attacker)
+
+        case 'display_starter':
+            display_starter(p1, p2)
+
+        case 'display_sleep':
+            display_sleep(cas)
+
 
 def display_all(text):
     [print(x) for x in text]
@@ -38,7 +76,7 @@ def display_sleep():#cas à ajouter si -> match case
     for _ in range(3):
         print(".", end="", flush=True)
         time.sleep(1)
-    print("\n")
+    print("\n") 
 
 
 def display_text_drop(cas):
@@ -79,36 +117,4 @@ def display_description(attacker):
     display_all(text)
 
 
-def display_manager(event, **data):
-    cas = data['cas']
-    pou_list = data['pou_list']
-    attacker = data['attacker']
-    team_attacker = data['team_attacker']
-    p1, p2 = data['p1'], data['p2'] 
-    match event:
-        case 'choose_action':
-            display_action(attacker, team_attacker)
-        
-        case 'show_team':
-            show_team(pou_list)
-        
-        case 'show_more':
-            show_more(pou_list, cas)
-        
-        case 'display_text_drop':
-            display_text_drop(cas)
-        
-        case 'description':
-            display_description(attacker)
-        
-        case 'invalid':
-            display_invalid()
-        
-        case 'display_sleep':
-            display_sleep(cas)
 
-        case 'display_comp':
-            display_comp(attacker)
-
-        case 'display_starter':
-            display_starter(p1, p2)
