@@ -25,13 +25,14 @@ TAUX_DROP={
 
 def create_team(owner_name): #lenT à rajouter -> 1 pour mes tests de comp plus rapide
     #Si tu veux implémenter le taux de drop sur la création de team juste créer une list = random_team(choice_list, TAUX_DROP, et len que tu veux)
-    choice_list = [Pou.from_model(owner_name, model) for model in PouModels.values()]
     lenT = 3
-    x = str(input(f"\n{owner_name} voulez vous créer votre propre équipe ou en générer une aléatoirement ?\n\n     1 : Créez votre propre équipe !\n\n     2 : Générer une équipe (En dev)\n\n"))
+    basic_list = [Pou.from_model(owner_name, model) for model in PouModels.values()]
+    choice_list = random_team([Pou.from_model(owner_name, model) for model in PouModels.values()], TAUX_DROP, lenT)
+    x = str(input("Voulez vous créer votre propre équipe ou en générer une aléatoirement ?\n\n     1 : Créez votre propre équipe !\n\n     2 : Générer une équipe (En dev)\n\n"))
     while (x != '1') and (x != '2'):
         x = str(input("Veuillez choisir une valeur valide : 1 ou 2.\n"))
     if x == '2':
-        pou_list = random_team(choice_list, TAUX_DROP, lenT)
+        pou_list = random_team(basic_list, TAUX_DROP, lenT)
         show_more(pou_list,1)
     else:
         while True:
@@ -50,6 +51,7 @@ def create_team(owner_name): #lenT à rajouter -> 1 pour mes tests de comp plus 
             if confirm == 'n':
                 break
     return Team(owner_name,pou_list)
+
 
 #show_more et recup_flag purement optionnel mais rajoute un petit truc quand tu random_team
 
@@ -76,21 +78,31 @@ def recup_flag(pou_list):
 def random_team(pou_list, TAUX_D, lenT):#lenT -> variable pour len Team
     random_list = []
     while (len(random_list) < lenT):
+        drop_rate = random.random()
+        if drop_rate < TAUX_D.get('légendaire', 0):
+            rara = 'légendaire'
+        elif drop_rate < TAUX_D.get('épic', 0):
+            rara = 'épic'
+        elif drop_rate < TAUX_D.get('rare', 0):
+            rara = 'rare'
+        else:
+            rara = 'commun'
+        rarity_sort = []
         for pou in pou_list:
-            #regarde si l'objet pou est déjà dans la list, pas de name car
-            #Il faisait une erreur vu qu'il se retrouvait à comparer des str avec object
-            #Et du coup si il est déjà dedans, la méthod 'continue' est l'équivalent d'un i+1, il passe au pou suivant
-            if pou in random_list:
-                continue
-            else:                   #possible opti avec un match / case cela dit
-                rarity = getattr(pou, 'rarity', None) #ici on vient récuperer la rareté du pou et return None si elle existe pas
-                if random.random() < TAUX_D.get(rarity, 0): #condition qui conclue si oui ou non on drop
-                    random_list.append(pou)
+            if getattr(pou, 'rarity', None) == rara:
+                rarity_sort.append(pou)
+        random_list.append(random.choice(rarity_sort))
     return random_list
+    
 
-if random.random() < 0.5:
-    if random.random() < 0.35:
-        if random.random() < 0.1:
-            if random.random() < 0.05:
 
-    random.random()
+
+
+
+'''
+def random_team(pou_list):
+    return random.sample(pou_list, 2)
+'''
+
+
+

@@ -9,16 +9,13 @@ def choose_comp(choice, attacker, defender, state, action=None):
     match choice:
         case '1':
             action = attacker.comp[0].apply(attacker, defender)
-            state['log'].append(action)
         case '2':
             action = attacker.comp[1].apply(attacker, defender) #Askip c'est plus rapide en match case mais j'avoue que j'ai l'impression d'en faire trop pour la fonction que c'est mdr
-            state['log'].append(action)
         case '3':
             action = attacker.comp[2].apply(attacker, defender)
-            state['log'].append(action)
         case '4':
             action = attacker.comp[3].apply(attacker, defender)
-            state['log'].append(action)
+    state['log'].append(action)
     return action
 
 def select_action(choice):
@@ -29,6 +26,8 @@ def select_action(choice):
             return {'next_step' : 'Description'}
         case '3':
             return {'next_step' : 'Changer_pou'}
+        case _:
+            return {'next_step' : 'INVALID_ARGUMENT'}
 
 
 def game_turn(team_attacker, team_defender, state):
