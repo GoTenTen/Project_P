@@ -89,9 +89,12 @@ def random_team(pou_list, TAUX_D, lenT):#lenT -> variable pour len Team
             rara = 'commun'
         rarity_sort = []
         for pou in pou_list:
-            if getattr(pou, 'rarity', None) == rara:
+            if pou not in random_list and getattr(pou, 'rarity', None) == rara:
                 rarity_sort.append(pou)
-        random_list.append(random.choice(rarity_sort))
+        if rarity_sort:
+            random_list.append(random.choice(rarity_sort))
+        else:
+            continue
     return random_list
     
 

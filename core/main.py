@@ -2,8 +2,9 @@
 import time
 
 from Project_P.systems.team_creation import create_team
-from Project_P.core.battle_copy import random_order, game_turn
+from Project_P.core.battle import game_turn
 from Project_P.core.team import *
+from Project_P.ui.display import display_manager
 import random
 
 def start():
@@ -17,12 +18,12 @@ def start():
     pou2 = team2.get_active_pou()
 
     game_state = {
-        'random_number' : 0,
+        'random_number' : random.randint(1,2),
         'tour': 1,
         'log': []
     }
 
-    random_order(player1, player2, game_state)
+    display_manager('display_starter', p1=player1, p2=player2)
 
     while team1.is_alive() and team2.is_alive():
         time.sleep(1.5)

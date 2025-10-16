@@ -5,41 +5,56 @@ import time
 
 
 def display_manager(event, **data):
-    cas = data['cas']
-    pou_list = data['pou_list']
-    attacker = data['attacker']
-    team_attacker = data['team_attacker']
-    p1, p2 = data['p1'], data['p2'] 
     match event:
         case 'choose_action':
+            attacker = data['attacker']
+            team_attacker = data['team_attacker']
+            cas = data['cas']
             display_action(attacker, team_attacker)
+            display_input(cas)
         
         case 'show_team':
+            pou_list = data['pou_list']           
             show_team(pou_list)
         
         case 'show_more':
+            pou_list = data['pou_list']
+            cas = data['cas']          
             show_more(pou_list, cas)
         
         case 'display_text_drop':
+            cas = data['cas']
             display_text_drop(cas)
         
         case 'description':
+            attacker = data['attacker']       
             display_description(attacker)
         
-        case 'invalid':
+        case 'invalid':            
             display_invalid()
         
         case 'display_sleep':
+            cas = data['cas'] 
             display_sleep(cas)
 
         case 'display_comp':
+            attacker = data['attacker']
             display_comp(attacker)
 
         case 'display_starter':
+            p1, p2 = data['p1'], data['p2']
             display_starter(p1, p2)
 
         case 'display_sleep':
+            cas = data['cas']
             display_sleep(cas)
+
+        case 'display_input':
+            cas = data['cas']
+            display_input(cas)
+
+        case _:
+            print(f'\n event : {event} est inconnu\n')
 
 
 def display_all(text):
@@ -53,6 +68,14 @@ def display_action(attacker, team_attacker):
                     "3 - Changer de Pou"]
     display_all(choice_action)
 
+def display_input(cas):
+    text = []
+    match cas:
+        case 1:
+            text = 'Que voulez vous faire ?'
+        case 2:
+            text = 'Votre choix :'
+    print(text, end='', flush=True)
 
 def display_invalid():
     display_all(["Choix invalide, réessaie."])
@@ -113,7 +136,7 @@ def display_comp(attacker):
     display_all(text)
 
 def display_description(attacker):
-    text = [f"{i}. {comp.name} : {comp.description}" for i, comp in enumerate(attacker.comp, start=1)]
+    text = [f"{i+1}. {comp.name} : {comp.description}" for i, comp in enumerate(attacker.comp, start=1)]
     display_all(text)
 
 
