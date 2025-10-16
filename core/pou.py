@@ -11,11 +11,11 @@ class Pou:
         self.base_atk = atk
         self.comp = comp_list
         self.crit_chance = crit_chance
-        self.rarity = rarity
+        self.rarity = []
         self.active_buffs = {}  # stocke les buffs temporaires
 
     @classmethod
-    def from_model(cls, model_data, owner):
+    def from_model(cls, owner, model_data):
         """Crée un Pou à partir d’un modèle de données."""
         pou = cls(
             owner=owner,
