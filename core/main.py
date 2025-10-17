@@ -34,12 +34,10 @@ def start():
         time.sleep(2)
 
         if game_state['random_number'] == 1:
-            game_turn(team1, team2, game_state)
-            #team2.handle_death_and_switch()  # Si un Pou de team2 est mort, il change
+            game_turn(team1, team2)
             game_state['random_number'] = 2
         else:
-            game_turn(team2, team1, game_state)
-            #team1.handle_death_and_switch()  # Si un Pou de team1 est mort, il change
+            game_turn(team2, team1)
             game_state['random_number'] = 1
 
         pou1 = team1.get_active_pou()

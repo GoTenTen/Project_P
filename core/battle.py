@@ -29,7 +29,7 @@ def select_action(choice):
             return {'next_step' : 'INVALID_ARGUMENT'}
 
 
-def game_turn(team_attacker, team_defender, state):
+def game_turn(team_attacker, team_defender):
     """
     team_attacker, team_defender sont des instances de Team.
     Cette fonction gère le tour du Pou actif de team_attacker.

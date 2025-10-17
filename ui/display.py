@@ -81,8 +81,8 @@ def display_starter(p1, p2):
 
 
 def display_sleep():#cas à ajouter si -> match case
-    '''match cas:
-        case '1':''' #Si on décide d'utiliser plusieurs affichage de ce style, on aura juste à ajouter un case (et ptet modifier le nom de la fonction)
+    #match cas:
+     #   case '1': #Si on décide d'utiliser plusieurs affichage de ce style, on aura juste à ajouter un case (et ptet modifier le nom de la fonction)
     for _ in range(3):
         print(".", end="", flush=True)
         time.sleep(1)
@@ -129,15 +129,29 @@ def display_description(attacker):
 def display_skill(action):
     match action['type_skill']:
         case 'buff':
-            return f"{action['user_name']} de {action['user_owner']} utilise {action['comp_name']} : {action['stat_id']} passe de {action['before']} à {action['stat_value']} !"
+            return f"{action['user'].name} de {action['user'].owner} utilise {action['comp_name']} : {action['stat_id']} passe de {action['before']} à {action['stat_value']} !"
         case 'heal':
-            return f"{action['user_name']} de {action['user_owner']} utilise {action['comp_name']} : {action['user_name']} récupère {action['amount']} PV. (PV actuels: {action['user_hp']})"
+            return f"{action['user'].name} de {action['user'].owner} utilise {action['comp_name']} : {action['user'].name} récupère {action['amount']} PV. (PV actuels: {action['user_hp']})"
         case 'timed_buff':
-            return f"{action['user_name']} de {action['user_owner']} utilise {action['comp_name']} : {action['stat_id']} augmenté pour {action['duration']} tours !"
+            return f"{action['user'].name} de {action['user'].owner} utilise {action['comp_name']} : {action['stat_id']} augmenté pour {action['duration']} tours !"
         case 'timed_heal':
-            return f"{action['user_name']} de {action['user_owner']} utilise {action['comp_name']} : régénère {action['amount']} PV par tours, pendant {action['duration']} tours !"
+            return f"{action['user'].name} de {action['user'].owner} utilise {action['comp_name']} : régénère {action['amount']} PV par tours, pendant {action['duration']} tours !"
         case 'attack':
-            return f"{action['user_name']} de {action['user_owner']} à infligé {action['total_damage']} dégâts à {action['target_name']} de {action['target_owner']}."
+            for events in action['events']:
+                match events['type_events']:
+                    case 'announce':
+                        print(f"{action['user'].owner} utilise {events['comp_name']} !")
+                    case 'bonus_message':
+                        print(f"\n{events['bonus_message']}\n")
+                    case 'hits_and_crits':
+                        if events['hits'] > 1:
+                            print(f"Coup {events['i'] + 1}: {events['damage']} dmg{events['crit_txt']}")
+                            time.sleep(1)
+                        else:
+                            print(events['crit_txt'])
+                    case 'self_damage':
+                        print(f"Il prend {events['self_damage']} de dégats de contre coup... Tdc va \n")
+            return f"{action['user'].name} de {action['user'].owner} à infligé {action['total_damage']} dégâts à {action['target_name']} de {action['target_owner']}."
         case _:
             return f"erreur starfoullah : {action['type_skill']}"
 
