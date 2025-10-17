@@ -27,7 +27,7 @@ def create_team(owner_name): #lenT à rajouter -> 1 pour mes tests de comp plus 
     #Si tu veux implémenter le taux de drop sur la création de team juste créer une list = random_team(choice_list, TAUX_DROP, et len que tu veux)
     lenT = 3
     basic_list = [Pou.from_model(owner_name, model) for model in PouModels.values()]
-    choice_list = random_team([Pou.from_model(owner_name, model) for model in PouModels.values()], TAUX_DROP, lenT)
+    choice_list = random_team(basic_list, TAUX_DROP, 5)
     x = str(input("Voulez vous créer votre propre équipe ou en générer une aléatoirement ?\n\n     1 : Créez votre propre équipe !\n\n     2 : Générer une équipe (En dev)\n\n"))
     while (x != '1') and (x != '2'):
         x = str(input("Veuillez choisir une valeur valide : 1 ou 2.\n"))
@@ -38,13 +38,13 @@ def create_team(owner_name): #lenT à rajouter -> 1 pour mes tests de comp plus 
         while True:
             pou_list = []
             # Avec enumerate on peut parcourir une liste et récupérer facielemnt à la fois index et valeur
-            for i, pou in enumerate(choice_list, 1):
-                print(f"{i} : {pou.name} | {RED}Hp : {pou.hp}{RESET} | {BLUE}Atk : {pou.atk}{RESET}")
+            for i, pou in enumerate(choice_list):
+                print(f"{i+1} : {pou.name} | {RED}Hp : {pou.hp}{RESET} | {BLUE}Atk : {pou.atk}{RESET}")
             while len(pou_list) < lenT:
-                c = int(input('Choississez le pou que vous voulez : \n')) - 1
-                while (c < 1) or (c > 5):
-                    c = int(input('Veuillez choisir une valeur valide, un chiffre de 1 à 5 : \n')) - 1
-                pou_list.append(choice_list[c])
+                c = int(input('Choississez le pou que vous voulez : \n'))
+                while c not in (1,2,3,4,5):
+                    c = int(input('Veuillez choisir une valeur valide, un chiffre de 1 à 5 : \n'))
+                pou_list.append(choice_list[c-1])
             show_more(pou_list,2)
             #si 'o' on retourne dans le 'while true' et ça vide la pou_list, si 'n' on break et on renvoie la team comme la fonction se doit de le faire
             confirm = str(input("Voulez vous modifier votre équipe ? (o/n)"))
