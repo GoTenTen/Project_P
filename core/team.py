@@ -17,7 +17,7 @@ class Team:
     def get_active_pou(self):
         return self.pous[self.active_index]
 
-    def is_alive(self):
+    def is_alive_team(self):
         return any(pou.hp > 0 for pou in self.pous)
 
     def switch_pou(self, new_index):

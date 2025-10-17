@@ -36,7 +36,7 @@ def game_turn(team_attacker, team_defender, state):
     """
 
     # Vérifier d'abord si l'équipe attaquante a au moins un Pou vivant
-    if not team_attacker.is_alive():
+    if not team_attacker.is_alive_team():
         print(f"Toute l'équipe de {team_attacker.owner} est KO. Aucun tour possible.")
         return
 
@@ -44,7 +44,7 @@ def game_turn(team_attacker, team_defender, state):
     attacker = team_attacker.get_active_pou()
     defender = team_defender.get_active_pou()
 
-    # Si le Pou actif de l'attaquant est KO, forcer le joueur à choisir un remplaçant
+    '''# Si le Pou actif de l'attaquant est KO, forcer le joueur à choisir un remplaçant
     if not attacker.is_alive():
         print(f"{team_attacker.owner}, votre {attacker.name} est KO et ne peut plus agir.")
         # Si l'équipe n'a aucun vivant, impossible de jouer
@@ -54,8 +54,7 @@ def game_turn(team_attacker, team_defender, state):
         # Demander au joueur de choisir un nouveau Pou (bloquant jusqu'à choix valide)
         team_attacker.choose_next_pou()
         # Après le switch, on arrête ici le tour (le joueur a juste switché)
-        return
-    
+        return'''
 
     while True:
         display_manager('choose_action', attacker=attacker, team_attacker=team_attacker, cas=2)
@@ -87,15 +86,15 @@ def game_turn(team_attacker, team_defender, state):
         case 'Changer_Pou':
             team_attacker.choose_next_pou()
 
-    team_attacker.handle_death_and_switch()
-
     # mettre à jour les buffs des deux Pous
     attacker.update_buffs()
 
     # IMPORTANT : ne pas forcer le switch du défenseur ici.
     # On laisse le joueur défenseur changer son Pou au début de son propre tour.
     # On vérifie néanmoins si toute l'équipe défenseur est KO --> fin de partie
-    if not team_defender.is_alive():
+    if not team_defender.is_alive_team():
         print(f"Toute l'équipe de {team_defender.owner} est KO.")
+        return
 
+    team_defender.handle_death_and_switch()
 

@@ -25,7 +25,7 @@ def start():
 
     display_manager('display_starter', p1=player1, p2=player2)
 
-    while team1.is_alive() and team2.is_alive():
+    while team1.is_alive_team() and team2.is_alive_team():
         time.sleep(1.5)
         print(f"\n-------------- TOUR {game_state['tour']} --------------")
         team1.show_all_pou_stats()
@@ -35,11 +35,11 @@ def start():
 
         if game_state['random_number'] == 1:
             game_turn(team1, team2, game_state)
-            team2.handle_death_and_switch()  # Si un Pou de team2 est mort, il change
+            #team2.handle_death_and_switch()  # Si un Pou de team2 est mort, il change
             game_state['random_number'] = 2
         else:
             game_turn(team2, team1, game_state)
-            team1.handle_death_and_switch()  # Si un Pou de team1 est mort, il change
+            #team1.handle_death_and_switch()  # Si un Pou de team1 est mort, il change
             game_state['random_number'] = 1
 
         pou1 = team1.get_active_pou()
@@ -49,9 +49,6 @@ def start():
 
     winner = pou1 if pou1.is_alive() else pou2
     print(f"\n{winner.owner} a gagné !")
-    print("\nRésumé du combat :")
-    for entry in game_state['log']:
-        print(" -", entry)
 
 
 if __name__ == "__main__":
