@@ -34,11 +34,6 @@ class Pou:
     def is_alive(self):
         return self.hp > 0
 
-    def heal(self, amount):
-        healed = min(amount, self.max_hp - self.hp)
-        self.hp += healed
-        return f"{self.name} récupère {healed} PV. (PV actuels: {self.hp})"
-
     def deal_damage(self, target, **kwargs):
         base_multiplier = kwargs.get("multiplier", 1.0)
         crit_chance = kwargs.get("crit_chance", self.crit_chance)

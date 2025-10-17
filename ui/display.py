@@ -4,54 +4,41 @@ import time
 
 
 
-def display_manager(event, **data):
+def display_manager(event, **kwargs):
     match event:
         case 'choose_action':
-            attacker = data['attacker']
-            team_attacker = data['team_attacker']
-            cas = data['cas']
-            display_action(attacker, team_attacker)
-            display_input(cas)
+            display_action(kwargs['attacker'], kwargs['team_attacker'])
+            display_input(kwargs['cas'])
         
         case 'show_team':
-            pou_list = data['pou_list']           
-            show_team(pou_list)
+            show_team(kwargs['pou_list'])
         
         case 'show_more':
-            pou_list = data['pou_list']
-            cas = data['cas']          
-            show_more(pou_list, cas)
+            show_more(kwargs['pou_list'], kwargs['cas'])
         
         case 'display_text_drop':
-            cas = data['cas']
-            display_text_drop(cas)
+            display_text_drop(kwargs['cas'])
         
         case 'description':
-            attacker = data['attacker']       
-            display_description(attacker)
+            display_description(kwargs['attacker'])
         
         case 'invalid':            
             display_invalid()
         
         case 'display_sleep':
-            cas = data['cas'] 
-            display_sleep(cas)
+            display_sleep()  # display_sleep(kwargs['cas'])
 
         case 'display_comp':
-            attacker = data['attacker']
-            display_comp(attacker)
+            display_comp(kwargs['attacker'])
 
         case 'display_starter':
-            p1, p2 = data['p1'], data['p2']
-            display_starter(p1, p2)
-
-        case 'display_sleep':
-            cas = data['cas']
-            display_sleep(cas)
+            display_starter(kwargs['p1'], kwargs['p2'])
 
         case 'display_input':
-            cas = data['cas']
-            display_input(cas)
+            display_input(kwargs['cas'])
+
+        case 'display_skill':
+            print(display_skill(kwargs['action']))
 
         case _:
             print(f'\n event : {event} est inconnu\n')
@@ -138,6 +125,22 @@ def display_comp(attacker):
 def display_description(attacker):
     text = [f"{i+1}. {comp.name} : {comp.description}" for i, comp in enumerate(attacker.comp, start=1)]
     display_all(text)
+
+def display_skill(action):
+    match action['type_skill']:
+        case 'buff':
+            return f"{action['user_name']} de {action['user_owner']} utilise {action['comp_name']} : {action['stat_id']} passe de {action['before']} à {action['stat_value']} !"
+        case 'heal':
+            return f"{action['user_name']} de {action['user_owner']} utilise {action['comp_name']} : {action['user_name']} récupère {action['amount']} PV. (PV actuels: {action['user_hp']})"
+        case 'timed_buff':
+            return f"{action['user_name']} de {action['user_owner']} utilise {action['comp_name']} : {action['stat_id']} augmenté pour {action['duration']} tours !"
+        case 'timed_heal':
+            return f"{action['user_name']} de {action['user_owner']} utilise {action['comp_name']} : régénère {action['amount']} PV par tours, pendant {action['duration']} tours !"
+        case 'attack':
+            return f"{action['user_name']} de {action['user_owner']} à infligé {action['total_damage']} dégâts à {action['target_name']} de {action['target_owner']}."
+        case _:
+            return f"erreur starfoullah : {action['type_skill']}"
+
 
 
 

@@ -52,8 +52,15 @@ class AttackSkill(Skill):
             else:
                 print(f"{user.owner} utilise {self.name} ! \nIl prend {self_damage} de dégats de contre coup... Tdc va \n")
 
-        return f"{user.name} de {user.owner} à infligé {total_damage} dégâts à {target.name} de {target.owner}."
-
+        return {
+            "type_skill": "attack",
+            "user_owner": user.owner,
+            "user_name": user.name,
+            "comp_name": self.name,
+            "target_name": target.name,
+            "target_owner": target.owner,
+            "total_damage": total_damage,
+        }
 
 class BuffSkill(Skill):
     """Compétence de buff."""
@@ -62,7 +69,15 @@ class BuffSkill(Skill):
         factor = self.kwargs.get("factor", 2.0)
         before = getattr(user, stat)
         setattr(user, stat, int(before * factor))
-        return f"{user.owner} utilise {self.name} : {stat.upper()} passe de {before} à {getattr(user, stat)} !"
+        return {
+            "type_skill": "buff",
+            "user_owner": user.owner,
+            "user_name": user.name,
+            "comp_name": self.name,
+            "stat_id": stat.upper(),
+            "before": before,
+            "stat_value": getattr(user, stat)
+        }
 
 class TimedBuffSkill(BuffSkill):
     def apply(self, user, target=None):
@@ -71,7 +86,14 @@ class TimedBuffSkill(BuffSkill):
         duration = self.kwargs.get("duration", 3)
 
         user.add_buff(stat, factor, duration)
-        return f"{user.name} de {user.owner} utilise {self.name} : {stat.upper()} augmenté pour {duration} tours !"
+        return {
+            "type_skill": "timed_buff",
+            "user_owner": user.owner,
+            "user_name": user.name,
+            "comp_name": self.name,
+            "stat_id": stat.upper(),
+            "duration": duration,
+        }
 
 class HealSkill(Skill):
     """Compétence de soin."""
@@ -80,7 +102,17 @@ class HealSkill(Skill):
         self.amount = amount
 
     def apply(self, user, target=None):
-        return user.heal(self.amount)
+        #return user.heal(self.amount)
+        healed = min(self.amount, user.max_hp - user.hp)
+        user.hp += healed
+        return {
+            "type_skill": "heal",
+            "user_owner": user.owner,
+            "user_name": user.name,
+            "comp_name": self.name,
+            "user_hp": user.hp,
+            "amount": healed,
+        }
         
 class TimedHealSkill(Skill):
     def apply(self, user, target=None):  #un truc que j'ai pas compris c'est tes init et super init, ici ça fonctionne ça, si tu penses que c'est mieux avec modifies
@@ -88,7 +120,15 @@ class TimedHealSkill(Skill):
         duration = self.kwargs.get("duration", 0)
         stat = self.kwargs.get("stat", "hp")
         user.add_heal(stat, amount, duration, self.name)
-        return f"{user.name} de {user.owner} utilise {self.name} : régénère {amount} PV par tours, pendant {duration} tours !"
+        return {
+            "type_skill": "timed_heal",
+            "user_owner": user.owner,
+            "user_name": user.name,
+            "comp_name": self.name,
+            "amount": amount,
+            "duration": duration,
+        }
+
 
 
 

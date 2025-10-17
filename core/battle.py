@@ -5,17 +5,17 @@ import random
 from Project_P.ui.display import display_manager
 
 #appeler -> display_comp
-def choose_comp(choice, attacker, defender, action=None):
+def choose_comp(choice, attacker, defender):
     match choice:
         case '1':
-            action = attacker.comp[0].apply(attacker, defender)
+            return attacker.comp[0].apply(attacker, defender)
         case '2':
-            action = attacker.comp[1].apply(attacker, defender) #Askip c'est plus rapide en match case mais j'avoue que j'ai l'impression d'en faire trop pour la fonction que c'est mdr
+            return attacker.comp[1].apply(attacker, defender) #Askip c'est plus rapide en match case mais j'avoue que j'ai l'impression d'en faire trop pour la fonction que c'est mdr
         case '3':
-            action = attacker.comp[2].apply(attacker, defender)
+            return attacker.comp[2].apply(attacker, defender)
         case '4':
-            action = attacker.comp[3].apply(attacker, defender)
-    return action
+            return attacker.comp[3].apply(attacker, defender)
+    return None
 
 def select_action(choice):
     match choice:
@@ -74,12 +74,13 @@ def game_turn(team_attacker, team_defender, state):
     match step['next_step']:
         case 'Attaquer':
             while True:
-                display_manager('display_comp', attacker)
+                display_manager('display_comp', attacker=attacker)
                 print('\n')
-                display_manager('display_input', 1)
+                display_manager('display_input', cas=1)
                 choice = input()
                 if choice in ('1', '2', '3', '4'):
-                    choose_comp(choice, attacker, defender, state, action=None)
+                    action = choose_comp(choice, attacker, defender)
+                    display_manager('display_skill', action=action)
                     break
                 else:
                     display_manager('invalid')
