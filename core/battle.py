@@ -5,7 +5,7 @@ import random
 from Project_P.ui.display import display_manager
 
 #appeler -> display_comp
-def choose_comp(choice, attacker, defender, state, action=None):
+def choose_comp(choice, attacker, defender, action=None):
     match choice:
         case '1':
             action = attacker.comp[0].apply(attacker, defender)
@@ -15,7 +15,6 @@ def choose_comp(choice, attacker, defender, state, action=None):
             action = attacker.comp[2].apply(attacker, defender)
         case '4':
             action = attacker.comp[3].apply(attacker, defender)
-    state['log'].append(action)
     return action
 
 def select_action(choice):
@@ -56,19 +55,41 @@ def game_turn(team_attacker, team_defender, state):
         team_attacker.choose_next_pou()
         # Après le switch, on arrête ici le tour (le joueur a juste switché)
         return
+    
 
-    action = select_action(attacker, defender, team_attacker, state)
+    while True:
+        display_manager('choose_action', attacker=attacker, team_attacker=team_attacker, cas=2)
+        choice = input()
+        print('\n')
+        step = select_action(choice)
+        if step['next_step'] in ['Changer_pou','Attaquer']:
+            break
+        elif step['next_step'] == 'Description':
+            display_manager('description', attacker=attacker)
+            print('\n')
+        else:
+            display_manager('invalid')
+            print('\n')
 
-    time.sleep(1)
-    print(action)
-    time.sleep(1)
+    match step['next_step']:
+        case 'Attaquer':
+            while True:
+                display_manager('display_comp', attacker)
+                print('\n')
+                display_manager('display_input', 1)
+                choice = input()
+                if choice in ('1', '2', '3', '4'):
+                    choose_comp(choice, attacker, defender, state, action=None)
+                    break
+                else:
+                    display_manager('invalid')
+        case 'Changer_Pou':
+            team_attacker.choose_next_pou()
 
     team_attacker.handle_death_and_switch()
 
     # mettre à jour les buffs des deux Pous
     attacker.update_buffs()
-
-    state['log'].append(action)
 
     # IMPORTANT : ne pas forcer le switch du défenseur ici.
     # On laisse le joueur défenseur changer son Pou au début de son propre tour.

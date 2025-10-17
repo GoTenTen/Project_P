@@ -38,4 +38,4 @@ Ajouts:                                                                         
 ----------
 [16/10/25]  - Continuité du 13/10/25, implémentation de + de fonc display, et commencé à trier 
             battle.py pour le ré-agencer et le rendre fonctionnel avec le display_manager, battle_copy en back up        (battle.py, battle_copy.py, team_creation.py, display.py)
-
+[16/10/25]  - New random_team, new game_turn fonctionnel mais incomplet, nouveauté dans display (ajout d'un case _)      (battle.py, main.py, team_creation.py, display.py)
