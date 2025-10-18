@@ -103,23 +103,23 @@ def recall_make_team(x):
 
 
 def create_team(owner_name):
-    Taille_Que_Tu_Souhaites_My_Love_T_As_Vu_Pycharm_Je_Respecte_Les_Conventions_Mais_La_J_Imagine_Que_Tu_Vas_Dire_Que_Le_Nom_Est_Beaucoup_Beaucoup_Trop_Long_Et_Si_C_Est_Le_Cas_Je_Comprends = 3
+    len_team = 3
     while True:
-        print("\n 1   -    Créez votre équipe \n\n 2   -    Générez votre équipe aléatoirement\n\n")
+        display_manager('display_input', cas=3)
         display_manager('display_input', cas=1)
         choice = str(input())
         while choice not in ('1', '2'):
             display_manager('invalid', cas=1)
         break
+    basic_list = [Pou.from_model(owner_name, model) for model in PouModels.values()]
+    choice_list = random_team(basic_list, TAUX_DROP, len_team)
     match choice:
         case '1':
             while True:
-                basic_list = [Pou.from_model(owner_name, model) for model in PouModels.values()]
-                choice_list = random_team(basic_list, TAUX_DROP, 5)
                 poupou_list = []
                 choose_number = []
                 display_manager('show_more', pou_list = choice_list, cas=1)
-                while len(choose_number)<Taille_Que_Tu_Souhaites_My_Love_T_As_Vu_Pycharm_Je_Respecte_Les_Conventions_Mais_La_J_Imagine_Que_Tu_Vas_Dire_Que_Le_Nom_Est_Beaucoup_Beaucoup_Trop_Long_Et_Si_C_Est_Le_Cas_Je_Comprends:
+                while len(choose_number)<len_team:
                     print("Quel pou choisissez vous ?\n")
                     x = int(input())
                     if x not in choose_number:
@@ -127,7 +127,7 @@ def create_team(owner_name):
                     else:
                         display_manager('invalid', cas=1)
                         continue
-                poupou_list = make_team(basic_list, choice_list, choice, choose_number, Taille_Que_Tu_Souhaites_My_Love_T_As_Vu_Pycharm_Je_Respecte_Les_Conventions_Mais_La_J_Imagine_Que_Tu_Vas_Dire_Que_Le_Nom_Est_Beaucoup_Beaucoup_Trop_Long_Et_Si_C_Est_Le_Cas_Je_Comprends)
+                poupou_list = make_team(basic_list, choice_list, choice, choose_number, len_team)
                 print("Voulez vous modifier votre team ?\n")
                 confirm = str(input()).lower()
                 while confirm not in ('oui', 'o', 'n', 'non'):

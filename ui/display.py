@@ -23,7 +23,7 @@ def display_manager(event, **kwargs):
             display_description(kwargs['attacker'])
         
         case 'invalid':            
-            display_invalid()
+            display_invalid(kwargs['cas'])
         
         case 'display_sleep':
             display_sleep()  # display_sleep(kwargs['cas'])
@@ -32,7 +32,7 @@ def display_manager(event, **kwargs):
             display_comp(kwargs['attacker'])
 
         case 'display_starter':
-            display_starter(kwargs['p1'], kwargs['p2'])
+            return display_starter(kwargs['player1'], kwargs['player2'], kwargs['player_random'])
 
         case 'display_input':
             display_input(kwargs['cas'])
@@ -40,12 +40,24 @@ def display_manager(event, **kwargs):
         case 'display_skill':
             print(display_skill(kwargs['action']))
 
+        case 'display_show_all_pou_stats':
+            display_show_all_pou_stats(kwargs['team'])
+
+        case 'name_player_input':
+            return display_name_player_input(kwargs['number_player'])
+
         case _:
             print(f'\n event : {event} est inconnu\n')
 
 
+def output(text, end="\n", delay=0):
+    print(text, end=end, flush=True)
+    if delay > 0:
+        time.sleep(delay)
+
 def display_all(text):
-    [print(x) for x in text]
+    for x in text:
+        output(x)
 
 
 def display_action(attacker, team_attacker):
@@ -56,28 +68,26 @@ def display_action(attacker, team_attacker):
     display_all(choice_action)
 
 def display_input(cas):
-    text = []
+    text = ""
     match cas:
         case 1:
             text = 'Que voulez vous faire ?'
         case 2:
             text = 'Votre choix :'
-    print(text, end='', flush=True)
+        case 3:
+            text = "Voulez vous créer votre propre équipe ou en générer une aléatoirement ?\n\n     1 : Créez votre propre équipe !\n\n     2 : Générer une équipe (En dev)\n\n"
+    output(text, end='')
 
-def display_invalid():
-    display_all(["Choix invalide, réessaie."])
-
-
-def display_starter(p1, p2):
-    start = []
-    display_all([f"Qui commence entre {p1} et {p2} ?\n"])
-    display_sleep()
-    match random.randint(1,2):
+def display_invalid(cas):
+    match cas:
         case 1:
-            start = [f"C'est {p1} qui commence !\n"]
+            display_all(["Choix invalide, réessaie."])
         case 2:
-            start = [f"C'est {p2} qui commence !\n"]
-    display_all(start)
+            display_all(["Pou mort, choix impossible."])
+
+def display_starter(player1, player2, player_random):
+    output(f"Qui commence entre {player1} et {player2} ?\n", delay=2)
+    output(f"C'est {player_random} qui commence !\n")
 
 
 def display_sleep():#cas à ajouter si -> match case
@@ -92,13 +102,13 @@ def display_sleep():#cas à ajouter si -> match case
 def display_text_drop(cas):
     match cas:
         case 1:
-            print("\nLes étoiles se sont alignées... Ou pas...\nVoici ton équipe :\n")
+            output("\nLes étoiles se sont alignées... Ou pas...\nVoici ton équipe :\n")
         case 2:
-            print("\nLes étoiles se sont alignées... Ou presque...\nVoici ton équipe :\n")
+            output("\nLes étoiles se sont alignées... Ou presque...\nVoici ton équipe :\n")
         case 3:
-            print("\nLes étoiles se sont alignées ! Regarde moi cette équipe :\n")
+            output("\nLes étoiles se sont alignées ! Regarde moi cette équipe :\n")
         case 4:
-            print("\nDios mio abberant le taux de drop guette :\n")
+            output("\nDios mio abberant le taux de drop guette :\n")
 
 
 def show_team(pou_list):
@@ -115,7 +125,7 @@ def show_more(pou_list, cas):
             display_text_drop(cas2)
             show_team(pou_list)
         case 2:
-            print("\nVoici votre équipe :\n")
+            output("\nVoici votre équipe :\n")
             show_team(pou_list)
 
 def display_comp(attacker):
@@ -140,21 +150,30 @@ def display_skill(action):
             for events in action['events']:
                 match events['type_events']:
                     case 'announce':
-                        print(f"{action['user'].owner} utilise {events['comp_name']} !")
+                        output(f"{action['user'].owner} utilise {events['comp_name']} !")
                     case 'bonus_message':
-                        print(f"\n{events['bonus_message']}\n")
+                        output(f"\n{events['bonus_message']}\n")
                     case 'hits_and_crits':
                         if events['hits'] > 1:
-                            print(f"Coup {events['i'] + 1}: {events['damage']} dmg{events['crit_txt']}")
+                            output(f"Coup {events['i'] + 1}: {events['damage']} dmg{events['crit_txt']}")
                             time.sleep(1)
                         else:
-                            print(events['crit_txt'])
+                            output(events['crit_txt'])
                     case 'self_damage':
-                        print(f"Il prend {events['self_damage']} de dégats de contre coup... Tdc va \n")
+                        output(f"Il prend {events['self_damage']} de dégats de contre coup... Tdc va \n")
             return f"{action['user'].name} de {action['user'].owner} à infligé {action['total_damage']} dégâts à {action['target_name']} de {action['target_owner']}."
         case _:
             return f"erreur starfoullah : {action['type_skill']}"
 
 
+def display_show_all_pou_stats(team):
+    output(f"\n    [[{team.owner}]]")
+    for pou in team.pous:
+        actif = "" if pou.hp > 0 else " (KO)"
+        output(f"       - {pou.name}{actif} : {pou.hp}/{pou.max_hp} PV | {pou.atk} ATK")
+
+
+def display_name_player_input(number_player):
+    return input(f"\nVeuillez définir le nom du Joueur {number_player} s\'il vous plait. :  ")
 
 

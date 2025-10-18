@@ -20,14 +20,26 @@ def choose_comp(choice, attacker, defender):
 def select_action(choice):
     match choice:
         case '1':
-            return {'next_step' : 'Attaquer'}
+            return {'next_step' : 'attaquer'}
         case '2':
-            return {'next_step' : 'Description'}
+            return {'next_step' : 'description'}
         case '3':
-            return {'next_step' : 'Changer_pou'}
+            return {'next_step' : 'changer_pou'}
         case _:
             return {'next_step' : 'INVALID_ARGUMENT'}
 
+def switch_pou(team_attacker):
+    while True:
+        display_manager('display_show_all_pou_stats', team=team_attacker)
+        new_index = int(input('Choisi un nouveau pou : '))
+        if new_index in (1, 2, 3):
+            if team_attacker.switch_pou(new_index):
+                print(f"{team_attacker.get_active_pou.owner} change pour {team_attacker.get_active_pou.name} !")
+                break
+            else:
+                display_manager('invalid', cas=2)
+        else:
+            display_manager('invalid', cas=1)
 
 def game_turn(team_attacker, team_defender):
     """
@@ -44,26 +56,14 @@ def game_turn(team_attacker, team_defender):
     attacker = team_attacker.get_active_pou()
     defender = team_defender.get_active_pou()
 
-    '''# Si le Pou actif de l'attaquant est KO, forcer le joueur à choisir un remplaçant
-    if not attacker.is_alive():
-        print(f"{team_attacker.owner}, votre {attacker.name} est KO et ne peut plus agir.")
-        # Si l'équipe n'a aucun vivant, impossible de jouer
-        if not team_attacker.is_alive():
-            print(f"Aucun Pou disponible pour {team_attacker.owner}.")
-            return
-        # Demander au joueur de choisir un nouveau Pou (bloquant jusqu'à choix valide)
-        team_attacker.choose_next_pou()
-        # Après le switch, on arrête ici le tour (le joueur a juste switché)
-        return'''
-
     while True:
         display_manager('choose_action', attacker=attacker, team_attacker=team_attacker, cas=2)
         choice = input()
         print('\n')
         step = select_action(choice)
-        if step['next_step'] in ['Changer_pou','Attaquer']:
+        if step['next_step'] in ['changer_pou','attaquer']:
             break
-        elif step['next_step'] == 'Description':
+        elif step['next_step'] == 'description':
             display_manager('description', attacker=attacker)
             print('\n')
         else:
@@ -71,7 +71,7 @@ def game_turn(team_attacker, team_defender):
             print('\n')
 
     match step['next_step']:
-        case 'Attaquer':
+        case 'attaquer':
             while True:
                 display_manager('display_comp', attacker=attacker)
                 print('\n')
@@ -83,8 +83,13 @@ def game_turn(team_attacker, team_defender):
                     break
                 else:
                     display_manager('invalid')
-        case 'Changer_Pou':
-            team_attacker.choose_next_pou()
+        case 'changer_pou':
+            display_manager('display_show_all_pou_stats', team=team_attacker)
+            new_index = int(input('quel pou khoya?'))
+            while new_index not in (1, 2, 3):
+                display_manager('invalid', cas=1)
+                new_index = int(input('Choisi un nouveau pou : '))
+            switch_pou(team_attacker)
 
     # mettre à jour les buffs des deux Pous
     attacker.update_buffs()
@@ -96,5 +101,14 @@ def game_turn(team_attacker, team_defender):
         print(f"Toute l'équipe de {team_defender.owner} est KO.")
         return
 
-    team_defender.handle_death_and_switch()
+    step = team_defender.handle_death_and_switch()
+    match step['next_step']:
+        case 'switch_pou':
+            display_manager('display_show_all_pou_stats', team=team_attacker)
+            new_index = int(input('ton pou est mort tu veux quel pou khoya?'))
+            while new_index not in (1, 2, 3):
+                display_manager('invalid', cas=1)
+                new_index = int(input('Choisi un nouveau pou : '))
+            switch_pou(team_defender)
+
 
