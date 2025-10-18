@@ -80,7 +80,7 @@ def random_team(pou_list, TAUX_D, lenT):#lenT -> variable pour len Team
     return random_list
     
 def recall_make_team(x):
-    if x == 'n':
+    if x in ('n', 'non'):
         return {'next_step' : 'NO_RECALL'}
     else:
         return {'next_step' : 'RECALL'}
@@ -112,26 +112,28 @@ def create_team(owner_name):
         display_manager('display_input', cas=1)
         choice = str(input())
         while choice not in ('1', '2'):
-            display_manager('invadlid')
+            display_manager('invalid', cas=1)
         break
     match choice:
         case '1':
             while True:
-                display_manager('show_more', pou_list = choice_list)
+                display_manager('show_more', pou_list = choice_list, cas=1)
                 while len(choose_number)<Taille_Que_Tu_Souhaites_My_Love_T_As_Vu_Pycharm_Je_Respecte_Les_Conventions_Mais_La_J_Imagine_Que_Tu_Vas_Dire_Que_Le_Nom_Est_Beaucoup_Beaucoup_Trop_Long_Et_Si_C_Est_Le_Cas_Je_Comprends:
                     print("Quel pou choisissez vous ?\n")
                     x = int(input())
                     if x not in choose_number:
                         choose_number.append(x)   #rajouter des prints
                     else:
-                        display_manager('invalid')
+                        display_manager('invalid', cas=1)
                         continue
                 poupou_list = make_team(basic_list, choice_list, choice, choose_number, Taille_Que_Tu_Souhaites_My_Love_T_As_Vu_Pycharm_Je_Respecte_Les_Conventions_Mais_La_J_Imagine_Que_Tu_Vas_Dire_Que_Le_Nom_Est_Beaucoup_Beaucoup_Trop_Long_Et_Si_C_Est_Le_Cas_Je_Comprends)
                 print("Voulez vous modifier votre team ?\n")
-                confirm = str(input())
-                step = recall_make_team(confirm)
-                if step['next_step'] == ['NO_RECALL']:
-                    break
+                confirm = str(input()).lower()
+                while confirm not in ('oui', 'non', 'o', 'n'):
+                    confirm = str(input()).lower()
+                    step = recall_make_team(confirm)
+                    if step['next_step'] == ['NO_RECALL']:
+                        break
         case '2':
             display_manager('show_more', pou_list=choice_list, cas=1)
             return Team(owner_name,choice_list)
