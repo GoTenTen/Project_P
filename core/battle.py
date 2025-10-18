@@ -28,19 +28,6 @@ def select_action(choice):
         case _:
             return {'next_step' : 'INVALID_ARGUMENT'}
 
-def switch_pou(team_attacker):
-    while True:
-        display_manager('display_show_all_pou_stats', team=team_attacker)
-        new_index = int(input('Choisi un nouveau pou : '))
-        if new_index in (1, 2, 3):
-            if team_attacker.switch_pou(new_index):
-                print(f"{team_attacker.get_active_pou.owner} change pour {team_attacker.get_active_pou.name} !")
-                break
-            else:
-                display_manager('invalid', cas=2)
-        else:
-            display_manager('invalid', cas=1)
-
 def game_turn(team_attacker, team_defender):
     """
     team_attacker, team_defender sont des instances de Team.
@@ -84,12 +71,14 @@ def game_turn(team_attacker, team_defender):
                 else:
                     display_manager('invalid')
         case 'changer_pou':
-            display_manager('display_show_all_pou_stats', team=team_attacker)
-            new_index = int(input('quel pou khoya?'))
-            while new_index not in (1, 2, 3):
+            while True:
+                choix = display_manager('display_ask_next_pou', team=team_defender)
+                if choix.isdigit():
+                    idx = int(choix) - 1
+                    if team_defender.switch_pou(idx):
+                        display_manager('display_ask_next_pou_more', team=team_defender, index=idx)
+                        break
                 display_manager('invalid', cas=1)
-                new_index = int(input('Choisi un nouveau pou : '))
-            switch_pou(team_attacker)
 
     # mettre à jour les buffs des deux Pous
     attacker.update_buffs()
@@ -102,13 +91,14 @@ def game_turn(team_attacker, team_defender):
         return
 
     step = team_defender.handle_death_and_switch()
-    match step['next_step']:
-        case 'switch_pou':
-            display_manager('display_show_all_pou_stats', team=team_attacker)
-            new_index = int(input('ton pou est mort tu veux quel pou khoya?'))
-            while new_index not in (1, 2, 3):
-                display_manager('invalid', cas=1)
-                new_index = int(input('Choisi un nouveau pou : '))
-            switch_pou(team_defender)
+    if step['next_step'] ==  'switch_pou':
+        while True:
+            choix = display_manager('display_ask_next_pou', team=team_defender)
+            if choix.isdigit():
+                idx = int(choix) - 1
+                if team_defender.switch_pou(idx):
+                    break
+            display_manager('invalid', cas=1)
+
 
 

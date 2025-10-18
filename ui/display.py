@@ -46,6 +46,12 @@ def display_manager(event, **kwargs):
         case 'name_player_input':
             return display_name_player_input(kwargs['number_player'])
 
+        case 'display_ask_next_pou':
+            return ask_next_pou(kwargs['team'])
+
+        case 'display_ask_next_pou_more':
+            ask_next_pou_more(kwargs['team'], kwargs['index'])
+
         case _:
             print(f'\n event : {event} est inconnu\n')
 
@@ -175,5 +181,16 @@ def display_show_all_pou_stats(team):
 
 def display_name_player_input(number_player):
     return input(f"\nVeuillez définir le nom du Joueur {number_player} s\'il vous plait. :  ")
+
+def ask_next_pou(team):
+    print(f"{team.owner}, choisissez un autre Pou :\n")
+    for i, pou in enumerate(team.pous):
+        status = "(ACTIF)" if i == team.active_index else ""
+        print(f"{i + 1}. {pou.name} {status} - PV: {pou.hp}/{pou.max_hp}")
+    return input("Choisissez un Pou par numéro : ")
+
+def ask_next_pou_more(team, index):
+    output(f"{team.owner} à envoie {team.get_active_pou().name} au combat!")
+
 
 

@@ -5,13 +5,6 @@ from Project_P.core.team import Team
 from Project_P.ui.display import *
 import random
 
-'''
-def create_team(owner_name):
-    pou_list = [Pou.from_model(owner_name, model) for model in PouModels.values()]
-    return Team(owner_name, pou_list)
-'''
-
-
 RED = "\033[91m"
 BLUE = "\033[94m"
 RESET = "\033[0m"
@@ -84,23 +77,6 @@ def recall_make_team(x):
         return {'next_step' : 'NO_RECALL'}
     else:
         return {'next_step' : 'RECALL'}
-    
-'''def check_sub(str_numb):
-    str_stack = []
-    str_sub = []
-    str_res = ''
-    for i in str_numb:
-        if i in str_stack:
-            str_sub.append(i)
-        else:
-            str_stack.append(i)  Mdr je la laisse pour l'effort jme suis rendu compte que je pouvais faire plus simple je suis deg
-    str_res = ''.join(str_stack)
-    if len(str_sub)==0:
-        return str_res
-    else:
-        str_sub = ', '.join(str_sub)
-        return str_res, str_sub'''
-
 
 def create_team(owner_name):
     len_team = 3
@@ -116,7 +92,6 @@ def create_team(owner_name):
     match choice:
         case '1':
             while True:
-                poupou_list = []
                 choose_number = []
                 display_manager('show_more', pou_list = choice_list, cas=1)
                 while len(choose_number)<len_team:
@@ -140,14 +115,5 @@ def create_team(owner_name):
             display_manager('show_more', pou_list=choice_list, cas=1)
             return Team(owner_name,choice_list)
     return Team(owner_name, poupou_list)
-
-
-
-
-'''
-def random_team(pou_list):
-    return random.sample(pou_list, 2)
-'''
-
 
 
