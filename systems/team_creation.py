@@ -81,7 +81,7 @@ def recall_make_team(x):
 def create_team(owner_name):
     len_team = 3
     while True:
-        display_manager('display_input', cas=3)
+        display_manager('display_input_create_team', player=owner_name)
         display_manager('display_input', cas=1)
         choice = str(input())
         while choice not in ('1', '2'):
@@ -91,11 +91,13 @@ def create_team(owner_name):
     choice_list = random_team(basic_list, TAUX_DROP, len_team)
     match choice:
         case '1':
+            len_pool = 5
             while True:
                 choose_number = []
+                choice_list = random_team(basic_list, TAUX_DROP, len_pool)
                 display_manager('show_more', pou_list = choice_list, cas=1)
                 while len(choose_number)<len_team:
-                    print("Quel pou choisissez vous ?\n")
+                    print("\nQuel pou choisissez vous ?\n")
                     x = int(input())
                     if x not in choose_number:
                         choose_number.append(x)   #rajouter des prints

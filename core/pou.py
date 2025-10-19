@@ -2,7 +2,7 @@
 import random
 
 class Pou:
-    def __init__(self, owner, name, hp, atk, comp_list, rarity, crit_chance=0.1):
+    def __init__(self, owner, name, hp, atk, comp_list, rarity, color, crit_chance=0.1):
         self.owner = owner
         self.name = name
         self.hp = hp
@@ -12,6 +12,7 @@ class Pou:
         self.comp = comp_list
         self.crit_chance = crit_chance
         self.rarity = rarity
+        self.color = color
         self.active_buffs = {}  # stocke les buffs temporaires
 
     @classmethod
@@ -23,9 +24,9 @@ class Pou:
             hp=model_data["hp"],
             atk=model_data["atk"],
             comp_list=model_data["skills"],
-            rarity=model_data.get("rarity", "commun") 
+            rarity=model_data.get("rarity", "commun"),
+            color=model_data["color"]
         )
-
         return pou
 
     def take_damage(self, amount):
@@ -90,7 +91,7 @@ class Pou:
                         # Expiration → on restaure la valeur d’origine
                         setattr(self, effect_type, buff["original"])
                         expired.append(effect_type)
-                        print(f"L’effet sur {stat.upper()} de {self.name} s’est dissipé.\n")
+                        print(f"L’effet sur {self.atk.upper()} de {self.name} s’est dissipé.\n")
                 
                 case 'regen':
                     amount2 = buff['amount']

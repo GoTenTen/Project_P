@@ -8,8 +8,11 @@ from Project_P.ui.display import display_manager
 import random
 
 def start():
-    player1 = display_manager('name_player_input', number_player=1)
-    player2 = display_manager('name_player_input', number_player=2)
+    display_manager('clear', delay=0)
+    display_manager('display_name_player', number_player=1)
+    player1 = input()
+    display_manager('display_name_player', number_player=2)
+    player2 = input()
 
     team1 = create_team(player1)
     team2 = create_team(player2)
@@ -20,18 +23,17 @@ def start():
     game_state = {
         'random_player' : random.choice([player1, player2]),
         'tour': 1,
-        'log': []
     }
 
     display_manager('display_starter', player1=player1, player2=player2, player_random=game_state['random_player'])
 
     while team1.is_alive_team() and team2.is_alive_team():
-        time.sleep(1.5)
-        print(f"\n-------------- TOUR {game_state['tour']} --------------")
+        display_manager('clear', delay=1.5)
+        print(f"\n------------------ TOUR {game_state['tour']} ------------------")
         display_manager('display_show_all_pou_stats', team=team1)
         display_manager('display_show_all_pou_stats', team=team2)
-        print("\n------------------------------------\n")
-        time.sleep(2)
+        print("\n--------------------------------------------\n")
+        time.sleep(0.5)
 
         if game_state['random_player'] == player1:
             game_turn(team1, team2)
@@ -46,7 +48,7 @@ def start():
         game_state['tour'] += 1
 
     winner = pou1 if pou1.is_alive() else pou2
-    print(f"\n{winner.owner} a gagné !")
+    display_manager('display_victory', winner=winner)
 
 
 if __name__ == "__main__":

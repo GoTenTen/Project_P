@@ -1,7 +1,9 @@
 #display.py
-from Project_P.core.pou import *
+from Project_P.ui.colors import *
 import time
-
+import os
+import sys
+import random
 
 
 def display_manager(event, **kwargs):
@@ -37,40 +39,69 @@ def display_manager(event, **kwargs):
         case 'display_input':
             display_input(kwargs['cas'])
 
+        case 'display_input_create_team':
+            output(f"\n{BOLD}{kwargs['player']}{RESET}, voulez vous créer votre propre équipe ou en générer une aléatoirement ?\n\n     1 : Créez votre propre équipe !\n     2 : Générer une équipe (En dev)\n")
+
         case 'display_skill':
             print(display_skill(kwargs['action']))
 
         case 'display_show_all_pou_stats':
             display_show_all_pou_stats(kwargs['team'])
 
-        case 'name_player_input':
-            return display_name_player_input(kwargs['number_player'])
+        case 'display_name_player':
+            output(f"\nVeuillez définir le nom du Joueur {kwargs['number_player']} s\'il vous plait. :  ", end="")
 
         case 'display_ask_next_pou':
             return ask_next_pou(kwargs['team'])
 
         case 'display_ask_next_pou_more':
-            ask_next_pou_more(kwargs['team'], kwargs['index'])
+            output(f"\n{BOLD}{kwargs['team'].owner}{RESET} envoie {BOLD}{kwargs['team'].get_active_pou().name}{RESET} au combat!")
+
+        case 'display_space':
+            output("")
+
+        case 'display_dead_team':
+            output(f"Toute l'équipe de {BOLD}{kwargs['team'].owner}{RESET} est KO.")
+
+        case 'display_victory':
+            output(f"\n{BOLD}{kwargs['winner'].owner}{RESET} a gagné !")
+
+        case 'clear':
+            time.sleep(kwargs['delay'])
+            clear()
 
         case _:
-            print(f'\n event : {event} est inconnu\n')
+            output(f'\n event : {event} est inconnu\n')
 
+
+def clear():
+    """Efface le terminal proprement, quel que soit l'environnement (Windows, macOS, Linux, VSCode, IDLE, etc.)"""
+    # Cas 1 : Si on est dans un terminal "classique"
+    if os.name == 'nt':  # Windows
+        os.system('cls')
+    else:  # macOS / Linux
+        os.system('clear')
+
+    # Cas 2 : Certains environnements (IDLE, PyCharm, VSCode) n’effacent pas vraiment.
+    # On simule alors un effacement en imprimant plusieurs sauts de ligne :
+    if not sys.stdout.isatty():  # Pas un vrai terminal
+        print("\n" * 100)
 
 def output(text, end="\n", delay=0):
     print(text, end=end, flush=True)
     if delay > 0:
         time.sleep(delay)
 
-def display_all(text):
+def display_all(text, end="\n", delay=0):
     for x in text:
-        output(x)
+        output(x, end, delay=delay)
 
 
 def display_action(attacker, team_attacker):
-    choice_action = [f"C'est au tour de {team_attacker.owner} avec {attacker.name} !",
-                    "1 - Attaquer",
-                    "2 - Description des compétences",
-                    "3 - Changer de Pou"]
+    choice_action = [f"C'est au tour de {team_attacker.owner} avec {attacker.name} !\n",
+                    "  1 - Attaquer",
+                    "  2 - Description des compétences",
+                    "  3 - Changer de Pou\n"]
     display_all(choice_action)
 
 def display_input(cas):
@@ -80,8 +111,6 @@ def display_input(cas):
             text = 'Que voulez vous faire ?'
         case 2:
             text = 'Votre choix :'
-        case 3:
-            text = "Voulez vous créer votre propre équipe ou en générer une aléatoirement ?\n\n     1 : Créez votre propre équipe !\n\n     2 : Générer une équipe (En dev)\n\n"
     output(text, end='')
 
 def display_invalid(cas):
@@ -92,8 +121,11 @@ def display_invalid(cas):
             display_all(["Pou mort, choix impossible."])
 
 def display_starter(player1, player2, player_random):
-    output(f"Qui commence entre {player1} et {player2} ?\n", delay=2)
-    output(f"C'est {player_random} qui commence !\n")
+    time.sleep(2)
+    clear()
+    output(f"Qui commence entre {BOLD}{player1}{RESET} et {BOLD}{player2}{RESET} ?", end=" ")
+    display_sleep()
+    output(f"C'est {BOLD}{player_random}{RESET} qui commence !\n")
 
 
 def display_sleep():#cas à ajouter si -> match case
@@ -108,17 +140,17 @@ def display_sleep():#cas à ajouter si -> match case
 def display_text_drop(cas):
     match cas:
         case 1:
-            output("\nLes étoiles se sont alignées... Ou pas...\nVoici ton équipe :\n")
+            output(f"\n{LIGHTGREEN}●{RESET} Les étoiles se sont alignées... Ou pas... {LIGHTGREEN}●{RESET}\nVoici ton équipe : \n")
         case 2:
-            output("\nLes étoiles se sont alignées... Ou presque...\nVoici ton équipe :\n")
+            output(f"\n{LIGHTBLUE}●{RESET} Les étoiles se sont alignées... Ou presque... {LIGHTBLUE}●{RESET}\nVoici ton équipe :\n")
         case 3:
-            output("\nLes étoiles se sont alignées ! Regarde moi cette équipe :\n")
+            output(f"\n{MAGENTA}●{RESET} Les étoiles se sont alignées ! {MAGENTA}●{RESET} \nRegarde moi cette équipe : \n")
         case 4:
-            output("\nDios mio abberant le taux de drop guette :\n")
+            output(f"\n{LIGHTYELLOW}●{RESET} Dios mio abberant le taux de drop {LIGHTYELLOW}●{RESET}\nAdmire ton équipe : \n")
 
 
 def show_team(pou_list):
-    text = [f"- {pou.name}" for pou in pou_list]
+    text = [f"  - {pou.color}{pou.name}{RESET}" for pou in pou_list]
     display_all(text)
 
 
@@ -135,8 +167,9 @@ def show_more(pou_list, cas):
             show_team(pou_list)
 
 def display_comp(attacker):
-    text = [f"  {i + 1} - {attacker.comp[i].name}" for i in range(4)]
-    display_all(text)
+    for i in range(3):
+        output(f"  {i + 1} - {attacker.comp[i].name}")
+    output(f"  4 - {attacker.comp[3].name}", end="\n\n")
 
 def display_description(attacker):
     text = [f"{i+1}. {comp.name} : {comp.description}" for i, comp in enumerate(attacker.comp, start=1)]
@@ -145,52 +178,51 @@ def display_description(attacker):
 def display_skill(action):
     match action['type_skill']:
         case 'buff':
-            return f"{action['user'].name} de {action['user'].owner} utilise {action['comp_name']} : {action['stat_id']} passe de {action['before']} à {action['stat_value']} !"
+            return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} utilise {LIGHTMAGENTA}{action['comp_name']}{RESET} : {action['stat_id']} passe de {action['before']} à {action['stat_value']} !"
         case 'heal':
-            return f"{action['user'].name} de {action['user'].owner} utilise {action['comp_name']} : {action['user'].name} récupère {action['amount']} PV. (PV actuels: {action['user_hp']})"
+            return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} utilise {LIGHTMAGENTA}{action['comp_name']}{RESET} : {action['user'].name} récupère {action['amount']} PV. (PV actuels: {action['user_hp']})"
         case 'timed_buff':
-            return f"{action['user'].name} de {action['user'].owner} utilise {action['comp_name']} : {action['stat_id']} augmenté pour {action['duration']} tours !"
+            return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} utilise {LIGHTMAGENTA}{action['comp_name']}{RESET} : {action['stat_id']} augmenté pour {action['duration']} tours !"
         case 'timed_heal':
-            return f"{action['user'].name} de {action['user'].owner} utilise {action['comp_name']} : régénère {action['amount']} PV par tours, pendant {action['duration']} tours !"
+            return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} utilise {LIGHTMAGENTA}{action['comp_name']}{RESET} : régénère {action['amount']} PV par tours, pendant {action['duration']} tours !"
         case 'attack':
             for events in action['events']:
                 match events['type_events']:
                     case 'announce':
-                        output(f"{action['user'].owner} utilise {events['comp_name']} !")
+                        output(f"\n{action['user'].owner} utilise {LIGHTMAGENTA}{events['comp_name']}{RESET} !")
                     case 'bonus_message':
                         output(f"\n{events['bonus_message']}\n")
                     case 'hits_and_crits':
                         if events['hits'] > 1:
-                            output(f"Coup {events['i'] + 1}: {events['damage']} dmg{events['crit_txt']}")
+                            output(f"Coup {events['i'] + 1}: {events['damage']} dmg{YELLOW}{events['crit_txt']}{RESET}")
                             time.sleep(1)
                         else:
                             output(events['crit_txt'])
                     case 'self_damage':
                         output(f"Il prend {events['self_damage']} de dégats de contre coup... Tdc va \n")
-            return f"{action['user'].name} de {action['user'].owner} à infligé {action['total_damage']} dégâts à {action['target_name']} de {action['target_owner']}."
+            return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} à infligé {RED}{action['total_damage']}{RESET} dégâts à {BOLD}{action['target_name']}{RESET} de {BOLD}{action['target_owner']}{RESET}."
         case _:
             return f"erreur starfoullah : {action['type_skill']}"
 
 
+def hp_bar(hp, max_hp, width=20):
+    filled = int(width * hp / max_hp)
+    empty = width - filled
+    color = GREEN if hp > max_hp * 0.5 else YELLOW if hp > max_hp * 0.2 else RED if hp != 0 else GREY
+    return f"{color}{'█' * filled}{'░' * empty}{RESET}"
+
 def display_show_all_pou_stats(team):
-    output(f"\n    [[{team.owner}]]")
-    for pou in team.pous:
-        actif = "" if pou.hp > 0 else " (KO)"
-        output(f"       - {pou.name}{actif} : {pou.hp}/{pou.max_hp} PV | {pou.atk} ATK")
-
-
-def display_name_player_input(number_player):
-    return input(f"\nVeuillez définir le nom du Joueur {number_player} s\'il vous plait. :  ")
+    output(f"\n    [[{BOLD}{team.owner}{RESET}]]")
+    for i, pou in enumerate(team.pous):
+        dead = "" if pou.hp > 0 else GREY
+        actif = CYAN if i == team.active_index else ""
+        output(f"       - {actif}{dead}{pou.name.ljust(20)}{RESET}:  {hp_bar(pou.hp, pou.max_hp)} {GREEN}{pou.hp}{RESET}/{LIGHTGREEN}{pou.max_hp}{RESET} PV | {LIGHTRED}{pou.atk}{RESET} ATK")
 
 def ask_next_pou(team):
     print(f"{team.owner}, choisissez un autre Pou :\n")
     for i, pou in enumerate(team.pous):
-        status = "(ACTIF)" if i == team.active_index else ""
-        print(f"{i + 1}. {pou.name} {status} - PV: {pou.hp}/{pou.max_hp}")
-    return input("Choisissez un Pou par numéro : ")
-
-def ask_next_pou_more(team, index):
-    output(f"{team.owner} envoie {team.get_active_pou().name} au combat!")
-
+        status = CYAN if i == team.active_index else ""
+        print(f"  {i + 1}. {status}{pou.name}{RESET} - PV: {GREEN}{pou.hp}{RESET}/{LIGHTGREEN}{pou.max_hp}{RESET} | {LIGHTRED}{pou.atk}{RESET} ATK")
+    output("\nChoisissez un Pou par numéro : ", end="")
 
 
