@@ -2,7 +2,7 @@
 import random
 
 class Pou:
-    def __init__(self, owner, name, hp, atk, comp_list, rarity, color, crit_chance=0.1):
+    def __init__(self, owner, name, hp, atk, comp_list, passive, rarity, color, crit_chance=0.1):
         self.owner = owner
         self.name = name
         self.hp = hp
@@ -10,9 +10,11 @@ class Pou:
         self.atk = atk
         self.base_atk = atk
         self.comp = comp_list
+        self.passive = passive
         self.crit_chance = crit_chance
         self.rarity = rarity
         self.color = color
+        self.flags = {}
         self.active_buffs = {}  # stocke les buffs temporaires
 
     @classmethod
@@ -24,6 +26,7 @@ class Pou:
             hp=model_data["hp"],
             atk=model_data["atk"],
             comp_list=model_data["skills"],
+            passive=model_data["passive"],
             rarity=model_data.get("rarity", "commun"),
             color=model_data["color"]
         )
@@ -80,6 +83,7 @@ class Pou:
     def update_buffs(self):
         """À appeler à chaque tour pour diminuer la durée des buffs."""
         expired = []
+        events = []
 
         for effect_type, buff in self.active_buffs.items():
             buff["duration"] -= 1
@@ -91,20 +95,29 @@ class Pou:
                         # Expiration → on restaure la valeur d’origine
                         setattr(self, effect_type, buff["original"])
                         expired.append(effect_type)
-                        print(f"L’effet sur {self.atk.upper()} de {self.name} s’est dissipé.\n")
-                
+                        events.append({
+                            "type_buff": "atk",
+                        })
+
                 case 'regen':
-                    amount2 = buff['amount']
+                    amount = buff['amount']
                     #Pour éviter de dépasser la limite d'hp
-                    self.hp = min(self.hp + amount2, self.max_hp)
-                    print(f"{self.name} récupère {amount2} PV grâce à {buff.get('skill_name', 'sa compétence')}\n")
+                    self.hp = min(self.hp + amount, self.max_hp)
                     if buff["duration"] <= 0:
                         expired.append(effect_type)
-                        print(f"La régénération de {self.name} est terminée.")
+                    events.append({
+                        "type_buff": "regen",
+                        "amount": amount,
+                    })
 
         # Supprimer les buffs expirés
         for stat in expired:
             del self.active_buffs[effect_type]
+
+        return {
+            "events": events,
+            "user": self,
+        }
 
 
     def add_heal(self, stat, amount, duration, skill_name=""):

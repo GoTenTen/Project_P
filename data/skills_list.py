@@ -1,5 +1,4 @@
 # skills_list.py
-import random
 from Project_P.core.skills import *
 
 SKILLS = {
@@ -25,7 +24,7 @@ SKILLS = {
         name="Slap That Ass",
         description="Frappe entre 1 et 5 fois.",
         multiplier=1.0,
-        multi_hit=random.randint(1, 5)
+        multi_hit_range=(1,5)
     ),
     "Jackpot" : AttackSkill(
         name="Jackpot",

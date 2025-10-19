@@ -3,7 +3,6 @@ from Project_P.ui.colors import *
 import time
 import os
 import sys
-import random
 
 
 def display_manager(event, **kwargs):
@@ -44,6 +43,9 @@ def display_manager(event, **kwargs):
 
         case 'display_skill':
             print(display_skill(kwargs['action']))
+
+        case 'display_update_buff':
+            output(display_update_buff(kwargs['update_buff']))
 
         case 'display_show_all_pou_stats':
             display_show_all_pou_stats(kwargs['team'])
@@ -175,6 +177,16 @@ def display_description(attacker):
     text = [f"{i+1}. {comp.name} : {comp.description}" for i, comp in enumerate(attacker.comp, start=1)]
     display_all(text)
 
+def display_update_buff(action):
+    for events in action['events']:
+        match events['type_buff']:
+            case 'atk':
+                return f"L’effet de d'augmentation de l'{LIGHTRED}ATK{RESET} du {BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} s’est dissipé.\n"
+            case 'regen':
+                return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} récupère {LIGHTGREEN}{events['amount']}{RESET} PV\n"
+            case _:
+                return f"erreur"
+
 def display_skill(action):
     match action['type_skill']:
         case 'buff':
@@ -216,7 +228,7 @@ def display_show_all_pou_stats(team):
     for i, pou in enumerate(team.pous):
         dead = "" if pou.hp > 0 else GREY
         actif = CYAN if i == team.active_index else ""
-        output(f"       - {actif}{dead}{pou.name.ljust(20)}{RESET}:  {hp_bar(pou.hp, pou.max_hp)} {GREEN}{pou.hp}{RESET}/{LIGHTGREEN}{pou.max_hp}{RESET} PV | {LIGHTRED}{pou.atk}{RESET} ATK")
+        output(f"       - {actif}{dead}{pou.name.ljust(20)}{RESET}:  {hp_bar(pou.hp, pou.max_hp)} {GREEN}{pou.hp}{RESET}/{LIGHTGREEN}{pou.max_hp}{RESET} PV | {LIGHTRED}{pou.atk}{RESET} ATK | {LIGHTMAGENTA}{("(" + pou.passive.name.upper() + ")") if pou.passive else ''}{RESET}")
 
 def ask_next_pou(team):
     print(f"{team.owner}, choisissez un autre Pou :\n")

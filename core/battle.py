@@ -23,11 +23,13 @@ def game_turn(team_attacker, team_defender):
         break
 
     # mettre à jour les buffs des deux Pous
-    attacker.update_buffs()
+    update_buff = attacker.update_buffs()
+    if update_buff['events']:
+        display_manager('display_update_buff', update_buff=update_buff)
 
     if not team_defender.is_alive_team():
         display_manager('display_dead_team', team=team_defender)
-        return
+        return # pour bien sortir de la fonction [ne pas suppr !]
 
     step = team_defender.handle_death_and_switch()
     if step['next_step'] == 'switch_pou':

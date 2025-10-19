@@ -17,11 +17,17 @@ class AttackSkill(Skill):
         super().__init__(name, description)
         self.kwargs = kwargs  # stocke les paramètres de dégâts
 
+    def get_multi_hit(self):
+        if self.kwargs.get('multi_hit_range', 1):
+            return random.randint(*self.kwargs.get('multi_hit_range', (1,1)))  # "*" est utilisé pour débaler l'argument "(1,5)" devient "1,5"
+        return 1
+
     def apply(self, user, target):
         total_damage = 0
-        hits = self.kwargs.get("multi_hit", 1)
+        hits = self.get_multi_hit()
         bonus_message = self.kwargs.get("bonus_message", None)
         self_damage = self.kwargs.get("self_damage", 0)
+        accuracy = self.kwargs.get("accuracy", 1.0)
 
         # On prépare une liste "d’événements"
         events = []
@@ -32,14 +38,19 @@ class AttackSkill(Skill):
             "comp_name": self.name
         })
 
-        # message bonus optionnel
-        if bonus_message:
-            events.append({
-                "type_events": "bonus_message",
-                "bonus_message": bonus_message
-            })
+        successful_hit = False  # pour savoir si au moins un coup a touché
 
         for i in range(hits):
+            # Vérifie la précision
+            if random.random() > accuracy:
+                events.append({
+                    "type_events": "miss",
+                    "i": i
+                })
+                continue # si raté, termine ce tour de boucle
+
+            # Coup réussi
+            successful_hit = True
             damage, crit = user.deal_damage(target, **self.kwargs)
             total_damage += damage
             crit_txt = "(Critique!)" if crit else ""
@@ -51,12 +62,20 @@ class AttackSkill(Skill):
                 "i": i
             })
 
-        if self_damage >= 1:
-            user.take_damage(self_damage)
-            events.append({
-                "type_events": "self_damage",
-                "self_damage": self_damage
-            })
+        # affiche les messages bonus que s'il y a au moins un coup réussi
+        if successful_hit:
+            if bonus_message: # message bonus optionnel
+                events.append({
+                    "type_events": "bonus_message",
+                    "bonus_message": bonus_message
+                })
+
+            if self_damage >= 1:
+                user.take_damage(self_damage)
+                events.append({
+                    "type_events": "self_damage",
+                    "self_damage": self_damage
+                })
 
         return {
             "type_skill": "attack",
