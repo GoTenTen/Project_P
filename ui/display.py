@@ -190,7 +190,7 @@ def ask_next_pou(team):
     return input("Choisissez un Pou par numéro : ")
 
 def ask_next_pou_more(team, index):
-    output(f"{team.owner} à envoie {team.get_active_pou().name} au combat!")
+    output(f"{team.owner} envoie {team.get_active_pou().name} au combat!")
 
 
 

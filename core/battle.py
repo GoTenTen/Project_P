@@ -1,7 +1,4 @@
 # battle.py
-
-import time
-import random
 from Project_P.ui.display import display_manager
 
 #appeler -> display_comp
@@ -10,7 +7,7 @@ def choose_comp(choice, attacker, defender):
         case '1':
             return attacker.comp[0].apply(attacker, defender)
         case '2':
-            return attacker.comp[1].apply(attacker, defender) #Askip c'est plus rapide en match case mais j'avoue que j'ai l'impression d'en faire trop pour la fonction que c'est mdr
+            return attacker.comp[1].apply(attacker, defender)
         case '3':
             return attacker.comp[2].apply(attacker, defender)
         case '4':
@@ -29,16 +26,6 @@ def select_action(choice):
             return {'next_step' : 'INVALID_ARGUMENT'}
 
 def game_turn(team_attacker, team_defender):
-    """
-    team_attacker, team_defender sont des instances de Team.
-    Cette fonction gère le tour du Pou actif de team_attacker.
-    """
-
-    # Vérifier d'abord si l'équipe attaquante a au moins un Pou vivant
-    if not team_attacker.is_alive_team():
-        print(f"Toute l'équipe de {team_attacker.owner} est KO. Aucun tour possible.")
-        return
-
     # Récupérer les Pous actifs (après potentiels précédents switchs)
     attacker = team_attacker.get_active_pou()
     defender = team_defender.get_active_pou()
@@ -48,7 +35,7 @@ def game_turn(team_attacker, team_defender):
         choice = input()
         print('\n')
         step = select_action(choice)
-        if step['next_step'] in ['changer_pou','attaquer']:
+        if step['next_step'] in ['changer_pou', 'attaquer']:
             break
         elif step['next_step'] == 'description':
             display_manager('description', attacker=attacker)
@@ -59,26 +46,9 @@ def game_turn(team_attacker, team_defender):
 
     match step['next_step']:
         case 'attaquer':
-            while True:
-                display_manager('display_comp', attacker=attacker)
-                print('\n')
-                display_manager('display_input', cas=1)
-                choice = input()
-                if choice in ('1', '2', '3', '4'):
-                    action = choose_comp(choice, attacker, defender)
-                    display_manager('display_skill', action=action)
-                    break
-                else:
-                    display_manager('invalid')
+            select_attack(attacker, defender)
         case 'changer_pou':
-            while True:
-                choix = display_manager('display_ask_next_pou', team=team_defender)
-                if choix.isdigit():
-                    idx = int(choix) - 1
-                    if team_defender.switch_pou(idx):
-                        display_manager('display_ask_next_pou_more', team=team_defender, index=idx)
-                        break
-                display_manager('invalid', cas=1)
+            select_action(team_attacker)
 
     # mettre à jour les buffs des deux Pous
     attacker.update_buffs()
@@ -91,14 +61,28 @@ def game_turn(team_attacker, team_defender):
         return
 
     step = team_defender.handle_death_and_switch()
-    if step['next_step'] ==  'switch_pou':
-        while True:
-            choix = display_manager('display_ask_next_pou', team=team_defender)
-            if choix.isdigit():
-                idx = int(choix) - 1
-                if team_defender.switch_pou(idx):
-                    break
-            display_manager('invalid', cas=1)
+    if step['next_step'] == 'switch_pou':
+        select_switch_pou(team_defender)
 
+def select_switch_pou(team):
+    while True:
+        choix = display_manager('display_ask_next_pou', team=team)
+        if choix.isdigit():
+            idx = int(choix) - 1
+            if team.switch_pou(idx):
+                display_manager('display_ask_next_pou_more', team=team, index=idx)
+                break
+        display_manager('invalid', cas=1)
 
-
+def select_attack(attacker, defender):
+    while True:
+        display_manager('display_comp', attacker=attacker)
+        print('\n')
+        display_manager('display_input', cas=1)
+        choice = input()
+        if choice in ('1', '2', '3', '4'):
+            action = choose_comp(choice, attacker, defender)
+            display_manager('display_skill', action=action)
+            break
+        else:
+            display_manager('invalid')
