@@ -1,8 +1,8 @@
 # team_creation.py
 from Project_P.core.pou import Pou
 from Project_P.data.pou_list import PouModels
-from Project_P.core.team import Team
 from Project_P.ui.display import *
+from Project_P.core.team import Team
 import random
 
 RED = "\033[91m"
@@ -19,12 +19,10 @@ TAUX_DROP={
 def make_team(basic_list, choice_list, x, choose_list, lenT): #lenT à rajouter -> 1 pour mes tests de comp plus rapide
     if x == '2':
         pou_list = random_team(basic_list, TAUX_DROP, lenT)
-        show_more(pou_list,1)
     else:
         pou_list = []
         for z in choose_list:
             pou_list.append(choice_list[z-1])
-        show_more(pou_list,2)
     return pou_list
 
 

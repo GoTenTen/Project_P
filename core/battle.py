@@ -30,10 +30,11 @@ def game_turn(team_attacker, team_defender):
     if not team_defender.is_alive_team():
         display_manager('display_dead_team', team=team_defender)
         return # pour bien sortir de la fonction [ne pas suppr !]
-
-    step = team_defender.handle_death_and_switch()
-    if step['next_step'] == 'switch_pou':
-        select_switch_pou(team_defender)
+    zgeg = [team_attacker, team_defender]
+    for zgegouz in zgeg:
+        step = zgegouz.handle_death_and_switch()
+        if step['next_step'] == 'switch_pou':
+            select_switch_pou(zgegouz)
 
 
 

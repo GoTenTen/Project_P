@@ -34,8 +34,7 @@ class AttackSkill(Skill):
 
         # message standard
         events.append({
-            "type_events": "announce",
-            "comp_name": self.name
+            "type_events": "announce"
         })
 
         successful_hit = False  # pour savoir si au moins un coup a touché
@@ -83,7 +82,8 @@ class AttackSkill(Skill):
             "target_name": target.name,
             "target_owner": target.owner,
             "total_damage": total_damage,
-            "events": events
+            "events": events,
+            "comp_name": self.name
         }
 
 class BuffSkill(Skill):

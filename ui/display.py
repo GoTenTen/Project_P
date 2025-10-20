@@ -1,5 +1,5 @@
 #display.py
-from Project_P.ui.colors import *
+from Project_P.ui.colors import * 
 import time
 import os
 import sys
@@ -132,7 +132,7 @@ def display_starter(player1, player2, player_random):
 
 def display_sleep():#cas à ajouter si -> match case
     #match cas:
-     #   case '1': #Si on décide d'utiliser plusieurs affichage de ce style, on aura juste à ajouter un case (et ptet modifier le nom de la fonction)
+    #   case '1': #Si on décide d'utiliser plusieurs affichage de ce style, on aura juste à ajouter un case (et ptet modifier le nom de la fonction)
     for _ in range(3):
         print(".", end="", flush=True)
         time.sleep(1)
@@ -158,7 +158,7 @@ def show_team(pou_list):
 
 #Affiche un message différent par rapport à la rareté la plus haute + affiche la team
 def show_more(pou_list, cas):
-    from Project_P.systems.team_creation import recup_flag 
+    from Project_P.systems.team_creation import recup_flag
     cas2 = recup_flag(pou_list)
     match cas:
         case 1: #Ce match est à remplir à la main dans les fonction car c'est si on décide d'une random team ou juste d'une création lambda
@@ -188,33 +188,42 @@ def display_update_buff(action):
                 return f"erreur"
 
 def display_skill(action):
+    msg_debut = f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} utilise {LIGHTMAGENTA}{action['comp_name']}{RESET} "
+    message_final = ""
     match action['type_skill']:
         case 'buff':
-            return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} utilise {LIGHTMAGENTA}{action['comp_name']}{RESET} : {action['stat_id']} passe de {action['before']} à {action['stat_value']} !"
+            msg_fin = f": {action['stat_id']} passe de {action['before']} à {action['stat_value']} !"
+            message_final = msg_debut + msg_fin
         case 'heal':
-            return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} utilise {LIGHTMAGENTA}{action['comp_name']}{RESET} : {action['user'].name} récupère {action['amount']} PV. (PV actuels: {action['user_hp']})"
+            msg_fin = f": {action['user'].name} récupère {action['amount']} PV. (PV actuels: {action['user_hp']})"
+            message_final = msg_debut + msg_fin
         case 'timed_buff':
-            return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} utilise {LIGHTMAGENTA}{action['comp_name']}{RESET} : {action['stat_id']} augmenté pour {action['duration']} tours !"
+            msg_fin = f": {action['stat_id']} augmenté pour {action['duration']} tours !"
+            message_final = msg_debut + msg_fin
         case 'timed_heal':
-            return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} utilise {LIGHTMAGENTA}{action['comp_name']}{RESET} : régénère {action['amount']} PV par tours, pendant {action['duration']} tours !"
+            msg_fin = f": régénère {action['amount']} PV par tours, pendant {action['duration']} tours !"
+            message_final = msg_debut + msg_fin
         case 'attack':
+            message = []
             for events in action['events']:
                 match events['type_events']:
                     case 'announce':
-                        output(f"\n{action['user'].owner} utilise {LIGHTMAGENTA}{events['comp_name']}{RESET} !")
+                        message.append(f"\n{action['user'].owner} utilise {LIGHTMAGENTA}{action['comp_name']}{RESET} !")
                     case 'bonus_message':
-                        output(f"\n{events['bonus_message']}\n")
+                        message.append(f"\n{events['bonus_message']}\n")
                     case 'hits_and_crits':
                         if events['hits'] > 1:
-                            output(f"Coup {events['i'] + 1}: {events['damage']} dmg{YELLOW}{events['crit_txt']}{RESET}")
+                            message.append(f"Coup {events['i'] + 1}: {events['damage']} dmg{YELLOW}{events['crit_txt']}{RESET}")
                             time.sleep(1)
                         else:
-                            output(events['crit_txt'])
+                            message.append(events['crit_txt'])
                     case 'self_damage':
-                        output(f"Il prend {events['self_damage']} de dégats de contre coup... Tdc va \n")
-            return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} à infligé {RED}{action['total_damage']}{RESET} dégâts à {BOLD}{action['target_name']}{RESET} de {BOLD}{action['target_owner']}{RESET}."
+                        message.append(f"Il prend {events['self_damage']} de dégats de contre coup... Tdc va \n")
+            message.append(f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} à infligé {RED}{action['total_damage']}{RESET} dégâts à {BOLD}{action['target_name']}{RESET} de {BOLD}{action['target_owner']}{RESET}.")
+            message_final = "\n".join(message)
         case _:
-            return f"erreur starfoullah : {action['type_skill']}"
+            message_final = f"erreur starfoullah : {action['type_skill']}"
+    return message_final
 
 
 def hp_bar(hp, max_hp, width=20):
