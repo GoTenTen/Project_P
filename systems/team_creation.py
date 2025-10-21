@@ -40,13 +40,6 @@ def create_team(owner_name):
     return Team(owner_name, poupou_list)
 
 
-def make_team(choice_list,choose_list): #lenT à rajouter -> 1 pour mes tests de comp plus rapide
-    pou_list = []
-    for z in choose_list:
-        pou_list.append(choice_list[z-1])
-    return pou_list
-
-
 #show_more et recup_flag purement optionnel mais rajoute un petit truc quand tu random_team
 
 #Cette fonction vient déterminer la rareté la plus haute dans la team
