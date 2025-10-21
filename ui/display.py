@@ -113,6 +113,10 @@ def display_input(cas):
             text = 'Que voulez vous faire ?'
         case 2:
             text = 'Votre choix :'
+        case 3:
+            text = "Quel Pou choississez-vous ?\n"
+        case 4:
+            text = "Voulez-vous modifier votre équipe ?\n"
     output(text, end='')
 
 def display_invalid(cas):
@@ -121,6 +125,8 @@ def display_invalid(cas):
             display_all(["Choix invalide, réessaie."])
         case 2:
             display_all(["Pou mort, choix impossible."])
+        case 3:
+            display_all(["Pou déjà selectionné."])
 
 def display_starter(player1, player2, player_random):
     time.sleep(2)
