@@ -36,6 +36,6 @@ Ajouts:                                                                         
 ----------
 [13/10/25]  - Début de la séparation rendu/logique de battle.py                                                          (battle.py *NEW*-> ui/display.py)
 ----------
-[16/10/25]  - Continuité du 13/10/25, implémentation de + de fonc display, et commencé à trier 
-            battle.py pour le ré-agencer et le rendre fonctionnel avec le display_manager, battle_copy en back up        (battle.py, battle_copy.py, team_creation.py, display.py)
-[16/10/25]  - New random_team, new game_turn fonctionnel mais incomplet, nouveauté dans display (ajout d'un case _)      (battle.py, main.py, team_creation.py, display.py)
+[20/10/25]  - Refonte Create_team, + create_manual/random_team, +modif_confirm_team, +2 cas display_input et 1 invalid   (team_creation.py, display.py)
+----------
+[22/10/25]  - Ajout des types et ptite modif dans start_screen pour pas que ça fasse une erreur si mauvaise valeur est entrée  (core/pou.py,skills.py; data/pou_list.py)

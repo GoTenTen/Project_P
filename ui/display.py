@@ -225,6 +225,8 @@ def display_skill(action):
                             message.append(events['crit_txt'])
                     case 'self_damage':
                         message.append(f"Il prend {events['self_damage']} de dégats de contre coup... Tdc va \n")
+                    case 'elem_efficacity':
+                        message.append(f"\n{events['elem_efficacity']}\n")
             message.append(f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} à infligé {RED}{action['total_damage']}{RESET} dégâts à {BOLD}{action['target_name']}{RESET} de {BOLD}{action['target_owner']}{RESET}.")
             message_final = "\n".join(message)
         case _:

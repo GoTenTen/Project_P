@@ -24,6 +24,7 @@ def create_team(owner_name):
         choice = str(input())
         while choice not in ('1', '2'):
             display_manager('invalid', cas=1)
+            choice = str(input())
         break
     basic_list = [Pou.from_model(owner_name, model) for model in PouModels.values()]
     choice_list = random_team(basic_list, TAUX_DROP, len_team)

@@ -1,8 +1,9 @@
 #pou.py
 import random
+from Project_P.data.elem_list import ELEMENT
 
 class Pou:
-    def __init__(self, owner, name, hp, atk, comp_list, passive, rarity, color, crit_chance=0.1):
+    def __init__(self, owner, name, hp, atk, comp_list, passive, rarity, elem, color, crit_chance=0.1):
         self.owner = owner
         self.name = name
         self.hp = hp
@@ -13,6 +14,7 @@ class Pou:
         self.passive = passive
         self.crit_chance = crit_chance
         self.rarity = rarity
+        self.elem = elem
         self.color = color
         self.flags = {}
         self.active_buffs = {}  # stocke les buffs temporaires
@@ -27,6 +29,7 @@ class Pou:
             atk=model_data["atk"],
             comp_list=model_data["skills"],
             passive=model_data["passive"],
+            elem = model_data["elem"],
             rarity=model_data.get("rarity", "commun"),
             color=model_data["color"]
         )
@@ -47,10 +50,18 @@ class Pou:
         accuracy = kwargs.get("accuracy", 1)
         self_damage = kwargs.get("self_damage", 0)
 
+        elem_efficacity = ''
+        elem_mult = ELEMENT[self.elem][target.elem]
+        match elem_mult:
+            case 1.5:
+                elem_efficacity = "c'est super efficace !\n"
+            case 0.5:
+                elem_efficacity = "Il a mangé tout le caca ça lui fait rien\n"
+
         # Calcul du critique
         is_crit = random.random() < crit_chance
         if random.random() < accuracy:
-            damage = self.atk * base_multiplier * element_bonus + flat_bonus
+            damage = self.atk * base_multiplier * elem_mult * element_bonus + flat_bonus
         else:
             damage = 0
             print("raté!\n")
@@ -59,7 +70,7 @@ class Pou:
 
         damage = int(damage)
         target.take_damage(damage)
-        return damage, is_crit
+        return damage, is_crit, elem_efficacity
 
 
     def add_buff(self, stat, factor, duration):
