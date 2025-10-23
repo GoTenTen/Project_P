@@ -58,6 +58,13 @@ class Pou:
         miss = kwargs.get("miss", False)
         elem_mult = ELEMENT.get(self.elem, {}).get(target.elem, 1)
 
+        events = []
+
+        # --- Passif d'attaque --- donc "OnAttack
+        attack_passive_result = self.verif_passive("OnAttack", target=target, damage=0)
+        if attack_passive_result and "text" in attack_passive_result:
+            events.append(attack_passive_result)
+
         elem_efficacity = ''
         match elem_mult:
             case 1.5:
@@ -77,21 +84,21 @@ class Pou:
 
         damage = int(damage)
 
-        # --- Passif d'attaque --- donc "OnAttack
-        attack_passive_result = self.verif_passive("OnAttack", target=target, damage=0)
-        if attack_passive_result and "text" in attack_passive_result:
-            print(attack_passive_result["text"])
-
         # --- Passif défensif ---
         defense_passive_result = target.verif_passive("OnReceiveDamage", target=target, damage=damage)
         if defense_passive_result and ("damage" in defense_passive_result):
             if not target.flags['passive_ignored']:
                 damage = defense_passive_result["damage"]
-                print(defense_passive_result["text"])
+                events.append(defense_passive_result)
             target.flags['passive_ignored'] = False
 
         target.take_damage(damage)
-        return damage, is_crit, elem_efficacity
+        return {
+            "damage": damage,
+            "is_crit": is_crit,
+            "elem_efficacity": elem_efficacity,
+            "events_passive": events
+        }
 
 
     def add_buff(self, stat, factor, duration):

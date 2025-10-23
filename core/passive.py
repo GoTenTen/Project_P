@@ -20,8 +20,9 @@ class OnAttack(Passive):
         if self.name == 'Autoritée Divine':
             target.flags['passive_ignored'] = True
             return {
+                "name_passive": self.name,
                 "damage": damage,
-                "text" : f"Grace à son passif {self.name}, {user.name} ignore le passif de {target.name}!"
+                "text" : "ignore" #f"Grace à son passif {self.name}, {user.name} ignore le passif de {target.name}!"
             }
 
         return {
@@ -40,8 +41,10 @@ class OnReceiveDamage(Passive):
         if tankiness > 0:
             new_damage = int(damage * (1 - tankiness))
             return {
+                "name_passive": self.name,
                 "damage": new_damage,
-                "text": f"{user.name} réduit les dégats subit de {int(tankiness*100)}% grace à son passif {self.name} !"
+                "percent_tankiness": int(tankiness),
+                "text": "tankiness" #f"{user.name} réduit les dégats subit de {int(tankiness*100)}% grace à son passif {self.name} !"
             }
 
         return {
@@ -64,7 +67,7 @@ class OnTurnStart(Passive):
                 user.atk *= stat_multiplier
                 user.flags['turnstart_passive_applied'] = True
                 return {
-                    "text": f"{user.name} ne lache rien est voit son attaque doublée !"
+                    "text": "double_atk" #f"{user.name} ne lache rien est voit son attaque doublée !"
                 }
 
         return {

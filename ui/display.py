@@ -215,6 +215,13 @@ def display_skill(action):
                 match events['type_events']:
                     case 'announce':
                         message.append(f"\n{action['user'].owner} utilise {LIGHTMAGENTA}{action['comp_name']}{RESET} !")
+                    case 'events_passive':
+                        for x in events['events_passive']:
+                            match x['text']:
+                                case 'ignore':
+                                    message.append(f"Grace à son passif {x['name_passive']}, {action['user'].name} ignore le passif de {action['target'].name}!")
+                                case 'tankiness':
+                                    message.append(f"{action['user'].name} réduit les dégats subit de {events['tankiness']*100}% grace à son passif {action['user'].passive['name']} !")
                     case 'miss':
                         message.append("raté!")
                         return "\n".join(message)
@@ -230,7 +237,7 @@ def display_skill(action):
                         message.append(f"Il prend {events['self_damage']} de dégats de contre coup... Tdc va \n")
                     case 'elem_efficacity':
                         message.append(f"\n{events['elem_efficacity']}\n")
-            message.append(f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} à infligé {RED}{action['total_damage']}{RESET} dégâts à {BOLD}{action['target_name']}{RESET} de {BOLD}{action['target_owner']}{RESET}.")
+            message.append(f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} à infligé {RED}{action['total_damage']}{RESET} dégâts à {BOLD}{action['target'].name}{RESET} de {BOLD}{action['target'].owner}{RESET}.")
             message_final = "\n".join(message)
         case _:
             message_final = f"erreur starfoullah : {action['type_skill']}"

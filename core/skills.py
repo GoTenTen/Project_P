@@ -52,15 +52,21 @@ class AttackSkill(Skill):
 
             # Coup réussi
             successful_hit = True
-            damage, crit, elem_efficacity = user.deal_damage(target, **self.kwargs, miss=miss)
-            total_damage += damage
-            crit_txt = "(Critique!)" if crit else ""
+            deal_damage = user.deal_damage(target, **self.kwargs, miss=miss)
+            total_damage += deal_damage['damage']
+            crit_txt = "(Critique!)" if deal_damage['is_crit'] else ""
             events.append({
                 "type_events": "hits_and_crits",
                 "hits": hits,
-                "damage": damage,
+                "damage": deal_damage['damage'],
                 "crit_txt": crit_txt,
-                "i": i
+                "i": i,
+            })
+
+        if deal_damage['events_passive']:
+            events.append({
+                "type_events": "events_passive",
+                "events_passive": deal_damage['events_passive'],
             })
 
         # affiche les messages bonus que s'il y a au moins un coup réussi
@@ -70,10 +76,10 @@ class AttackSkill(Skill):
                     "type_events": "bonus_message",
                     "bonus_message": bonus_message
                 })
-            if elem_efficacity:
+            if deal_damage['elem_efficacity']:
                 events.append({
                     "type_events" : "elem_efficacity",
-                    "elem_efficacity" : elem_efficacity
+                    "elem_efficacity" : deal_damage['elem_efficacity']
                 })
 
         if self_damage >= 1:
@@ -86,8 +92,7 @@ class AttackSkill(Skill):
         return {
             "type_skill": "attack",
             "user": user,
-            "target_name": target.name,
-            "target_owner": target.owner,
+            "target": target,
             "total_damage": total_damage,
             "events": events,
             "comp_name": self.name
