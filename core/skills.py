@@ -50,7 +50,7 @@ class AttackSkill(Skill):
 
             # Coup réussi
             successful_hit = True
-            damage, crit = user.deal_damage(target, **self.kwargs)
+            damage, crit, elem_efficacity = user.deal_damage(target, **self.kwargs)
             total_damage += damage
             crit_txt = "(Critique!)" if crit else ""
             events.append({
@@ -68,13 +68,18 @@ class AttackSkill(Skill):
                     "type_events": "bonus_message",
                     "bonus_message": bonus_message
                 })
+        if elem_efficacity:
+            events.append({
+                "type_events" : "elem_efficacity",
+                "elem_efficacity" : elem_efficacity
+            })
 
-            if self_damage >= 1:
-                user.take_damage(self_damage)
-                events.append({
-                    "type_events": "self_damage",
-                    "self_damage": self_damage
-                })
+        if self_damage >= 1:
+            user.take_damage(self_damage)
+            events.append({
+                "type_events": "self_damage",
+                "self_damage": self_damage
+            })
 
         return {
             "type_skill": "attack",

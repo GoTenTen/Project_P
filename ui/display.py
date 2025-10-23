@@ -113,6 +113,10 @@ def display_input(cas):
             text = 'Que voulez vous faire ?'
         case 2:
             text = 'Votre choix :'
+        case 3:
+            text = "Quel Pou choississez-vous ?\n"
+        case 4:
+            text = "Voulez-vous modifier votre équipe ?\n"
     output(text, end='')
 
 def display_invalid(cas):
@@ -121,6 +125,8 @@ def display_invalid(cas):
             display_all(["Choix invalide, réessaie."])
         case 2:
             display_all(["Pou mort, choix impossible."])
+        case 3:
+            display_all(["Pou déjà selectionné."])
 
 def display_starter(player1, player2, player_random):
     time.sleep(2)
@@ -219,6 +225,8 @@ def display_skill(action):
                             message.append(events['crit_txt'])
                     case 'self_damage':
                         message.append(f"Il prend {events['self_damage']} de dégats de contre coup... Tdc va \n")
+                    case 'elem_efficacity':
+                        message.append(f"\n{events['elem_efficacity']}\n")
             message.append(f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} à infligé {RED}{action['total_damage']}{RESET} dégâts à {BOLD}{action['target_name']}{RESET} de {BOLD}{action['target_owner']}{RESET}.")
             message_final = "\n".join(message)
         case _:

@@ -19,14 +19,15 @@ def start_ecran():
     print('_________________________________________________')
 
     time.sleep(1)
-
-    x = int(input())
-
-    if x == 1:
+    x = str(input())
+    while x not in ('1', '2', '3'):
+        x = str(input())
+        print('Choississez parmi 1,2 et 3\n')
+    if x == '1':
         start()
-    if x == 2:
+    if x == '2':
         regles()
-    if x == 3:
+    if x == '3':
         exit()
 
 
