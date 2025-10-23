@@ -14,7 +14,7 @@ class Pou:
         self.crit_chance = crit_chance
         self.rarity = rarity
         self.color = color
-        self.flags = {}
+        self.flags = {'passive_ignored': False}
         self.active_buffs = {}  # stocke les buffs temporaires
 
     @classmethod
@@ -38,6 +38,18 @@ class Pou:
     def is_alive(self):
         return self.hp > 0
 
+    def verif_passive(self, call_type, **kwargs):
+        """Déclenche un passif si son type correspond."""
+        if not self.passive:
+            return None  # aucun passif à déclencher
+
+        # Vérifie le type du passif
+        passive_type = self.passive.__class__.__name__ # ("OnAttack", "OnReceiveDamage"...)
+        if call_type == passive_type:
+            return self.passive.apply(user=self, **kwargs)
+
+        return None
+
     def deal_damage(self, target, **kwargs):
         base_multiplier = kwargs.get("multiplier", 1.0)
         crit_chance = kwargs.get("crit_chance", self.crit_chance)
@@ -45,7 +57,11 @@ class Pou:
         element_bonus = kwargs.get("element_bonus", 1.0)
         flat_bonus = kwargs.get("flat_bonus", 0)
         accuracy = kwargs.get("accuracy", 1)
-        self_damage = kwargs.get("self_damage", 0)
+
+        # --- Passif d'attaque --- donc "OnAttack
+        attack_passive_result = self.verif_passive("OnAttack", target=target, damage=0)
+        if attack_passive_result and "text" in attack_passive_result:
+            print(attack_passive_result["text"])
 
         # Calcul du critique
         is_crit = random.random() < crit_chance
@@ -58,6 +74,16 @@ class Pou:
             damage *= crit_mult
 
         damage = int(damage)
+
+        # --- Passif défensif ---
+        defense_passive_result = target.verif_passive("OnReceiveDamage", target=target, damage=damage)
+        if defense_passive_result and "damage" in defense_passive_result:
+            if not target.flags['passive_ignored']:
+                damage = defense_passive_result["damage"]
+                if defense_passive_result.get("text"):
+                    print(defense_passive_result["text"])
+            print(self.verif_passive("OnAttack", target=target, damage=0)["text"])
+
         target.take_damage(damage)
         return damage, is_crit
 

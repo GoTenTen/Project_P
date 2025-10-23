@@ -22,6 +22,7 @@ class OnAttack(Passive):
         if ignore_passive:
             target.flags['passive_ignored'] = True
             return {
+                "damage": damage,
                 "text" : f"Grace à son passif {self.name}, {user.name} ignore le passif de {target.name}!"
             }
 

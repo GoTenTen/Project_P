@@ -1,6 +1,4 @@
 # main.py
-import time
-
 from Project_P.systems.team_creation import create_team
 from Project_P.core.battle import game_turn
 from Project_P.core.team import *
