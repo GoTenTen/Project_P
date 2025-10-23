@@ -26,7 +26,8 @@ def start():
     display_manager('display_starter', player1=player1, player2=player2, player_random=game_state['random_player'])
 
     while team1.is_alive_team() and team2.is_alive_team():
-        display_manager('clear', delay=1.5)
+        input('continue? ')
+        display_manager('clear', delay=0)
         print(f"\n------------------ TOUR {game_state['tour']} ------------------")
         display_manager('display_show_all_pou_stats', team=team1)
         display_manager('display_show_all_pou_stats', team=team2)
@@ -47,6 +48,7 @@ def start():
 
     winner = pou1 if pou1.is_alive() else pou2
     display_manager('display_victory', winner=winner)
+    display_manager('clear', delay=2)
 
 
 if __name__ == "__main__":

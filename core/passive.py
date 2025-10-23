@@ -17,9 +17,7 @@ class OnAttack(Passive):
         self.kwargs = kwargs
 
     def apply(self, user, target, damage, **kwargs):
-        ignore_passive = self.kwargs.get('ignore_passive', False)
-
-        if ignore_passive:
+        if self.name == 'Autoritée Divine':
             target.flags['passive_ignored'] = True
             return {
                 "damage": damage,

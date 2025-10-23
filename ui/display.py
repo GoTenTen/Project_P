@@ -215,6 +215,9 @@ def display_skill(action):
                 match events['type_events']:
                     case 'announce':
                         message.append(f"\n{action['user'].owner} utilise {LIGHTMAGENTA}{action['comp_name']}{RESET} !")
+                    case 'miss':
+                        message.append("raté!")
+                        return "\n".join(message)
                     case 'bonus_message':
                         message.append(f"\n{events['bonus_message']}\n")
                     case 'hits_and_crits':
@@ -245,7 +248,7 @@ def display_show_all_pou_stats(team):
     for i, pou in enumerate(team.pous):
         dead = "" if pou.hp > 0 else GREY
         actif = CYAN if i == team.active_index else ""
-        output(f"       - {actif}{dead}{pou.name.ljust(20)}{RESET}:  {hp_bar(pou.hp, pou.max_hp)} {GREEN}{pou.hp}{RESET}/{LIGHTGREEN}{pou.max_hp}{RESET} PV | {LIGHTRED}{pou.atk}{RESET} ATK | {LIGHTMAGENTA}{("(" + pou.passive.name.upper() + ")") if pou.passive else ''}{RESET}")
+        output(f"       - /{pou.elem}/ {actif}{dead}{pou.name.ljust(20)}{RESET}:  {hp_bar(pou.hp, pou.max_hp)} {GREEN}{pou.hp}{RESET}/{LIGHTGREEN}{pou.max_hp}{RESET} PV | {LIGHTRED}{pou.atk}{RESET} ATK | {LIGHTMAGENTA}{("(" + pou.passive.name.upper() + ")") if pou.passive else ''}{RESET}")
 
 def ask_next_pou(team):
     print(f"{team.owner}, choisissez un autre Pou :\n")

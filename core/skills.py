@@ -38,10 +38,12 @@ class AttackSkill(Skill):
         })
 
         successful_hit = False  # pour savoir si au moins un coup a touché
+        miss = False
 
         for i in range(hits):
             # Vérifie la précision
             if random.random() > accuracy:
+                miss = True
                 events.append({
                     "type_events": "miss",
                     "i": i
@@ -50,7 +52,7 @@ class AttackSkill(Skill):
 
             # Coup réussi
             successful_hit = True
-            damage, crit, elem_efficacity = user.deal_damage(target, **self.kwargs)
+            damage, crit, elem_efficacity = user.deal_damage(target, **self.kwargs, miss=miss)
             total_damage += damage
             crit_txt = "(Critique!)" if crit else ""
             events.append({
@@ -68,11 +70,11 @@ class AttackSkill(Skill):
                     "type_events": "bonus_message",
                     "bonus_message": bonus_message
                 })
-        if elem_efficacity:
-            events.append({
-                "type_events" : "elem_efficacity",
-                "elem_efficacity" : elem_efficacity
-            })
+            if elem_efficacity:
+                events.append({
+                    "type_events" : "elem_efficacity",
+                    "elem_efficacity" : elem_efficacity
+                })
 
         if self_damage >= 1:
             user.take_damage(self_damage)

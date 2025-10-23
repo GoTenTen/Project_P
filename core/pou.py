@@ -43,13 +43,11 @@ class Pou:
 
     def verif_passive(self, call_type, **kwargs):
         """Déclenche un passif si son type correspond."""
-        if not self.passive:
-            return None  # aucun passif à déclencher
-
-        # Vérifie le type du passif
-        passive_type = self.passive.__class__.__name__ # ("OnAttack", "OnReceiveDamage"...)
-        if call_type == passive_type:
-            return self.passive.apply(user=self, **kwargs)
+        if self.passive:
+            # Vérifie le type du passif
+            passive_type = self.passive.__class__.__name__ # ("OnAttack", "OnReceiveDamage"...)
+            if call_type == passive_type:
+                return self.passive.apply(user=self, **kwargs)
 
         return None
 
@@ -57,17 +55,10 @@ class Pou:
         base_multiplier = kwargs.get("multiplier", 1.0)
         crit_chance = kwargs.get("crit_chance", self.crit_chance)
         crit_mult = kwargs.get("crit_mult", 1.25)
-        element_bonus = kwargs.get("element_bonus", 1.0)
-        flat_bonus = kwargs.get("flat_bonus", 0)
-        accuracy = kwargs.get("accuracy", 1)
-
-        # --- Passif d'attaque --- donc "OnAttack
-        attack_passive_result = self.verif_passive("OnAttack", target=target, damage=0)
-        if attack_passive_result and "text" in attack_passive_result:
-            print(attack_passive_result["text"])
+        miss = kwargs.get("miss", False)
+        elem_mult = ELEMENT.get(self.elem, {}).get(target.elem, 1)
 
         elem_efficacity = ''
-        elem_mult = ELEMENT[self.elem][target.elem]
         match elem_mult:
             case 1.5:
                 elem_efficacity = "c'est super efficace !\n"
@@ -76,24 +67,28 @@ class Pou:
 
         # Calcul du critique
         is_crit = random.random() < crit_chance
-        if random.random() < accuracy:
-            damage = self.atk * base_multiplier * elem_mult * element_bonus + flat_bonus
+
+        if not miss:
+            damage = self.atk * base_multiplier * elem_mult
         else:
             damage = 0
-            print("raté!\n")
         if is_crit:
             damage *= crit_mult
 
         damage = int(damage)
 
+        # --- Passif d'attaque --- donc "OnAttack
+        attack_passive_result = self.verif_passive("OnAttack", target=target, damage=0)
+        if attack_passive_result and "text" in attack_passive_result:
+            print(attack_passive_result["text"])
+
         # --- Passif défensif ---
         defense_passive_result = target.verif_passive("OnReceiveDamage", target=target, damage=damage)
-        if defense_passive_result and "damage" in defense_passive_result:
+        if defense_passive_result and ("damage" in defense_passive_result):
             if not target.flags['passive_ignored']:
                 damage = defense_passive_result["damage"]
-                if defense_passive_result.get("text"):
-                    print(defense_passive_result["text"])
-            print(self.verif_passive("OnAttack", target=target, damage=0)["text"])
+                print(defense_passive_result["text"])
+            target.flags['passive_ignored'] = False
 
         target.take_damage(damage)
         return damage, is_crit, elem_efficacity
