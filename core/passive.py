@@ -43,7 +43,7 @@ class OnReceiveDamage(Passive):
             return {
                 "name_passive": self.name,
                 "damage": new_damage,
-                "percent_tankiness": int(tankiness),
+                "tankiness": tankiness,
                 "text": "tankiness" #f"{user.name} réduit les dégats subit de {int(tankiness*100)}% grace à son passif {self.name} !"
             }
 

@@ -42,7 +42,7 @@ def display_manager(event, **kwargs):
             output(f"\n{BOLD}{kwargs['player']}{RESET}, voulez vous créer votre propre équipe ou en générer une aléatoirement ?\n\n     1 : Créez votre propre équipe !\n     2 : Générer une équipe (En dev)\n")
 
         case 'display_skill':
-            print(display_skill(kwargs['action']))
+            display_all(display_skill(kwargs['action']), delay=1)
 
         case 'display_update_buff':
             output(display_update_buff(kwargs['update_buff']))
@@ -195,7 +195,7 @@ def display_update_buff(action):
 
 def display_skill(action):
     msg_debut = f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} utilise {LIGHTMAGENTA}{action['comp_name']}{RESET} "
-    message_final = ""
+    message = ""
     match action['type_skill']:
         case 'buff':
             msg_fin = f": {action['stat_id']} passe de {action['before']} à {action['stat_value']} !"
@@ -221,27 +221,29 @@ def display_skill(action):
                                 case 'ignore':
                                     message.append(f"Grace à son passif {x['name_passive']}, {action['user'].name} ignore le passif de {action['target'].name}!")
                                 case 'tankiness':
-                                    message.append(f"{action['user'].name} réduit les dégats subit de {events['tankiness']*100}% grace à son passif {action['user'].passive['name']} !")
+                                    message.append(f"{action['user'].name} réduit les dégats subit de {int(x['tankiness']*100)}% grace à son passif {x['name_passive']} !")
                     case 'miss':
                         message.append("raté!")
-                        return "\n".join(message)
+                        return message
                     case 'bonus_message':
                         message.append(f"\n{events['bonus_message']}\n")
                     case 'hits_and_crits':
                         if events['hits'] > 1:
                             message.append(f"Coup {events['i'] + 1}: {events['damage']} dmg{YELLOW}{events['crit_txt']}{RESET}")
-                            time.sleep(1)
                         else:
-                            message.append(events['crit_txt'])
+                            if events['crit_txt']:
+                                message.append(events['crit_txt'])
                     case 'self_damage':
                         message.append(f"Il prend {events['self_damage']} de dégats de contre coup... Tdc va \n")
                     case 'elem_efficacity':
-                        message.append(f"\n{events['elem_efficacity']}\n")
+                        if events['elem_efficacity'] == 'effective':
+                            message.append(f"\nX 1.5 WAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
+                        else:
+                            message.append(f"\nPsahtek t'as tout raté le khoya, t'es vraiment un golmon la vie tu connais même pas la table de type\n")
             message.append(f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} à infligé {RED}{action['total_damage']}{RESET} dégâts à {BOLD}{action['target'].name}{RESET} de {BOLD}{action['target'].owner}{RESET}.")
-            message_final = "\n".join(message)
         case _:
-            message_final = f"erreur starfoullah : {action['type_skill']}"
-    return message_final
+            message = f"erreur starfoullah : {action['type_skill']}"
+    return message
 
 
 def hp_bar(hp, max_hp, width=20):

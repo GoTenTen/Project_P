@@ -39,6 +39,7 @@ class AttackSkill(Skill):
 
         successful_hit = False  # pour savoir si au moins un coup a touché
         miss = False
+        deal_damage = {}
 
         for i in range(hits):
             # Vérifie la précision

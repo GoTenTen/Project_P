@@ -68,9 +68,9 @@ class Pou:
         elem_efficacity = ''
         match elem_mult:
             case 1.5:
-                elem_efficacity = "c'est super efficace !\n"
+                elem_efficacity = "effective"
             case 0.5:
-                elem_efficacity = "Il a mangé tout le caca ça lui fait rien\n"
+                elem_efficacity = "not_effective"
 
         # Calcul du critique
         is_crit = random.random() < crit_chance
