@@ -6,6 +6,10 @@ def game_turn(team_attacker, team_defender):
     attacker = team_attacker.get_active_pou()
     defender = team_defender.get_active_pou()
 
+    verif_passive_on_turn_start = attacker.verif_passive('OnTurnStart', target=defender)
+    if verif_passive_on_turn_start:
+        display_manager('display_passive', user=attacker, action=verif_passive_on_turn_start)
+
     while True:
         display_manager('choose_action', attacker=attacker, team_attacker=team_attacker, cas=2)
         choice = input()

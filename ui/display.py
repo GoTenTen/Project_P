@@ -3,6 +3,7 @@ from Project_P.ui.colors import *
 import time
 import os
 import sys
+import re
 
 
 def display_manager(event, **kwargs):
@@ -43,6 +44,9 @@ def display_manager(event, **kwargs):
 
         case 'display_skill':
             display_all(display_skill(kwargs['action']), delay=1)
+
+        case 'display_passive':
+            output(display_passive(user=kwargs['user'], action=kwargs['action']))
 
         case 'display_update_buff':
             output(display_update_buff(kwargs['update_buff']))
@@ -100,7 +104,7 @@ def display_all(text, end="\n", delay=0):
 
 
 def display_action(attacker, team_attacker):
-    choice_action = [f"C'est au tour de {team_attacker.owner} avec {attacker.name} !\n",
+    choice_action = [f"C'est au tour de {BOLD}{team_attacker.owner}{RESET} avec {BOLD}{attacker.name}{RESET} !\n",
                     "  1 - Attaquer",
                     "  2 - Description des compétences",
                     "  3 - Changer de Pou\n"]
@@ -129,19 +133,17 @@ def display_invalid(cas):
             display_all(["Pou déjà selectionné."])
 
 def display_starter(player1, player2, player_random):
-    time.sleep(2)
+    input('continue?')
     clear()
     output(f"Qui commence entre {BOLD}{player1}{RESET} et {BOLD}{player2}{RESET} ?", end=" ")
-    display_sleep()
+    display_sleep(0.5)
     output(f"C'est {BOLD}{player_random}{RESET} qui commence !\n")
 
 
-def display_sleep():#cas à ajouter si -> match case
-    #match cas:
-    #   case '1': #Si on décide d'utiliser plusieurs affichage de ce style, on aura juste à ajouter un case (et ptet modifier le nom de la fonction)
+def display_sleep(delay=1.0):
     for _ in range(3):
         print(".", end="", flush=True)
-        time.sleep(1)
+        time.sleep(delay)
     print("\n") 
 
 
@@ -152,9 +154,9 @@ def display_text_drop(cas):
         case 2:
             output(f"\n{LIGHTBLUE}●{RESET} Les étoiles se sont alignées... Ou presque... {LIGHTBLUE}●{RESET}\nVoici ton équipe :\n")
         case 3:
-            output(f"\n{MAGENTA}●{RESET} Les étoiles se sont alignées ! {MAGENTA}●{RESET} \nRegarde moi cette équipe : \n")
+            output(f"\n{MAGENTA}★{RESET} Les étoiles se sont alignées ! {MAGENTA}★{RESET} \nRegarde moi cette équipe : \n")
         case 4:
-            output(f"\n{LIGHTYELLOW}●{RESET} Dios mio abberant le taux de drop {LIGHTYELLOW}●{RESET}\nAdmire ton équipe : \n")
+            output(f"\n{LIGHTYELLOW}★{RESET} Dios mio abberant le taux de drop {LIGHTYELLOW}★{RESET}\nAdmire ton équipe : \n")
 
 
 def show_team(pou_list):
@@ -217,7 +219,7 @@ def display_skill(action):
                         message.append(f"\n{action['user'].owner} utilise {LIGHTMAGENTA}{action['comp_name']}{RESET} !")
                     case 'events_passive':
                         for x in events['events_passive']:
-                            match x['text']:
+                            match x['id_passive']:
                                 case 'ignore':
                                     message.append(f"Grace à son passif {x['name_passive']}, {action['user'].name} ignore le passif de {action['target'].name}!")
                                 case 'tankiness':
@@ -237,9 +239,9 @@ def display_skill(action):
                         message.append(f"Il prend {events['self_damage']} de dégats de contre coup... Tdc va \n")
                     case 'elem_efficacity':
                         if events['elem_efficacity'] == 'effective':
-                            message.append(f"\nX 1.5 WAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n")
+                            message.append(f"\n{BOLD}c'est super efficace !{RESET}\n")
                         else:
-                            message.append(f"\nPsahtek t'as tout raté le khoya, t'es vraiment un golmon la vie tu connais même pas la table de type\n")
+                            message.append(f"\n{BOLD}ce n'est pas très efficace...{RESET}\n")
             message.append(f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} à infligé {RED}{action['total_damage']}{RESET} dégâts à {BOLD}{action['target'].name}{RESET} de {BOLD}{action['target'].owner}{RESET}.")
         case _:
             message = f"erreur starfoullah : {action['type_skill']}"
@@ -253,11 +255,37 @@ def hp_bar(hp, max_hp, width=20):
     return f"{color}{'█' * filled}{'░' * empty}{RESET}"
 
 def display_show_all_pou_stats(team):
+    ANSI_ESCAPE = re.compile(r'\x1b\[([0-9]+)(;[0-9]+)*m')
+
+    def visible_len(s):
+        return len(ANSI_ESCAPE.sub('', s))
+
+    def pad_right(s, width):
+        return s + ' ' * (width - visible_len(s))
+
+    def pad_left(s, width):
+        return ' ' * (width - visible_len(s)) + s
+
     output(f"\n    [[{BOLD}{team.owner}{RESET}]]")
     for i, pou in enumerate(team.pous):
         dead = "" if pou.hp > 0 else GREY
         actif = CYAN if i == team.active_index else ""
-        output(f"       - /{pou.elem}/ {actif}{dead}{pou.name.ljust(20)}{RESET}:  {hp_bar(pou.hp, pou.max_hp)} {GREEN}{pou.hp}{RESET}/{LIGHTGREEN}{pou.max_hp}{RESET} PV | {LIGHTRED}{pou.atk}{RESET} ATK | {LIGHTMAGENTA}{("(" + pou.passive.name.upper() + ")") if pou.passive else ''}{RESET}")
+
+        name_col = f"{actif}{dead}{pou.name} ({pou.elem})"
+        name_col = pad_right(name_col[:30], 30)
+
+        hp_col = f"{hp_bar(pou.hp, pou.max_hp)} {GREEN}{pou.hp}{RESET}/{LIGHTGREEN}{pou.max_hp}{RESET} PV"
+        hp_col = pad_right(hp_col, 20)
+
+        atk_col = f"{LIGHTRED}{pou.atk}{RESET} ATK"
+        atk_col = pad_left(atk_col, 6)  # largeur fixe pour ATK
+
+        passive_col = f"({LIGHTMAGENTA}{pou.passive.name.upper()}{RESET})" if pou.passive else ""
+        passive_col = pad_right(passive_col, 15)
+
+        output(f"       - {name_col} : {hp_col} | {atk_col} | {passive_col}")
+
+        #output(f"- {actif}{dead}{pou.name}{RESET} ({pou.elem})".ljust(65) + f" :  {hp_bar(pou.hp, pou.max_hp)} {GREEN}{pou.hp}{RESET}/{LIGHTGREEN}{pou.max_hp}{RESET} PV | {LIGHTRED}{str(pou.atk).rjust(2)}{RESET} ATK | {LIGHTMAGENTA}{("(" + pou.passive.name.upper() + ")") if pou.passive else ''}{RESET}")
 
 def ask_next_pou(team):
     print(f"{team.owner}, choisissez un autre Pou :\n")
@@ -266,4 +294,8 @@ def ask_next_pou(team):
         print(f"  {i + 1}. {status}{pou.name}{RESET} - PV: {GREEN}{pou.hp}{RESET}/{LIGHTGREEN}{pou.max_hp}{RESET} | {LIGHTRED}{pou.atk}{RESET} ATK")
     output("\nChoisissez un Pou par numéro : ", end="")
 
-
+def display_passive(user, action):
+    match action["name_passive"]:
+        case 'Dernier Mot':
+            return f"{BOLD}{user.name}{RESET} de {BOLD}{user.owner}{RESET} donne tout et voit son ATK doublée ! Son ATK passe à {LIGHTRED}{user.atk}{RESET}."
+    return None

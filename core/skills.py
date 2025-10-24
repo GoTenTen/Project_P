@@ -64,11 +64,12 @@ class AttackSkill(Skill):
                 "i": i,
             })
 
-        if deal_damage['events_passive']:
-            events.append({
-                "type_events": "events_passive",
-                "events_passive": deal_damage['events_passive'],
-            })
+        if deal_damage:
+            if deal_damage['events_passive']:
+                events.append({
+                    "type_events": "events_passive",
+                    "events_passive": deal_damage['events_passive'],
+                })
 
         # affiche les messages bonus que s'il y a au moins un coup réussi
         if successful_hit:

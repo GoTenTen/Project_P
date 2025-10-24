@@ -11,7 +11,7 @@ PouModels = {
         "rarity": 'commun',
         "elem" : 'Gluant',
         "color": LIGHTGREEN,
-        "skills": [SKILLS["Tape Fort"], SKILLS["Vidage Sanguin"], SKILLS["Slap That Ass"], SKILLS["Baume visqueux"]],
+        "skills": [SKILLS["Jab"], SKILLS["Vidage Sanguin"], SKILLS["Tape Fort"], SKILLS["Baume visqueux"]],
         "passive": '',
     },
     "Pou Sergent": {
@@ -52,6 +52,6 @@ PouModels = {
         "elem" : 'Gluant',
         "color": MAGENTA,
         "skills": [SKILLS["Jab"], SKILLS["Slap That Ass"], SKILLS["Cire Chaude"], SKILLS["Tape Fort"]],
-        "passive": '',
+        "passive": PASSIVE['Dernier Mot'],
     }
 }

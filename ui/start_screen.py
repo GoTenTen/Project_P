@@ -1,22 +1,31 @@
 import time
 from Project_P.core.main import start
+from Project_P.ui.colors import *
 # ------------------------------------
 
 
 def start_ecran():
-    print('_________________________________________________')
-    print('')
-    print('')
-    print('     █▀▀█ █▀▀█ █░░█ █░█ █▀▀ █▀▄▀█ █▀▀█ █▀▀▄')
-    print('     █░░█ █░░█ █░░█ █▀▄ █▀▀ █░▀░█ █░░█ █░░█')
-    print('     █▀▀▀ ▀▀▀▀ ░▀▀▀ ▀░▀ ▀▀▀ ▀░░░▀ ▀▀▀▀ ▀░░▀')
-    print('')
-    print('')
-    print('                1 - COMMENCER')
-    print('                2 - REGLES DU JEU')
-    print('                3 - QUITTER')
-    print('')
-    print('_________________________________________________')
+    color = LIGHTRED
+    print(f"""
+╔═══════════════════════════════════════════════════════════════════════════════════════╗
+║                                                                                       ║
+║                                                                                       ║
+║                                                                                       ║
+║       ██████{color}╗{RESET}  ██████{color}╗{RESET} ██{color}╗{RESET}   ██{color}╗{RESET}██{color}╗{RESET}  ██{color}╗{RESET} ███████{color}╗{RESET}███{color}╗{RESET}   ███{color}╗{RESET} ██████{color}╗{RESET} ███{color}╗{RESET}   ██{color}╗{RESET}       ║
+║       ██{color}╔══{RESET}██{color}╗{RESET}██{color}╔═══{RESET}██{color}╗{RESET}██{color}║{RESET}   ██{color}║{RESET}██{color}║{RESET} ██{color}╔╝{RESET} ██{color}╔════╝{RESET}████{color}╗{RESET} ████{color}║{RESET}██{color}╔═══{RESET}██{color}╗{RESET}████{color}╗{RESET}  ██{color}║{RESET}       ║
+║       ██████{color}╔╝{RESET}██{color}║{RESET}   ██{color}║{RESET}██{color}║{RESET}   ██{color}║{RESET}█████{color}╔╝{RESET}  █████{color}╗{RESET}  ██{color}╔{RESET}████{color}╔{RESET}██{color}║{RESET}██{color}║{RESET}   ██{color}║{RESET}██{color}╔{RESET}██{color}╗{RESET} ██{color}║{RESET}       ║
+║       ██{color}╔═══╝{RESET} ██{color}║{RESET}   ██{color}║{RESET}██{color}║{RESET}   ██{color}║{RESET}██{color}╔═{RESET}██{color}╗{RESET}  ██{color}╔══╝{RESET}  ██{color}║╚{RESET}██{color}╔╝{RESET}██{color}║{RESET}██{color}║{RESET}   ██{color}║{RESET}██{color}║{color}╚{RESET}██{color}╗{RESET}██{color}║{RESET}       ║
+║       ██{color}║{RESET}     ╚██████{color}╔╝{RESET}╚██████{color}╔╝{RESET}██{color}║{RESET}  ██{color}╗{RESET} ███████{color}╗{RESET}██{color}║ ╚═╝{RESET} ██{color}║╚{RESET}██████{color}╔╝{RESET}██{color}║ ╚{RESET}████{color}║{RESET}       ║
+║       {color}╚═╝      {color}╚═════{color}╝{RESET}  {color}╚═════{color}╝{RESET} {color}╚═╝  {color}╚═╝ {color}╚══════╝{RESET}{color}╚═╝     {color}╚═╝ {color}╚═════╝{RESET} {color}╚═╝  {color}╚═══╝{RESET}       ║
+║                                                                                       ║
+║                                                                                       ║
+║                                  1 - COMMENCER                                        ║
+║                                  2 - REGLES DU JEU                                    ║
+║                                  3 - QUITTER                                          ║
+║                                                                                       ║
+║                                                                                       ║
+║                                                                                       ║
+╚═══════════════════════════════════════════════════════════════════════════════════════╝""")
 
     time.sleep(1)
     x = str(input())

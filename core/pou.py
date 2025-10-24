@@ -45,7 +45,7 @@ class Pou:
         """Déclenche un passif si son type correspond."""
         if self.passive:
             # Vérifie le type du passif
-            passive_type = self.passive.__class__.__name__ # ("OnAttack", "OnReceiveDamage"...)
+            passive_type = self.passive.trigger # ("OnAttack", "OnReceiveDamage"...)
             if call_type == passive_type:
                 return self.passive.apply(user=self, **kwargs)
 
@@ -61,7 +61,7 @@ class Pou:
         events = []
 
         # --- Passif d'attaque --- donc "OnAttack
-        attack_passive_result = self.verif_passive("OnAttack", target=target, damage=0)
+        attack_passive_result = self.verif_passive('OnAttack', target=target, damage=0)
         if attack_passive_result and "text" in attack_passive_result:
             events.append(attack_passive_result)
 
@@ -85,7 +85,7 @@ class Pou:
         damage = int(damage)
 
         # --- Passif défensif ---
-        defense_passive_result = target.verif_passive("OnReceiveDamage", target=target, damage=damage)
+        defense_passive_result = target.verif_passive('OnReceiveDamage', target=target, damage=damage)
         if defense_passive_result and ("damage" in defense_passive_result):
             if not target.flags['passive_ignored']:
                 damage = defense_passive_result["damage"]

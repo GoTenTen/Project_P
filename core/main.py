@@ -4,6 +4,7 @@ from Project_P.core.battle import game_turn
 from Project_P.core.team import *
 from Project_P.ui.display import display_manager
 import random
+from Project_P.ui.colors import *
 
 def start():
     display_manager('clear', delay=0)
@@ -28,10 +29,10 @@ def start():
     while team1.is_alive_team() and team2.is_alive_team():
         input('continue? ')
         display_manager('clear', delay=0)
-        print(f"\n------------------ TOUR {game_state['tour']} ------------------")
+        print(f"\n╔═-------------------------------------════════ {BOLD}TOUR {game_state['tour']}{RESET} ════════-------------------------------------═╗")
         display_manager('display_show_all_pou_stats', team=team1)
         display_manager('display_show_all_pou_stats', team=team2)
-        print("\n--------------------------------------------\n")
+        print("\n╚═----------------------------------------------------------------------------------------------------═╝\n")
         time.sleep(0.5)
 
         if game_state['random_player'] == player1:
