@@ -271,8 +271,8 @@ def display_show_all_pou_stats(team):
         dead = "" if pou.hp > 0 else GREY
         actif = CYAN if i == team.active_index else ""
 
-        name_col = f"{actif}{dead}{pou.name} ({pou.elem})"
-        name_col = pad_right(name_col[:30], 30)
+        name_col = f"{actif}{dead}{pou.name} ({pou.elem}){RESET}"
+        name_col = pad_right(name_col, 30)
 
         hp_col = f"{hp_bar(pou.hp, pou.max_hp)} {GREEN}{pou.hp}{RESET}/{LIGHTGREEN}{pou.max_hp}{RESET} PV"
         hp_col = pad_right(hp_col, 20)
