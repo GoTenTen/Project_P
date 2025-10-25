@@ -26,15 +26,9 @@ def display_manager(event, **kwargs):
         
         case 'invalid':            
             display_invalid(kwargs['cas'])
-        
-        case 'display_sleep':
-            display_sleep()  # display_sleep(kwargs['cas'])
 
         case 'display_comp':
             display_comp(kwargs['attacker'])
-
-        case 'display_starter':
-            return display_starter(kwargs['player1'], kwargs['player2'], kwargs['player_random'])
 
         case 'display_input':
             display_input(kwargs['cas'])
@@ -61,7 +55,7 @@ def display_manager(event, **kwargs):
             return ask_next_pou(kwargs['team'])
 
         case 'display_ask_next_pou_more':
-            output(f"\n{BOLD}{kwargs['team'].owner}{RESET} envoie {BOLD}{kwargs['team'].get_active_pou().name}{RESET} au combat!")
+            output(display_ask_next_pou_more(kwargs['team'], kwargs['cas']))
 
         case 'display_space':
             output("")
@@ -132,21 +126,6 @@ def display_invalid(cas):
         case 3:
             display_all(["Pou déjà selectionné."])
 
-def display_starter(player1, player2, player_random):
-    input('continue?')
-    clear()
-    output(f"Qui commence entre {BOLD}{player1}{RESET} et {BOLD}{player2}{RESET} ?", end=" ")
-    display_sleep(0.5)
-    output(f"C'est {BOLD}{player_random}{RESET} qui commence !\n")
-
-
-def display_sleep(delay=1.0):
-    for _ in range(3):
-        print(".", end="", flush=True)
-        time.sleep(delay)
-    print("\n") 
-
-
 def display_text_drop(cas):
     match cas:
         case 1:
@@ -189,7 +168,7 @@ def display_update_buff(action):
     for events in action['events']:
         match events['type_buff']:
             case 'atk':
-                return f"L’effet de d'augmentation de l'{LIGHTRED}ATK{RESET} du {BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} s’est dissipé.\n"
+                return f"L’effet de d'augmentation de l'{LIGHTRED}ATT{RESET} du {BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} s’est dissipé.\n"
             case 'regen':
                 return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} récupère {LIGHTGREEN}{events['amount']}{RESET} PV\n"
             case _:
@@ -223,7 +202,7 @@ def display_skill(action):
                                 case 'ignore':
                                     message.append(f"Grace à son passif {x['name_passive']}, {action['user'].name} ignore le passif de {action['target'].name}!")
                                 case 'tankiness':
-                                    message.append(f"{action['user'].name} réduit les dégats subit de {int(x['tankiness']*100)}% grace à son passif {x['name_passive']} !")
+                                    message.append(f"{action['target'].name} réduit les dégats subit de {int(x['tankiness']*100)}% grace à son passif {x['name_passive']} !")
                     case 'miss':
                         message.append("raté!")
                         return message
@@ -254,18 +233,18 @@ def hp_bar(hp, max_hp, width=20):
     color = GREEN if hp > max_hp * 0.5 else YELLOW if hp > max_hp * 0.2 else RED if hp != 0 else GREY
     return f"{color}{'█' * filled}{'░' * empty}{RESET}"
 
+ANSI_ESCAPE = re.compile(r'\x1b\[([0-9]+)(;[0-9]+)*m')
+
+def visible_len(s):
+    return len(ANSI_ESCAPE.sub('', s))
+
+def pad_right(s, width):
+    return s + ' ' * (width - visible_len(s))
+
+def pad_left(s, width):
+    return ' ' * (width - visible_len(s)) + s
+
 def display_show_all_pou_stats(team):
-    ANSI_ESCAPE = re.compile(r'\x1b\[([0-9]+)(;[0-9]+)*m')
-
-    def visible_len(s):
-        return len(ANSI_ESCAPE.sub('', s))
-
-    def pad_right(s, width):
-        return s + ' ' * (width - visible_len(s))
-
-    def pad_left(s, width):
-        return ' ' * (width - visible_len(s)) + s
-
     output(f"\n    [[{BOLD}{team.owner}{RESET}]]")
     for i, pou in enumerate(team.pous):
         dead = "" if pou.hp > 0 else GREY
@@ -274,28 +253,51 @@ def display_show_all_pou_stats(team):
         name_col = f"{actif}{dead}{pou.name} ({pou.elem}){RESET}"
         name_col = pad_right(name_col, 30)
 
-        hp_col = f"{hp_bar(pou.hp, pou.max_hp)} {GREEN}{pou.hp}{RESET}/{LIGHTGREEN}{pou.max_hp}{RESET} PV"
-        hp_col = pad_right(hp_col, 20)
+        hp_col = f"{hp_bar(pou.hp, pou.max_hp)} {GREEN}{pou.hp}{RESET}/{LIGHTGREEN}{pou.max_hp}{RESET} HP"
 
-        atk_col = f"{LIGHTRED}{pou.atk}{RESET} ATK"
+        atk_col = f"{LIGHTRED}{pou.atk}{RESET} ATT"
         atk_col = pad_left(atk_col, 6)  # largeur fixe pour ATK
+
+        speed_col = f"{BLUE}{pou.speed}{RESET} VIT"
 
         passive_col = f"({LIGHTMAGENTA}{pou.passive.name.upper()}{RESET})" if pou.passive else ""
         passive_col = pad_right(passive_col, 15)
 
-        output(f"       - {name_col} : {hp_col} | {atk_col} | {passive_col}")
-
-        #output(f"- {actif}{dead}{pou.name}{RESET} ({pou.elem})".ljust(65) + f" :  {hp_bar(pou.hp, pou.max_hp)} {GREEN}{pou.hp}{RESET}/{LIGHTGREEN}{pou.max_hp}{RESET} PV | {LIGHTRED}{str(pou.atk).rjust(2)}{RESET} ATK | {LIGHTMAGENTA}{("(" + pou.passive.name.upper() + ")") if pou.passive else ''}{RESET}")
+        output(f"       - {name_col} : {hp_col} | {atk_col} | {speed_col} | {passive_col}")
 
 def ask_next_pou(team):
-    print(f"{team.owner}, choisissez un autre Pou :\n")
+    output(f"{team.owner}, choisissez un autre Pou :\n")
     for i, pou in enumerate(team.pous):
-        status = CYAN if i == team.active_index else ""
-        print(f"  {i + 1}. {status}{pou.name}{RESET} - PV: {GREEN}{pou.hp}{RESET}/{LIGHTGREEN}{pou.max_hp}{RESET} | {LIGHTRED}{pou.atk}{RESET} ATK")
+        dead = "" if pou.hp > 0 else GREY
+        actif = CYAN if i == team.active_index else ""
+
+        name_col = f"{actif}{dead}{pou.name} ({pou.elem}){RESET}"
+        name_col = pad_right(name_col, 30)
+
+        hp_col = f" {GREEN}{pou.hp}{RESET}/{LIGHTGREEN}{pou.max_hp}{RESET} HP"
+
+        atk_col = f"{LIGHTRED}{pou.atk}{RESET} ATT"
+        atk_col = pad_left(atk_col, 6)  # largeur fixe pour ATK
+
+        speed_col = f"{BLUE}{pou.speed}{RESET} VIT"
+
+        passive_col = f"({LIGHTMAGENTA}{pou.passive.name.upper()}{RESET})" if pou.passive else ""
+        passive_col = pad_right(passive_col, 15)
+
+        output(f" - {name_col} : {hp_col} | {atk_col} | {speed_col} | {passive_col}")
     output("\nChoisissez un Pou par numéro : ", end="")
+
+def display_ask_next_pou_more(team, cas):
+    match str(cas):
+        case "1":
+            return f"\n{BOLD}{team.owner}{RESET} envoie {BOLD}{team.get_active_pou().name}{RESET} au combat!"
+        case "2":
+            return f"\nChangement confirmé. {BOLD}{team.get_active_pou().name}{RESET} est maintenant votre pou actif."
+        case _:
+            return "invalid"
 
 def display_passive(user, action):
     match action["name_passive"]:
         case 'Dernier Mot':
-            return f"{BOLD}{user.name}{RESET} de {BOLD}{user.owner}{RESET} donne tout et voit son ATK doublée ! Son ATK passe à {LIGHTRED}{user.atk}{RESET}."
+            return f"{BOLD}{user.name}{RESET} de {BOLD}{user.owner}{RESET} donne tout et voit son ATT doublée ! Son ATT passe à {LIGHTRED}{user.atk}{RESET}."
     return None

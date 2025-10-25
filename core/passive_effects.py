@@ -27,10 +27,6 @@ def double_attack_below_half(user, target, damage, stat_multiplier=2, hp_conditi
             "name_passive": user.passive.name,
             "id_passive": "double_attack_below_half"
         }
-    return {
-        "damage": damage,
-        "text": ""
-    }
 
 
 # ----------------------------------------------------------------------------------------------------------------------

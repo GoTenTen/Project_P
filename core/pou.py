@@ -3,20 +3,22 @@ import random
 from Project_P.data.elem_list import ELEMENT
 
 class Pou:
-    def __init__(self, owner, name, hp, atk, comp_list, passive, rarity, elem, color, crit_chance=0.1):
+    def __init__(self, owner, name, hp, atk, speed, comp_list, passive, rarity, elem, color, crit_chance=0.1):
         self.owner = owner
         self.name = name
         self.hp = hp
         self.max_hp = hp
         self.atk = atk
         self.base_atk = atk
+        self.speed = speed
+        self.base_speed = speed
         self.comp = comp_list
         self.passive = passive
         self.crit_chance = crit_chance
         self.rarity = rarity
         self.elem = elem
         self.color = color
-        self.flags = {'passive_ignored': False}
+        self.flags = {'passive_ignored': False, 'switch_pou': False, 'switched_pou': False}
         self.active_buffs = {}  # stocke les buffs temporaires
 
     @classmethod
@@ -27,6 +29,7 @@ class Pou:
             name=model_data["name"],
             hp=model_data["hp"],
             atk=model_data["atk"],
+            speed=model_data["speed"],
             comp_list=model_data["skills"],
             passive=model_data["passive"],
             elem = model_data["elem"],

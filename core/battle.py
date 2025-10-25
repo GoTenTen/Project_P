@@ -1,58 +1,93 @@
 # battle.py
 from Project_P.ui.display import display_manager
+import random
 
-def game_turn(team_attacker, team_defender):
-    # Récupérer les Pous actifs (après potentiels précédents switchs)
-    attacker = team_attacker.get_active_pou()
-    defender = team_defender.get_active_pou()
+def game_turn(team1, team2):
+    # Pous actifs
+    pou_team1 = team1.get_active_pou()
+    pou_team2 = team2.get_active_pou()
 
-    verif_passive_on_turn_start = attacker.verif_passive('OnTurnStart', target=defender)
-    if verif_passive_on_turn_start:
-        display_manager('display_passive', user=attacker, action=verif_passive_on_turn_start)
+    # Réinitialiser flags ("swicthed_pou" uniquement pour l'instant)
+    for pou in (pou_team1, pou_team2):
+        pou.flags['switched_pou'] = False
 
+    # Passives OnTurnStart
+    for attacker, defender in [(pou_team1, pou_team2), (pou_team2, pou_team1)]:
+        passive = attacker.verif_passive('OnTurnStart', target=defender)
+        if passive:
+            display_manager('display_passive', user=attacker, action=passive)
+
+    # Récupérer les actions des joueurs
+    action = [
+        get_player_action(pou_team1, pou_team2, team1),
+        get_player_action(pou_team2, pou_team1, team2)
+    ]
+
+    # Appliquer switches si demandés
+    pou_team1 = apply_switch(pou_team1, team1)
+    pou_team2 = apply_switch(pou_team2, team2)
+
+    # Appliquer attaques dans le bon ordre (évite le calcul de dégats avant le switch ce qui causait des dégats a l'ancien pou)
+    execute_actions(pou_team1, pou_team2, action)
+
+    # mettre à jour les buffs des deux Pous
+    for pou in [pou_team1, pou_team2]:
+        update_buff = pou.update_buffs()
+        if update_buff['events']:
+            display_manager('display_update_buff', update_buff=update_buff)
+
+    # Vérifier morts et switchs forcés
+    for team in (team1, team2):
+        if not team.is_alive_team():
+            display_manager('display_dead_team', team=team)
+            return
+        step = team.handle_death_and_switch()
+        if step['next_step'] == 'switch_pou':
+            select_switch_pou(team)
+
+
+
+# ---------------------- FONCTIONS ------------------------
+
+def get_player_action(attacker, defender, team):
     while True:
-        display_manager('choose_action', attacker=attacker, team_attacker=team_attacker, cas=2)
+        display_manager('choose_action', attacker=attacker, team_attacker=team, cas=2)
         choice = input()
         display_manager('display_space')
         step = select_action(choice)
         match step['next_step']:
             case 'attaquer':
-                select_attack(attacker, defender)
+                return select_attack(attacker, defender)
             case 'changer_pou':
-                select_switch_pou(team_attacker)
+                attacker.flags['switch_pou'] = True
+                return None
             case 'description':
                 display_manager('description', attacker=attacker)
+                continue
             case _:
                 display_manager('invalid')
-        break
+                continue
 
-    # mettre à jour les buffs des deux Pous
-    update_buff = attacker.update_buffs()
-    if update_buff['events']:
-        display_manager('display_update_buff', update_buff=update_buff)
-
-    if not team_defender.is_alive_team():
-        display_manager('display_dead_team', team=team_defender)
-        return # pour bien sortir de la fonction [ne pas suppr !]
-    zgeg = [team_attacker, team_defender]
-    for zgegouz in zgeg:
-        step = zgegouz.handle_death_and_switch()
-        if step['next_step'] == 'switch_pou':
-            select_switch_pou(zgegouz)
-
-
-
-
-def select_switch_pou(team):
+def select_switch_pou(team, cas=1):
     while True:
         display_manager('display_ask_next_pou', team=team)
         choix = input()
         if choix.isdigit():
             idx = int(choix) - 1
             if team.switch_pou(idx):
-                display_manager('display_ask_next_pou_more', team=team, index=idx)
+                display_manager('display_ask_next_pou_more', team=team, index=idx, cas=cas)
                 break
         display_manager('invalid', cas=1)
+
+def apply_switch(pou_team, team):
+    # --- Appliquer les switchs avant la phase d'attaque ---
+    if pou_team.flags['switch_pou']:
+        select_switch_pou(team)
+        pou_team.flags['switch_pou'] = False
+        new_pou = team.get_active_pou()
+        new_pou.flags['switched_pou'] = True
+        return new_pou
+    return pou_team
 
 def select_attack(attacker, defender):
     while True:
@@ -60,23 +95,37 @@ def select_attack(attacker, defender):
         display_manager('display_input', cas=1)
         choice = input()
         if choice in ('1', '2', '3', '4'):
-            action = choose_comp(choice, attacker, defender)
-            display_manager('display_skill', action=action)
-            break
+            return choose_comp(choice, attacker, defender)
+            #display_manager('display_skill', action=action)
+            #break
         else:
             display_manager('invalid')
 
+def execute_actions(pou_team1, pou_team2, actions):
+    # Gestion des switches : si un joueur switch, l'autre attaque en priorité
+    if pou_team1.flags['switched_pou'] or pou_team2.flags['switched_pou']:
+        if pou_team1.flags['switched_pou'] and not pou_team2.flags['switched_pou']:
+            action_final = pou_team2.comp[actions[1]['comp_idx']].apply(pou_team2, pou_team1)
+            display_manager('display_skill', action=action_final)
+        elif pou_team2.flags['switched_pou'] and not pou_team1.flags['switched_pou']:
+            action_final = pou_team1.comp[actions[0]['comp_idx']].apply(pou_team1, pou_team2)
+            display_manager('display_skill', action=action_final)
+    else:
+        # Ordre par vitesse, tirage aléatoire si égalité
+        order = [0, 1] if pou_team1.speed >= pou_team2.speed else [1, 0]
+        if pou_team1.speed == pou_team2.speed:
+            random.shuffle(order)
+        for idx in order:
+            if actions[idx] is not None:
+                action_final = actions[idx]['attacker'].comp[actions[idx]['comp_idx']].apply(actions[idx]['attacker'], actions[idx]['defender'])
+                display_manager('display_skill', action=action_final)
+
 #appeler -> display_comp
 def choose_comp(choice, attacker, defender):
-    match choice:
-        case '1':
-            return attacker.comp[0].apply(attacker, defender)
-        case '2':
-            return attacker.comp[1].apply(attacker, defender)
-        case '3':
-            return attacker.comp[2].apply(attacker, defender)
-        case '4':
-            return attacker.comp[3].apply(attacker, defender)
+    idx = int(choice)-1
+    if 0 <= idx < 4:
+        return {"attacker": attacker, "defender": defender, "comp_idx": idx}
+        #return attacker.comp[idx].apply(attacker, defender)
     return None
 
 def select_action(choice):
