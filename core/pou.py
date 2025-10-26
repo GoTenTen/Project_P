@@ -144,13 +144,14 @@ class Pou:
                 case 'regen':
                     amount = buff['amount']
                     #Pour éviter de dépasser la limite d'hp
-                    self.hp = min(self.hp + amount, self.max_hp)
-                    if buff["duration"] <= 0:
-                        expired.append(effect_type)
-                    events.append({
-                        "type_buff": "regen",
-                        "amount": amount,
-                    })
+                    if self.hp > 0:
+                        self.hp = min(self.hp + amount, self.max_hp)
+                        if buff["duration"] <= 0:
+                            expired.append(effect_type)
+                        events.append({
+                            "type_buff": "regen",
+                            "amount": amount,
+                        })
 
         # Supprimer les buffs expirés
         for stat in expired:

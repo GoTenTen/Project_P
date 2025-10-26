@@ -20,12 +20,22 @@ def ignore_enemy_passive(user, target, damage, **kwargs):
     }
 
 def double_attack_below_half(user, target, damage, stat_multiplier=2, hp_condition=0.5, **kwargs):
+    origin_atk = user.atk
+    new_atk = 0
     if user.hp <= user.max_hp * hp_condition and not user.flags.get("atk_boosted", False):
+        user.flags['origin_atk'] = user.atk
         user.atk *= stat_multiplier
         user.flags["atk_boosted"] = True
         return {
             "name_passive": user.passive.name,
             "id_passive": "double_attack_below_half"
+        }
+    elif user.hp > user.max_hp * hp_condition and user.flags.get("atk_boosted", False):
+        user.atk = user.flags.get(['origin_atk'], user.base_atk)
+        user.flags["atk_boosted"] = False
+        return {
+            "name_passive": user.passive.name,
+            "id_passive": "double_attack_back_to_normal"
         }
 
 

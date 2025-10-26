@@ -176,33 +176,27 @@ def display_update_buff(action):
 
 def display_skill(action):
     msg_debut = f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} utilise {LIGHTMAGENTA}{action['comp_name']}{RESET} "
-    message = ""
+    message = []
     match action['type_skill']:
         case 'buff':
             msg_fin = f": {action['stat_id']} passe de {action['before']} à {action['stat_value']} !"
-            message_final = msg_debut + msg_fin
+            message.append(msg_debut + msg_fin)
         case 'heal':
             msg_fin = f": {action['user'].name} récupère {action['amount']} PV. (PV actuels: {action['user_hp']})"
-            message_final = msg_debut + msg_fin
+            message.append(msg_debut + msg_fin)
         case 'timed_buff':
             msg_fin = f": {action['stat_id']} augmenté pour {action['duration']} tours !"
-            message_final = msg_debut + msg_fin
+            message.append(msg_debut + msg_fin)
         case 'timed_heal':
             msg_fin = f": régénère {action['amount']} PV par tours, pendant {action['duration']} tours !"
-            message_final = msg_debut + msg_fin
+            message.append(msg_debut + msg_fin)
         case 'attack':
-            message = []
             for events in action['events']:
                 match events['type_events']:
                     case 'announce':
                         message.append(f"\n{action['user'].owner} utilise {LIGHTMAGENTA}{action['comp_name']}{RESET} !")
-                    case 'events_passive':
-                        for x in events['events_passive']:
-                            match x['id_passive']:
-                                case 'ignore':
-                                    message.append(f"Grace à son passif {x['name_passive']}, {action['user'].name} ignore le passif de {action['target'].name}!")
-                                case 'tankiness':
-                                    message.append(f"{action['target'].name} réduit les dégats subit de {int(x['tankiness']*100)}% grace à son passif {x['name_passive']} !")
+                    '''case 'events_passive':
+                        message.append(display_passive(action['user'], action))''' #pas opé je m'en occupe quand je peux
                     case 'miss':
                         message.append("raté!")
                         return message
@@ -297,7 +291,14 @@ def display_ask_next_pou_more(team, cas):
             return "invalid"
 
 def display_passive(user, action):
-    match action["name_passive"]:
-        case 'Dernier Mot':
+    match action["id_passive"]:
+        case 'double_atk_below_half':
             return f"{BOLD}{user.name}{RESET} de {BOLD}{user.owner}{RESET} donne tout et voit son ATT doublée ! Son ATT passe à {LIGHTRED}{user.atk}{RESET}."
-    return None
+        case 'double_atk_back_to_normal':
+            return f"{user.name} voit son attaque revenir à la normale..."
+        case 'ignore':
+            return f"Grace à son passif {action['name_passive']}, {user.name} ignore le passif de {action['target'].name}!"
+        case 'tankiness':
+            return f"{user.name} réduit les dégats subit de {int(action['tankiness']*100)}% grace à son passif {action['name_passive']} !"
+        case _:
+            return None
