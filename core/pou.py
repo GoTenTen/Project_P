@@ -60,6 +60,8 @@ class Pou:
         crit_mult = kwargs.get("crit_mult", 1.25)
         miss = kwargs.get("miss", False)
         elem_mult = ELEMENT.get(self.elem, {}).get(target.elem, 1)
+        set_target_hp = kwargs.get("set_target_hp", None)
+        self_damage = kwargs.get("self_damage", 0)
 
         events = []
 
@@ -78,11 +80,16 @@ class Pou:
         # Calcul du critique
         is_crit = random.random() < crit_chance
 
-        if not miss:
-            damage = self.atk * base_multiplier * elem_mult
-        else:
+        # Calcul des dégâts
+        if miss or not target.is_alive():
             damage = 0
-        if is_crit:
+        elif set_target_hp is not None:
+            damage = target.hp - set_target_hp
+        else:
+            damage = self.atk * base_multiplier * elem_mult
+
+        # Coup critique
+        if is_crit and set_target_hp is None:
             damage *= crit_mult
 
         damage = int(damage)
@@ -96,6 +103,10 @@ class Pou:
             target.flags['passive_ignored'] = False
 
         target.take_damage(damage)
+
+        if self_damage > 0 and damage > 0:
+            self.take_damage(amount=(self.hp * self_damage))
+
         return {
             "damage": damage,
             "is_crit": is_crit,
@@ -154,7 +165,7 @@ class Pou:
                         })
 
         # Supprimer les buffs expirés
-        for stat in expired:
+        for effect_type in expired:
             del self.active_buffs[effect_type]
 
         return {

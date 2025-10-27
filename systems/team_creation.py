@@ -5,10 +5,6 @@ from Project_P.ui.display import display_manager
 from Project_P.core.team import Team
 import random
 
-RED = "\033[91m"
-BLUE = "\033[94m"
-RESET = "\033[0m"
-
 TAUX_DROP={
     'commun':0.5,
     'rare':0.35,

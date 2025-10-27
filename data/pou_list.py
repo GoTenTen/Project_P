@@ -12,7 +12,7 @@ PouModels = {
         "rarity": 'commun',
         "elem" : 'Gluant',
         "color": LIGHTGREEN,
-        "skills": [SKILLS["Jab"], SKILLS["Vidage Sanguin"], SKILLS["Tape Fort"], SKILLS["Baume visqueux"]],
+        "skills": [SKILLS["Attack"]["Jab"], SKILLS["Heal"]["Soin"], SKILLS["Attack"]["Tape Fort"], SKILLS["TimedHeal"]["Baume visqueux"]],
         "passive": '',
     },
     "Pou Sergent": {
@@ -23,7 +23,7 @@ PouModels = {
         "rarity": 'commun',
         "elem" : 'Corrompu',
         "color": LIGHTGREEN,
-        "skills": [SKILLS["Jab"], SKILLS["Danse Lame"], SKILLS["Tape Fort"], SKILLS["Soin"]],
+        "skills": [SKILLS["Attack"]["Jab"], SKILLS["TimedBuffAttack"]["Danse Lame"], SKILLS["Attack"]["Tape Fort"], SKILLS["Heal"]["Soin"]],
         "passive": PASSIVE['Peau Dure']
     },
     "Pou Kamikaze": {
@@ -34,7 +34,7 @@ PouModels = {
         "rarity": 'rare',
         "elem" : 'Antisémite',
         "color": LIGHTBLUE,
-        "skills": [SKILLS["Jab"], SKILLS["Danse Lame"], SKILLS["Slap That Ass"], SKILLS["Soin"]],
+        "skills": [SKILLS["Attack"]["Jab"], SKILLS["TimedBuffAttack"]["Danse Lame"], SKILLS["Attack"]["Twin Tower"], SKILLS["Heal"]["Soin"]],
         "passive": '',
     },
     "Pou Accro Au Casino": {
@@ -45,7 +45,7 @@ PouModels = {
         "rarity": 'légendaire',
         "elem" : 'Glitch',
         "color": LIGHTYELLOW,
-        "skills": [SKILLS["Jab"], SKILLS["Bandit Manchot"], SKILLS["Jackpot"], SKILLS["Soin"]],
+        "skills": [SKILLS["Attack"]["Jab"], SKILLS["Attack"]["Bandit Manchot"], SKILLS["Attack"]["Jackpot"], SKILLS["Attack"]["Ruée vers l'Or"]],
         "passive": PASSIVE['Autoritée Divine']
     },
     "Pou BDSM": {
@@ -56,7 +56,7 @@ PouModels = {
         "rarity": 'épic',
         "elem" : 'Gluant',
         "color": MAGENTA,
-        "skills": [SKILLS["Jab"], SKILLS["Slap That Ass"], SKILLS["Cire Chaude"], SKILLS["Tape Fort"]],
+        "skills": [SKILLS["Attack"]["Jab"], SKILLS["Attack"]["Slap That Ass"], SKILLS["TimedBuffAttack"]["Cire Chaude"], SKILLS["Attack"]["Tape Fort"]],
         "passive": PASSIVE['Dernier Mot'],
     }
 }

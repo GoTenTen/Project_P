@@ -64,7 +64,10 @@ def display_manager(event, **kwargs):
             output(f"Toute l'équipe de {BOLD}{kwargs['team'].owner}{RESET} est KO.")
 
         case 'display_victory':
-            output(f"\n{BOLD}{kwargs['winner'].owner}{RESET} a gagné !")
+            output(f"\n{BOLD}{kwargs['winner'].owner}{RESET} a gagné ! BRAVO !!!")
+
+        case 'display_draw':
+            output(f"{BOLD}{kwargs['player1']}{RESET} et {BOLD}{kwargs['player2']}{RESET} n'ont pas réussi à se départager. MATCH NUL !")
 
         case 'clear':
             time.sleep(kwargs['delay'])
@@ -195,8 +198,6 @@ def display_skill(action):
                 match events['type_events']:
                     case 'announce':
                         message.append(f"\n{action['user'].owner} utilise {LIGHTMAGENTA}{action['comp_name']}{RESET} !")
-                    '''case 'events_passive':
-                        message.append(display_passive(action['user'], action))''' #pas opé je m'en occupe quand je peux
                     case 'miss':
                         message.append("raté!")
                         return message

@@ -30,12 +30,6 @@ def game_turn(team1, team2):
     # Appliquer attaques dans le bon ordre (évite le calcul de dégats avant le switch ce qui causait des dégats a l'ancien pou)
     execute_actions(pou_team1, pou_team2, action)
 
-    # mettre à jour les buffs des deux Pous
-    for pou in [pou_team1, pou_team2]:
-        update_buff = pou.update_buffs()
-        if update_buff['events']:
-            display_manager('display_update_buff', update_buff=update_buff)
-
     # Vérifier morts et switchs forcés
     for team in (team1, team2):
         if not team.is_alive_team():
@@ -45,7 +39,11 @@ def game_turn(team1, team2):
         if step['next_step'] == 'switch_pou':
             select_switch_pou(team)
 
-
+    # mettre à jour les buffs des deux Pous
+    for pou in [pou_team1, pou_team2]:
+        update_buff = pou.update_buffs()
+        if update_buff['events']:
+            display_manager('display_update_buff', update_buff=update_buff)
 
 # ---------------------- FONCTIONS ------------------------
 
@@ -111,10 +109,19 @@ def execute_actions(pou_team1, pou_team2, actions):
             action_final = pou_team1.comp[actions[0]['comp_idx']].apply(pou_team1, pou_team2)
             display_manager('display_skill', action=action_final)
     else:
-        # Ordre par vitesse, tirage aléatoire si égalité
-        order = [0, 1] if pou_team1.speed >= pou_team2.speed else [1, 0]
-        if pou_team1.speed == pou_team2.speed:
-            random.shuffle(order)
+        prio1 = pou_team1.comp[actions[0]['comp_idx']].priority if actions[0] else 0
+        prio2 = pou_team2.comp[actions[1]['comp_idx']].priority if actions[1] else 0
+
+        # Ordre par priorité de comp
+        if prio1 > prio2:
+            order = [0, 1]
+        elif prio2 > prio1:
+            order = [1, 0]
+        else:
+            # Ordre par vitesse, tirage aléatoire si égalité
+            order = [0, 1] if pou_team1.speed >= pou_team2.speed else [1, 0]
+            if pou_team1.speed == pou_team2.speed:
+                random.shuffle(order)
         for idx in order:
             if actions[idx] is not None:
                 action_final = actions[idx]['attacker'].comp[actions[idx]['comp_idx']].apply(actions[idx]['attacker'], actions[idx]['defender'])
