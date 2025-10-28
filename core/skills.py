@@ -64,32 +64,32 @@ class AttackSkill(Skill):
                 "i": i,
             })
 
-        if deal_damage:
-            if deal_damage['events_passive']:
-                events.append({
-                    "type_events": "events_passive",
-                    "events_passive": deal_damage['events_passive'],
-                })
+            if deal_damage:
+                if deal_damage['events_passive']:
+                    events.append({
+                        "type_events": "events_passive",
+                        "events_passive": deal_damage['events_passive'],
+                    })
 
-        # affiche les messages bonus que s'il y a au moins un coup réussi
-        if successful_hit:
-            if bonus_message: # message bonus optionnel
-                events.append({
-                    "type_events": "bonus_message",
-                    "bonus_message": bonus_message
-                })
-            if deal_damage['elem_efficacity']:
-                events.append({
-                    "type_events" : "elem_efficacity",
-                    "elem_efficacity" : deal_damage['elem_efficacity']
-                })
+            # affiche les messages bonus que s'il y a au moins un coup réussi
+            if successful_hit:
+                if bonus_message: # message bonus optionnel
+                    events.append({
+                        "type_events": "bonus_message",
+                        "bonus_message": bonus_message
+                    })
+                if deal_damage['elem_efficacity']:
+                    events.append({
+                        "type_events" : "elem_efficacity",
+                        "elem_efficacity" : deal_damage['elem_efficacity']
+                    })
 
-        if self_damage >= 1:
-            user.take_damage(self_damage)
-            events.append({
-                "type_events": "self_damage",
-                "self_damage": self_damage
-            })
+            if self_damage >= 1:
+                user.take_damage(self_damage)
+                events.append({
+                    "type_events": "self_damage",
+                    "self_damage": self_damage
+                })
 
         return {
             "type_skill": "attack",

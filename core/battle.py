@@ -15,7 +15,7 @@ def game_turn(team1, team2):
     for attacker, defender in [(pou_team1, pou_team2), (pou_team2, pou_team1)]:
         passive = attacker.verif_passive('OnTurnStart', target=defender)
         if passive:
-            display_manager('display_passive', user=attacker, action=passive)
+            display_manager('display_passive', user = attacker, action = passive)
 
     # Récupérer les actions des joueurs
     action = [

@@ -31,7 +31,7 @@ def double_attack_below_half(user, target, damage, stat_multiplier=2, hp_conditi
             "id_passive": "double_attack_below_half"
         }
     elif user.hp > user.max_hp * hp_condition and user.flags.get("atk_boosted", False):
-        user.atk = user.flags.get(['origin_atk'], user.base_atk)
+        user.atk = user.flags.get('origin_atk', user.base_atk)
         user.flags["atk_boosted"] = False
         return {
             "name_passive": user.passive.name,

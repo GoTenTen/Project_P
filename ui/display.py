@@ -195,8 +195,6 @@ def display_skill(action):
                 match events['type_events']:
                     case 'announce':
                         message.append(f"\n{action['user'].owner} utilise {LIGHTMAGENTA}{action['comp_name']}{RESET} !")
-                    '''case 'events_passive':
-                        message.append(display_passive(action['user'], action))''' #pas opé je m'en occupe quand je peux
                     case 'miss':
                         message.append("raté!")
                         return message
@@ -301,4 +299,4 @@ def display_passive(user, action):
         case 'tankiness':
             return f"{user.name} réduit les dégats subit de {int(action['tankiness']*100)}% grace à son passif {action['name_passive']} !"
         case _:
-            return None
+            return "Unkown Id"
