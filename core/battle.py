@@ -55,8 +55,12 @@ def get_player_action(attacker, defender, team):
         step = select_action(choice)
         match step['next_step']:
             case 'attaquer':
+                if select_attack(attacker, defender) is None:
+                    continue
                 return select_attack(attacker, defender)
             case 'changer_pou':
+                if select_switch_pou(team) == 'go_back':
+                    continue
                 attacker.flags['switch_pou'] = True
                 return None
             case 'description':
@@ -75,6 +79,8 @@ def select_switch_pou(team, cas=1):
             if team.switch_pou(idx):
                 display_manager('display_ask_next_pou_more', team=team, index=idx, cas=cas)
                 break
+            elif idx == len(team.pous):
+                return 'go_back'
         except ValueError:
             display_manager('invalid', cas=1)
 
@@ -97,6 +103,8 @@ def select_attack(attacker, defender):
             return choose_comp(choice, attacker, defender)
             #display_manager('display_skill', action=action)
             #break
+        elif choice == '5':
+            return None
         else:
             display_manager('invalid')
 
@@ -134,6 +142,8 @@ def choose_comp(choice, attacker, defender):
     if 0 <= idx < 4:
         return {"attacker": attacker, "defender": defender, "comp_idx": idx}
         #return attacker.comp[idx].apply(attacker, defender)
+    elif idx == 5:
+        return {'next_step ' : 'go_back'}
     return None
 
 def select_action(choice):

@@ -41,3 +41,5 @@ Ajouts:                                                                         
 [22/10/25]  - Ajout des types et ptite modif dans start_screen pour pas que ça fasse une erreur si mauvaise valeur est entrée  (core/pou.py,skills.py; data/pou_list.py)
 ----------
 [27/10/25]  - Correction bug baume visqueux + affichage des buffs, -> (WORKING ON : bug affichage passif)                (pou.py, passive_effect.py, display.py)
+----------
+[30/10/25]  - Ajout du retour quand on choisit d'attaquer ou changer de pou et modif de logique team_creation            (battle, display, team_creation)

@@ -159,9 +159,9 @@ def show_more(pou_list, cas):
             show_team(pou_list)
 
 def display_comp(attacker):
-    for i in range(3):
+    for i in range(4):
         output(f"  {i + 1} - {attacker.comp[i].name}")
-    output(f"  4 - {attacker.comp[3].name}", end="\n\n")
+    output("  5 - Retour", end="\n\n")
 
 def display_description(attacker):
     text = [f"{i+1}. {comp.name} : {comp.description}" for i, comp in enumerate(attacker.comp, start=1)]
@@ -292,6 +292,7 @@ def ask_next_pou(team):
         passive_col = pad_right(passive_col, 15)
 
         output(f" - {name_col} : {hp_col} | {atk_col} | {speed_col} | {passive_col}")
+    output(f" - Retour")
     output("\nChoisissez un Pou par numéro : ", end="")
 
 def display_ask_next_pou_more(team, cas):
