@@ -64,7 +64,10 @@ def display_manager(event, **kwargs):
             output(f"Toute l'équipe de {BOLD}{kwargs['team'].owner}{RESET} est KO.")
 
         case 'display_victory':
-            output(f"\n{BOLD}{kwargs['winner'].owner}{RESET} a gagné !")
+            output(f"\n{BOLD}{kwargs['winner'].owner}{RESET} a gagné ! BRAVO !!!")
+
+        case 'display_draw':
+            output(f"{BOLD}{kwargs['player1']}{RESET} et {BOLD}{kwargs['player2']}{RESET} n'ont pas réussi à se départager. MATCH NUL !")
 
         case 'clear':
             time.sleep(kwargs['delay'])
@@ -200,6 +203,18 @@ def display_skill(action):
                         return message
                     case 'bonus_message':
                         message.append(f"\n{events['bonus_message']}\n")
+                    case 'events_passive':
+                        passive_list = events.get('events_passive', [])
+                        user = None
+                        if passive_list:
+                            for passive in passive_list:
+                                if passive['trigger'] == 'OnReceiveDamage':
+                                    user = action.get('target', 'target_inconnu')
+                                else: 
+                                    user = action.get('user', 'user_inconnu')
+                                    target = action.get('target', 'user_inconnu')
+                            message.append(display_passive(user = user, action = passive, target = target ))
+                            
                     case 'hits_and_crits':
                         if events['hits'] > 1:
                             message.append(f"Coup {events['i'] + 1}: {events['damage']} dmg{YELLOW}{events['crit_txt']}{RESET}")
@@ -288,15 +303,22 @@ def display_ask_next_pou_more(team, cas):
         case _:
             return "invalid"
 
-def display_passive(user, action):
-    match action["id_passive"]:
-        case 'double_atk_below_half':
-            return f"{BOLD}{user.name}{RESET} de {BOLD}{user.owner}{RESET} donne tout et voit son ATT doublée ! Son ATT passe à {LIGHTRED}{user.atk}{RESET}."
-        case 'double_atk_back_to_normal':
+def display_passive(user, action, target=None):
+    passive_id = action.get("id_passive")
+
+    match passive_id:
+        case 'double_attack_below_half':
+            return f"{BOLD}{user.name}{RESET} de {BOLD}{user.owner}{RESET} donne tout et voit son ATT doublée ! Son ATT passe à {LIGHTRED}{user.atk}{RESET}."    
+        
+        case 'double_attack_back_to_normal':
             return f"{user.name} voit son attaque revenir à la normale..."
+
         case 'ignore':
-            return f"Grace à son passif {action['name_passive']}, {user.name} ignore le passif de {action['target'].name}!"
+            target_name = getattr(target, 'name', 'cible inconnue') if target else 'cible inconnue' 
+            return f"Grace à son passif {action['name_passive']}, {user.name} ignore le passif de {target_name}!"
+        
         case 'tankiness':
             return f"{user.name} réduit les dégats subit de {int(action['tankiness']*100)}% grace à son passif {action['name_passive']} !"
         case _:
-            return "Unkown Id"
+            return "Unknown_passive"
+

@@ -13,5 +13,4 @@ class Passive:
         effect_func = PASSIVE_EFFECTS.get(self.effect_id)
         if not effect_func:
             return {"text": f"Effet inconnu : {self.effect_id}"}
-        print("apply de Passive fonctionne!")
         return effect_func(user=user, target=target, damage=damage, **self.kwargs)

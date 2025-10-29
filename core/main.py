@@ -45,8 +45,16 @@ def start():
 
         game_state['tour'] += 1
 
-    winner = pou1 if pou1.is_alive() else pou2
-    display_manager('display_victory', winner=winner)
+    winner = None
+    if pou1.is_alive() or pou2.is_alive():
+        if pou1.is_alive():
+            winner = pou1
+        else:
+            winner = pou2
+    if winner:
+        display_manager('display_victory', winner=winner)
+    else:
+        display_manager('display_draw', player1=player1, player2=player2)
     display_manager('clear', delay=2)
 
 def choice_start_pou(team):

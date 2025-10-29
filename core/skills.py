@@ -1,11 +1,11 @@
 #skills.py
 import random
-import time
 
 class Skill:
-    def __init__(self, name, description, **kwargs):
+    def __init__(self, name, description, priority, **kwargs):
         self.name = name
         self.description = description
+        self.priority = priority
         self.kwargs = kwargs
 
     def apply(self, user, target):
@@ -13,8 +13,8 @@ class Skill:
 
 
 class AttackSkill(Skill):
-    def __init__(self, name, description, **kwargs):
-        super().__init__(name, description)
+    def __init__(self, name, description, priority, **kwargs):
+        super().__init__(name, description, priority)
         self.kwargs = kwargs  # stocke les paramètres de dégâts
 
     def get_multi_hit(self):
@@ -26,8 +26,8 @@ class AttackSkill(Skill):
         total_damage = 0
         hits = self.get_multi_hit()
         bonus_message = self.kwargs.get("bonus_message", None)
-        self_damage = self.kwargs.get("self_damage", 0)
         accuracy = self.kwargs.get("accuracy", 1.0)
+        self_damage = self.kwargs.get("self_damage", 0)
 
         # On prépare une liste "d’événements"
         events = []
@@ -43,19 +43,18 @@ class AttackSkill(Skill):
 
         for i in range(hits):
             # Vérifie la précision
-            if random.random() > accuracy:
+            if random.random() > accuracy or not target.is_alive():
                 miss = True
                 events.append({
                     "type_events": "miss",
                     "i": i
                 })
                 continue # si raté, termine ce tour de boucle
-
             # Coup réussi
             successful_hit = True
             deal_damage = user.deal_damage(target, **self.kwargs, miss=miss)
             total_damage += deal_damage['damage']
-            crit_txt = "(Critique!)" if deal_damage['is_crit'] else ""
+            crit_txt = "(Critique!)" if deal_damage['is_crit'] and self_damage is None else ""
             events.append({
                 "type_events": "hits_and_crits",
                 "hits": hits,
@@ -64,33 +63,30 @@ class AttackSkill(Skill):
                 "i": i,
             })
 
-            if deal_damage:
-                if deal_damage['events_passive']:
-                    events.append({
-                        "type_events": "events_passive",
-                        "events_passive": deal_damage['events_passive'],
-                    })
+        if deal_damage:
+            if deal_damage['events_passive']:
+                events.append({
+                    "type_events": "events_passive",
+                    "events_passive": deal_damage['events_passive'],
+                })
 
-            # affiche les messages bonus que s'il y a au moins un coup réussi
-            if successful_hit:
-                if bonus_message: # message bonus optionnel
-                    events.append({
-                        "type_events": "bonus_message",
-                        "bonus_message": bonus_message
-                    })
-                if deal_damage['elem_efficacity']:
-                    events.append({
-                        "type_events" : "elem_efficacity",
-                        "elem_efficacity" : deal_damage['elem_efficacity']
-                    })
-
+        # affiche les messages bonus que s'il y a au moins un coup réussi
+        if successful_hit:
+            if bonus_message: # message bonus optionnel
+                events.append({
+                    "type_events": "bonus_message",
+                    "bonus_message": bonus_message
+                })
+            if deal_damage['elem_efficacity']:
+                events.append({
+                    "type_events" : "elem_efficacity",
+                    "elem_efficacity" : deal_damage['elem_efficacity']
+                })
             if self_damage >= 1:
-                user.take_damage(self_damage)
                 events.append({
                     "type_events": "self_damage",
                     "self_damage": self_damage
                 })
-
         return {
             "type_skill": "attack",
             "user": user,
@@ -133,8 +129,8 @@ class TimedBuffSkill(BuffSkill):
 
 class HealSkill(Skill):
     """Compétence de soin."""
-    def __init__(self, name, description, amount):
-        super().__init__(name, description)
+    def __init__(self, name, description, priority, amount):
+        super().__init__(name, description, priority)
         self.amount = amount
 
     def apply(self, user, target=None):
