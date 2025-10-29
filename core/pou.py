@@ -100,7 +100,7 @@ class Pou:
         if defense_passive_result and ("damage" in defense_passive_result):
             if not target.flags['passive_ignored']:
                 damage = defense_passive_result["damage"]
-                defense_passive_result['trigger'] = self.passive.trigger
+                defense_passive_result['trigger'] = target.passive.trigger
                 events.append(defense_passive_result)
             target.flags['passive_ignored'] = False
 

@@ -209,12 +209,12 @@ def display_skill(action):
                         if passive_list:
                             for passive in passive_list:
                                 if passive['trigger'] == 'OnReceiveDamage':
-                                    user = action.get('target', 'target_inconnu')
+                                    user = action.get('target', 'user_inconnu')
+                                    target = action.get('user', 'target_inconnu')
                                 else: 
                                     user = action.get('user', 'user_inconnu')
-                                    target = action.get('target', 'user_inconnu')
+                                    target = action.get('target', 'target_inconnu')
                             message.append(display_passive(user = user, action = passive, target = target ))
-                            
                     case 'hits_and_crits':
                         if events['hits'] > 1:
                             message.append(f"Coup {events['i'] + 1}: {events['damage']} dmg{YELLOW}{events['crit_txt']}{RESET}")

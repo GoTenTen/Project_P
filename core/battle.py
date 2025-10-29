@@ -70,12 +70,13 @@ def select_switch_pou(team, cas=1):
     while True:
         display_manager('display_ask_next_pou', team=team)
         choix = input()
-        if choix.isdigit():
+        try:
             idx = int(choix) - 1
             if team.switch_pou(idx):
                 display_manager('display_ask_next_pou_more', team=team, index=idx, cas=cas)
                 break
-        display_manager('invalid', cas=1)
+        except ValueError:
+            display_manager('invalid', cas=1)
 
 def apply_switch(pou_team, team):
     # --- Appliquer les switchs avant la phase d'attaque ---
