@@ -55,9 +55,10 @@ def get_player_action(attacker, defender, team):
         step = select_action(choice)
         match step['next_step']:
             case 'attaquer':
-                if select_attack(attacker, defender) is None:
+                resultat_attack = select_attack(attacker, defender)
+                if resultat_attack is None:
                     continue
-                return select_attack(attacker, defender)
+                return resultat_attack
             case 'changer_pou':
                 if select_switch_pou(team) == 'go_back':
                     continue
@@ -87,7 +88,6 @@ def select_switch_pou(team, cas=1):
 def apply_switch(pou_team, team):
     # --- Appliquer les switchs avant la phase d'attaque ---
     if pou_team.flags['switch_pou']:
-        select_switch_pou(team)
         pou_team.flags['switch_pou'] = False
         new_pou = team.get_active_pou()
         new_pou.flags['switched_pou'] = True
