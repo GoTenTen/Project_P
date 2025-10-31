@@ -174,7 +174,10 @@ def display_update_buff(action):
                 return f"L’effet de d'augmentation de l'{LIGHTRED}ATT{RESET} du {BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} s’est dissipé.\n"
             case 'regen':
                 return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} récupère {LIGHTGREEN}{events['amount']}{RESET} PV\n"
+            case 'burned':
+                return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} perd {LIGHTGREEN}{events['turn_damage']}{RESET} PV\n"
             case _:
+                print(f"{events['type_buff']}")
                 return f"erreur"
 
 def display_skill(action):
@@ -215,6 +218,8 @@ def display_skill(action):
                                     user = action.get('user', 'user_inconnu')
                                     target = action.get('target', 'target_inconnu')
                             message.append(display_passive(user = user, action = passive, target = target ))
+                    case 'status':
+                        message.append(f"{events['status_name']} inflige %dgt à {events['target_name']}")
                     case 'hits_and_crits':
                         if events['hits'] > 1:
                             message.append(f"Coup {events['i'] + 1}: {events['damage']} dmg{YELLOW}{events['crit_txt']}{RESET}")

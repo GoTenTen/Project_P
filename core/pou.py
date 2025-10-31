@@ -164,6 +164,20 @@ class Pou:
                             "type_buff": "regen",
                             "amount": amount,
                         })
+                
+                case 'burn':
+                    amount = buff['burned_damage']
+                    percent_amount = amount*100
+                    if self.hp > 0:
+                        burn_damage = int(self.max_hp * amount)
+                        self.take_damage(burn_damage)
+                        if buff["duration"] <= 0:
+                            expired.append(effect_type)
+                        events.append({
+                            "type_buff": "burned",
+                            "amount": percent_amount,
+                            "turn_damage" : burn_damage,
+                        })
 
         # Supprimer les buffs expirés
         for effect_type in expired:
@@ -184,4 +198,11 @@ class Pou:
             "amount": amount,
             "duration": duration,
             "skill_name": skill_name #sinon je vois pas comment récup le nom de la compétence ici, si tu sais faire modifies
+        }
+
+    def add_status_effect(self, type_effect, duration, **kwargs):
+        self.active_buffs[type_effect] = {
+            "duration" : duration,
+            "type" : "status",
+            **kwargs
         }

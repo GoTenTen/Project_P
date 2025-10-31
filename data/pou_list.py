@@ -12,7 +12,7 @@ PouModels = {
         "rarity": 'commun',
         "elem" : 'Gluant',
         "color": LIGHTGREEN,
-        "skills": [SKILLS["Attack"]["Jab"], SKILLS["Heal"]["Soin"], SKILLS["Attack"]["Tape Fort"], SKILLS["TimedHeal"]["Baume visqueux"]],
+        "skills": [SKILLS["Attack"]["Jab"], SKILLS["Heal"]["Soin"], SKILLS["Attack"]["Tape Fort"], SKILLS["Attack"]["Brûlure"]],
         "passive": '',
     },
     "Pou Sergent": {
