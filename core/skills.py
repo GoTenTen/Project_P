@@ -30,7 +30,7 @@ class AttackSkill(Skill):
         self_damage = self.kwargs.get("self_damage", 0)
         type_effect = self.kwargs.get("type_effect", None)
         duration = self.kwargs.get("duration", 0)
-        burned_damage = self.kwargs.get("burned_damage", 0)
+        amount = self.kwargs.get("amount", 0)
 
         # On prépare une liste "d’événements"
         events = []
@@ -69,11 +69,13 @@ class AttackSkill(Skill):
 
         
         if type_effect:
-                target.add_status_effect(type_effect, duration,burned_damage=burned_damage)
+                target.add_status_effect(type_effect, duration,amount)
                 events.append({
                     "type_events" : "status",
                     "status_name" : type_effect,
-                    "target_name" : target.name
+                    "target_name" : target.name,
+                    "duration" : duration,
+                    "amount" : amount
                 })
 
         if deal_damage:

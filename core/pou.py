@@ -166,8 +166,7 @@ class Pou:
                         })
                 
                 case 'burn':
-                    amount = buff['burned_damage']
-                    percent_amount = amount*100
+                    amount = buff['amount']
                     if self.hp > 0:
                         burn_damage = int(self.max_hp * amount)
                         self.take_damage(burn_damage)
@@ -175,7 +174,7 @@ class Pou:
                             expired.append(effect_type)
                         events.append({
                             "type_buff": "burned",
-                            "amount": percent_amount,
+                            "amount": amount,
                             "turn_damage" : burn_damage,
                         })
 
@@ -200,9 +199,10 @@ class Pou:
             "skill_name": skill_name #sinon je vois pas comment récup le nom de la compétence ici, si tu sais faire modifies
         }
 
-    def add_status_effect(self, type_effect, duration, **kwargs):
+    def add_status_effect(self, type_effect, duration, amount, **kwargs):
         self.active_buffs[type_effect] = {
             "duration" : duration,
             "type" : "status",
+            "amount" : amount,
             **kwargs
         }

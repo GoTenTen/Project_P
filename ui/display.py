@@ -183,6 +183,7 @@ def display_update_buff(action):
 def display_skill(action):
     msg_debut = f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} utilise {LIGHTMAGENTA}{action['comp_name']}{RESET} "
     message = []
+    status_flag = True
     match action['type_skill']:
         case 'buff':
             msg_fin = f": {action['stat_id']} passe de {action['before']} à {action['stat_value']} !"
@@ -219,7 +220,8 @@ def display_skill(action):
                                     target = action.get('target', 'target_inconnu')
                             message.append(display_passive(user = user, action = passive, target = target ))
                     case 'status':
-                        message.append(f"{events['status_name']} inflige %dgt à {events['target_name']}")
+                        status_flag = False
+                        message.append(f"{action['comp_name']} infligera {int(events['amount']*100)}% des hp de {events['target_name']} pendant {events['duration']}!")
                     case 'hits_and_crits':
                         if events['hits'] > 1:
                             message.append(f"Coup {events['i'] + 1}: {events['damage']} dmg{YELLOW}{events['crit_txt']}{RESET}")
@@ -233,7 +235,8 @@ def display_skill(action):
                             message.append(f"\n{BOLD}c'est super efficace !{RESET}\n")
                         else:
                             message.append(f"\n{BOLD}ce n'est pas très efficace...{RESET}\n")
-            message.append(f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} à infligé {RED}{action['total_damage']}{RESET} dégâts à {BOLD}{action['target'].name}{RESET} de {BOLD}{action['target'].owner}{RESET}.")
+            if status_flag:
+                message.append(f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} à infligé {RED}{action['total_damage']}{RESET} dégâts à {BOLD}{action['target'].name}{RESET} de {BOLD}{action['target'].owner}{RESET}.")
         case _:
             message = f"erreur starfoullah : {action['type_skill']}"
     return message

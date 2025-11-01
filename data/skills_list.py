@@ -60,7 +60,7 @@ SKILLS = {
             priority=0,
             duration = 3,
             multiplier = 0,
-            burned_damage = 0.05,
+            amount = 0.05,
             accuracy = 1.0,
             type_effect = "burn"
         ),

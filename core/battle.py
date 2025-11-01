@@ -68,7 +68,7 @@ def get_player_action(attacker, defender, team):
                 display_manager('description', attacker=attacker)
                 continue
             case _:
-                display_manager('invalid')
+                display_manager('invalid', cas=1)
                 continue
 
 def select_switch_pou(team, cas=1):
