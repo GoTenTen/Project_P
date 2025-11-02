@@ -183,7 +183,6 @@ def display_update_buff(action):
 def display_skill(action):
     msg_debut = f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} utilise {LIGHTMAGENTA}{action['comp_name']}{RESET} "
     message = []
-    status_flag = True
     match action['type_skill']:
         case 'buff':
             msg_fin = f": {action['stat_id']} passe de {action['before']} à {action['stat_value']} !"
@@ -198,6 +197,7 @@ def display_skill(action):
             msg_fin = f": régénère {action['amount']} PV par tours, pendant {action['duration']} tours !"
             message.append(msg_debut + msg_fin)
         case 'attack':
+            direct_damage = True #Si attaque status pure ex Brûlure, direct_damage -> False pour pas print un message qui sert à rien (...à infligé 0 dégats à...)
             for events in action['events']:
                 match events['type_events']:
                     case 'announce':
@@ -209,19 +209,17 @@ def display_skill(action):
                         message.append(f"\n{events['bonus_message']}\n")
                     case 'events_passive':
                         passive_list = events.get('events_passive', [])
-                        user = None
+                        user = action.get('user', 'user_inconnu')
+                        target = action.get('target', 'target_inconnu')
                         if passive_list:
                             for passive in passive_list:
                                 if passive['trigger'] == 'OnReceiveDamage':
                                     user = action.get('target', 'user_inconnu')
                                     target = action.get('user', 'target_inconnu')
-                                else: 
-                                    user = action.get('user', 'user_inconnu')
-                                    target = action.get('target', 'target_inconnu')
                             message.append(display_passive(user = user, action = passive, target = target ))
                     case 'status':
-                        status_flag = False
-                        message.append(f"{action['comp_name']} infligera {int(events['amount']*100)}% des hp de {events['target_name']} pendant {events['duration']}!")
+                        direct_damage, msg = make_status_message(events, action)
+                        message.append(msg)
                     case 'hits_and_crits':
                         if events['hits'] > 1:
                             message.append(f"Coup {events['i'] + 1}: {events['damage']} dmg{YELLOW}{events['crit_txt']}{RESET}")
@@ -231,11 +229,13 @@ def display_skill(action):
                     case 'self_damage':
                         message.append(f"Il prend {events['self_damage']} de dégats de contre coup... Tdc va \n")
                     case 'elem_efficacity':
-                        if events['elem_efficacity'] == 'effective':
-                            message.append(f"\n{BOLD}c'est super efficace !{RESET}\n")
-                        else:
-                            message.append(f"\n{BOLD}ce n'est pas très efficace...{RESET}\n")
-            if status_flag:
+                        if direct_damage:
+                            if events['elem_efficacity'] == 'effective':
+                                message.append(f"\n{BOLD}c'est super efficace !{RESET}\n")
+                            else:
+                                message.append(f"\n{BOLD}ce n'est pas très efficace...{RESET}\n")
+            #Si le flag direct_damage est False on ne viendra donc pas append le text en dessous
+            if direct_damage:
                 message.append(f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} à infligé {RED}{action['total_damage']}{RESET} dégâts à {BOLD}{action['target'].name}{RESET} de {BOLD}{action['target'].owner}{RESET}.")
         case _:
             message = f"erreur starfoullah : {action['type_skill']}"
@@ -330,4 +330,19 @@ def display_passive(user, action, target=None):
             return f"{user.name} réduit les dégats subit de {int(action['tankiness']*100)}% grace à son passif {action['name_passive']} !"
         case _:
             return "Unknown_passive"
+        
+def make_status_message(events, action):
+    status_name = events.get('status_name')
+    damage = action.get('total_damage')
+    direct_damage = True
+
+    #Dans cette fonction on viendra donc return ce dont on a besoin  pour bien formater notre texte de sorti dans display_skill
+    #Càd définir si c'est une attaque direct ou pas, puis retourner le message adéquat concernant le statut
+
+    match status_name:
+        case 'burn':
+            if damage == 0:
+                direct_damage = False
+            return direct_damage, f"\n{action['comp_name']} infligera {int(events['amount']*100)}% des hp de {events['target_name']} pendant {events['duration']} tours !"
+
 
