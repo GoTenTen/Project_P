@@ -44,5 +44,7 @@ Ajouts:                                                                         
 ----------
 [30/10/25]  - Ajout du retour quand on choisit d'attaquer ou changer de pou et modif de logique team_creation            ((battle, display, team_creation).py)
 ----------
-[01/11/25]   - Modification du dicionnaire d'events des status (gère les status de manière général et pas un append event par type), correction display_input dans get_player_action,
+[01/11/25]  - Modification du dicionnaire d'events des status (gère les status de manière général et pas un append event par type), correction display_input dans get_player_action,
                 ajustement de display_skill et display_update_buff ((battle, pou, skills, skills_list, display).py)
+----------
+[02/11/25]  - +degats_direct afin de pas print des mauvais messages sur les degats des status, ajout du poison et d'un pou de test ((pou, pou_list, skills_list, display).py)

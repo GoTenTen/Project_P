@@ -175,7 +175,9 @@ def display_update_buff(action):
             case 'regen':
                 return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} récupère {LIGHTGREEN}{events['amount']}{RESET} PV\n"
             case 'burned':
-                return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} perd {LIGHTGREEN}{events['turn_damage']}{RESET} PV\n"
+                return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} perd {LIGHTGREEN}{events['turn_damage']}{RESET} dégats de brûlure...\n"
+            case 'poisoned':
+                return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} perd {LIGHTGREEN}{events['turn_damage']}{RESET} dégats de poison...\n"
             case _:
                 print(f"{events['type_buff']}")
                 return f"erreur"
@@ -344,5 +346,9 @@ def make_status_message(events, action):
             if damage == 0:
                 direct_damage = False
             return direct_damage, f"\n{action['comp_name']} infligera {int(events['amount']*100)}% des hp de {events['target_name']} pendant {events['duration']} tours !"
+        case 'poison':
+            if damage == 0:
+                direct_damage = False
+            return direct_damage, f"\n{action['comp_name']} infligera de plus en plus de dégats chaque tours pendant {events['duration']} tours ! En commencant par {int(events['amount']*100)}% des hp de {events['target_name']}"
 
 

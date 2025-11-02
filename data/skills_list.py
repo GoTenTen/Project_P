@@ -64,6 +64,16 @@ SKILLS = {
             accuracy = 1.0,
             type_effect = "burn"
         ),
+        "Poison" : AttackSkill(
+            name = "Poison",
+            description="Empoisonne l'ennemi",
+            priority=0,
+            duration = 4,
+            multiplier = 0,
+            amount = 0.05,
+            accuracy = 1.0,
+            type_effect = "poison"
+        ),
     },
     "TimedBuffAttack": { #----------------------------------------------------------------------------------------------
         "Danse Lame" : TimedBuffSkill(

@@ -179,6 +179,23 @@ class Pou:
                             "turn_damage" : burn_damage,
                         })
 
+                case 'poison':
+                    amount = buff['amount']
+                    if 'toxic_cpt' not in buff:
+                        buff['toxic_cpt'] = 1
+                    cpt = buff['toxic_cpt']
+                    if self.hp > 0:
+                        poison_damage = int((self.max_hp * amount * cpt)+0.5)
+                        buff['toxic_cpt'] += 1
+                        self.take_damage(poison_damage)
+                        if buff["duration"] <= 0:
+                            expired.append(effect_type)
+                        events.append({
+                            "type_buff": "poisoned",
+                            "amount": amount*cpt,
+                            "turn_damage" : poison_damage,
+                        })
+
         # Supprimer les buffs expirés
         for effect_type in expired:
             del self.active_buffs[effect_type]
