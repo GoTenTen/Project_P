@@ -55,15 +55,20 @@ def get_player_action(attacker, defender, team):
         step = select_action(choice)
         match step['next_step']:
             case 'attaquer':
-                return select_attack(attacker, defender)
+                resultat_attack = select_attack(attacker, defender)
+                if resultat_attack is None:
+                    continue
+                return resultat_attack
             case 'changer_pou':
+                if select_switch_pou(team) == 'go_back':
+                    continue
                 attacker.flags['switch_pou'] = True
                 return None
             case 'description':
                 display_manager('description', attacker=attacker)
                 continue
             case _:
-                display_manager('invalid')
+                display_manager('invalid', cas=1)
                 continue
 
 def select_switch_pou(team, cas=1):
@@ -75,13 +80,14 @@ def select_switch_pou(team, cas=1):
             if team.switch_pou(idx):
                 display_manager('display_ask_next_pou_more', team=team, index=idx, cas=cas)
                 break
+            elif idx == len(team.pous):
+                return 'go_back'
         except ValueError:
             display_manager('invalid', cas=1)
 
 def apply_switch(pou_team, team):
     # --- Appliquer les switchs avant la phase d'attaque ---
     if pou_team.flags['switch_pou']:
-        select_switch_pou(team)
         pou_team.flags['switch_pou'] = False
         new_pou = team.get_active_pou()
         new_pou.flags['switched_pou'] = True
@@ -97,6 +103,8 @@ def select_attack(attacker, defender):
             return choose_comp(choice, attacker, defender)
             #display_manager('display_skill', action=action)
             #break
+        elif choice == '5':
+            return None
         else:
             display_manager('invalid')
 
@@ -133,6 +141,9 @@ def choose_comp(choice, attacker, defender):
     idx = int(choice)-1
     if 0 <= idx < 4:
         return {"attacker": attacker, "defender": defender, "comp_idx": idx}
+        #return attacker.comp[idx].apply(attacker, defender)
+    elif idx == 5:
+        return {'next_step ' : 'go_back'}
     return None
 
 def select_action(choice):

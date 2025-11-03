@@ -30,7 +30,7 @@ class Team:
 
     def handle_death_and_switch(self):
         if not self.get_active_pou().is_alive():
-            print(f"{self.get_active_pou().name} de {self.get_active_pou().owner} perd connaissance.\n")
+            print(f"{self.get_active_pou().name} de {self.get_active_pou().owner} perd connaissance.\n") #-> display
             time.sleep(1)
             return {"next_step": "switch_pou"}
         return {"next_step": ""}

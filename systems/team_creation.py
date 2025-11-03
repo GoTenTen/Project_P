@@ -23,7 +23,6 @@ def create_team(owner_name):
             choice = str(input())
         break
     basic_list = [Pou.from_model(owner_name, model) for model in PouModels.values()]
-    choice_list = random_team(basic_list, TAUX_DROP, len_team)
     match choice:
         case '1':
             len_pool = 5
@@ -33,7 +32,7 @@ def create_team(owner_name):
                 if modif_confirm_team():
                     break
         case '2':
-            return create_random_team(owner_name, choice_list, len_team)
+            poupou_list = create_random_team(owner_name, basic_list, len_team)
     return Team(owner_name, poupou_list)
 
 
@@ -80,9 +79,10 @@ def create_manual_team(choice_list, lenT):
     return res
 
 
-def create_random_team(owner_name, choice_list, lenT):
-    display_manager('show_more', pou_list=choice_list, cas=1)
-    return Team(owner_name,choice_list)
+def create_random_team(owner_name, pou_list, lenT):
+    random_list = random_team(pou_list, TAUX_DROP, lenT)
+    display_manager('show_more', pou_list=random_list, cas=1)
+    return random_list
 
 
 def random_team(pou_list, TAUX_D, lenT):#lenT -> variable pour len Team
@@ -111,10 +111,10 @@ def random_team(pou_list, TAUX_D, lenT):#lenT -> variable pour len Team
 def modif_confirm_team():
     display_manager('display_input', cas=4)
     confirm = str(input()).lower()
-    while confirm not in ('oui', 'o', 'n', 'non'):
+    while confirm not in ('oui', 'o', 'n', 'non', '1', '2'):
         display_manager('invalid', cas=1)
         confirm = str(input()).lower()
-    if confirm in ( 'n', 'non'):
+    if confirm in ( 'n', 'non', '2'):
         return True
     else:
         return False

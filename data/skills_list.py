@@ -54,6 +54,26 @@ SKILLS = {
             priority=2,
             multiplier=1.0,
         ),
+        "Brûlure" : AttackSkill(
+            name = "Brûlure",
+            description="Brûle l'ennemi",
+            priority=0,
+            duration = 3,
+            multiplier = 0,
+            amount = 0.05,
+            accuracy = 1.0,
+            type_effect = "burn"
+        ),
+        "Poison" : AttackSkill(
+            name = "Poison",
+            description="Empoisonne l'ennemi",
+            priority=0,
+            duration = 4,
+            multiplier = 0,
+            amount = 0.05,
+            accuracy = 1.0,
+            type_effect = "poison"
+        ),
     },
     "TimedBuffAttack": { #----------------------------------------------------------------------------------------------
         "Danse Lame" : TimedBuffSkill(

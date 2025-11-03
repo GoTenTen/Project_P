@@ -96,13 +96,14 @@ class Pou:
         damage = int(damage)
 
         # --- Passif défensif ---
-        defense_passive_result = target.verif_passive('OnReceiveDamage', target=target, damage=damage)
-        if defense_passive_result and ("damage" in defense_passive_result):
-            if not target.flags['passive_ignored']:
-                damage = defense_passive_result["damage"]
-                defense_passive_result['trigger'] = self.passive.trigger
-                events.append(defense_passive_result)
-            target.flags['passive_ignored'] = False
+        if damage > 0:
+            defense_passive_result = target.verif_passive('OnReceiveDamage', target=target, damage=damage)
+            if defense_passive_result and ("damage" in defense_passive_result):
+                if not target.flags['passive_ignored']:
+                    damage = defense_passive_result["damage"]
+                    defense_passive_result['trigger'] = target.passive.trigger
+                    events.append(defense_passive_result)
+                target.flags['passive_ignored'] = False
 
         target.take_damage(damage)
 
@@ -164,6 +165,36 @@ class Pou:
                             "type_buff": "regen",
                             "amount": amount,
                         })
+                
+                case 'burn':
+                    amount = buff['amount']
+                    if self.hp > 0:
+                        burn_damage = int((self.max_hp * amount)+0.5)
+                        self.take_damage(burn_damage)
+                        if buff["duration"] <= 0:
+                            expired.append(effect_type)
+                        events.append({
+                            "type_buff": "burned",
+                            "amount": amount,
+                            "turn_damage" : burn_damage,
+                        })
+
+                case 'poison':
+                    amount = buff['amount']
+                    if 'toxic_cpt' not in buff:
+                        buff['toxic_cpt'] = 1
+                    cpt = buff['toxic_cpt']
+                    if self.hp > 0:
+                        poison_damage = int((self.max_hp * amount * cpt)+0.5)
+                        buff['toxic_cpt'] += 1
+                        self.take_damage(poison_damage)
+                        if buff["duration"] <= 0:
+                            expired.append(effect_type)
+                        events.append({
+                            "type_buff": "poisoned",
+                            "amount": amount*cpt,
+                            "turn_damage" : poison_damage,
+                        })
 
         # Supprimer les buffs expirés
         for effect_type in expired:
@@ -184,4 +215,12 @@ class Pou:
             "amount": amount,
             "duration": duration,
             "skill_name": skill_name #sinon je vois pas comment récup le nom de la compétence ici, si tu sais faire modifies
+        }
+
+    def add_status_effect(self, type_effect, duration, amount, **kwargs):
+        self.active_buffs[type_effect] = {
+            "duration" : duration,
+            "type" : "status",
+            "amount" : amount,
+            **kwargs
         }

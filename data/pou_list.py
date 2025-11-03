@@ -4,6 +4,17 @@ from Project_P.data.passive_list import PASSIVE
 from Project_P.ui.colors import *
 
 PouModels = {
+    "Pou Test": {
+        "name": "Pou Test",
+        "hp": 30,
+        "atk": 10,
+        "speed": 16,
+        "rarity": 'commun',
+        "elem" : 'Gluant',
+        "color": LIGHTGREEN,
+        "skills": [SKILLS["Attack"]["Jab"], SKILLS["Heal"]["Soin"], SKILLS["Attack"]["Poison"], SKILLS["Attack"]["Brûlure"]],
+        "passive": '',
+    },
     "Pou Soldat": {
         "name": "Pou Soldat",
         "hp": 30,
@@ -12,7 +23,7 @@ PouModels = {
         "rarity": 'commun',
         "elem" : 'Gluant',
         "color": LIGHTGREEN,
-        "skills": [SKILLS["Attack"]["Jab"], SKILLS["Heal"]["Soin"], SKILLS["Attack"]["Tape Fort"], SKILLS["TimedHeal"]["Baume visqueux"]],
+        "skills": [SKILLS["Attack"]["Jab"], SKILLS["Heal"]["Soin"], SKILLS["Attack"]["Tape Fort"], SKILLS["Attack"]["Brûlure"]],
         "passive": '',
     },
     "Pou Sergent": {
