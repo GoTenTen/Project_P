@@ -29,6 +29,7 @@ class AttackSkill(Skill):
         accuracy = self.kwargs.get("accuracy", 1.0)
         self_damage = self.kwargs.get("self_damage", 0)
         type_effect = self.kwargs.get("type_effect", None)
+        chance_apply_status = self.kwargs.get('chance_apply_status', 0)
         duration = self.kwargs.get("duration", 0)
         amount = self.kwargs.get("amount", 0)
 
@@ -69,6 +70,7 @@ class AttackSkill(Skill):
 
         if successful_hit:
             if type_effect:
+                if random.random() < chance_apply_status:
                     target.add_status_effect(type_effect, duration,amount)
                     events.append({
                         "type_events" : "status",
@@ -194,7 +196,7 @@ class StatusSkill(Skill):
                 "type_skill": "status",
                 "hit" : True,
                 "user": user,
-                "target_name": target,
+                "target": target,
                 "comp_name": self.name,
                 "status_name": type_effect,
                 "duration": duration,

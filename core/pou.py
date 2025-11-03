@@ -182,7 +182,7 @@ class Pou:
                 case 'poison':
                     amount = buff['amount']
                     if 'toxic_cpt' not in buff:
-                        buff['toxic_cpt'] = 1
+                        buff['toxic_cpt'] = 0
                     cpt = buff['toxic_cpt']
                     if self.hp > 0:
                         poison_damage = int((self.max_hp * amount * cpt)+0.5)

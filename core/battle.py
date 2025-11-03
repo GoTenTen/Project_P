@@ -30,6 +30,12 @@ def game_turn(team1, team2):
     # Appliquer attaques dans le bon ordre (évite le calcul de dégats avant le switch ce qui causait des dégats a l'ancien pou)
     execute_actions(pou_team1, pou_team2, action)
 
+    # mettre à jour les buffs des deux Pous
+    for pou in [pou_team1, pou_team2]:
+        update_buff = pou.update_buffs()
+        if update_buff['events']:
+            display_manager('display_update_buff', update_buff=update_buff)
+
     # Vérifier morts et switchs forcés
     for team in (team1, team2):
         if not team.is_alive_team():
@@ -38,12 +44,6 @@ def game_turn(team1, team2):
         step = team.handle_death_and_switch()
         if step['next_step'] == 'switch_pou':
             select_switch_pou(team)
-
-    # mettre à jour les buffs des deux Pous
-    for pou in [pou_team1, pou_team2]:
-        update_buff = pou.update_buffs()
-        if update_buff['events']:
-            display_manager('display_update_buff', update_buff=update_buff)
 
 # ---------------------- FONCTIONS ------------------------
 

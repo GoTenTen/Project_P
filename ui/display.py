@@ -177,6 +177,8 @@ def display_update_buff(action):
             case 'burned':
                 return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} perd {LIGHTGREEN}{events['turn_damage']}{RESET} dégats de brûlure...\n"
             case 'poisoned':
+                if not events['turn_damage']:
+                    return f"Poison appliqué"
                 return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} perd {LIGHTGREEN}{events['turn_damage']}{RESET} dégats de poison...\n"
             case _:
                 print(f"{events['type_buff']}")
@@ -224,7 +226,8 @@ def display_skill(action):
                                     user = action.get('target', 'user_inconnu')
                                     target = action.get('user', 'target_inconnu')
                             message.append(display_passive(user = user, action = passive, target = target ))
-                    #case 'status':
+                    case 'status':
+                        print(f"allez l'om")
                         #message.append(make_status_message(events, action))
                     case 'hits_and_crits':
                         if events['hits'] > 1:
@@ -267,9 +270,21 @@ def display_show_all_pou_stats(team):
     for i, pou in enumerate(team.pous):
         dead = "" if pou.hp > 0 else GREY
         actif = CYAN if i == team.active_index else ""
+        status = ""
+        if pou.active_buffs:
+            status_type = ""
+            if pou.active_buffs == 'burn':
+                status_type = RED
+            elif pou.active_buffs == 'poison':
+                status_type = MAGENTA
+            status_type = status_type if status_type else ""
+            status = f"{status_type}●{RESET}"
+        
 
         name_col = f"{actif}{dead}{pou.name} ({pou.elem}){RESET}"
         name_col = pad_right(name_col, 30)
+
+        status_col = f"{status}"
 
         hp_col = f"{hp_bar(pou.hp, pou.max_hp)} {GREEN}{pou.hp}{RESET}/{LIGHTGREEN}{pou.max_hp}{RESET} HP"
 
@@ -281,7 +296,7 @@ def display_show_all_pou_stats(team):
         passive_col = f"({LIGHTMAGENTA}{pou.passive.name.upper()}{RESET})" if pou.passive else ""
         passive_col = pad_right(passive_col, 15)
 
-        output(f"       - {name_col} : {hp_col} | {atk_col} | {speed_col} | {passive_col}")
+        output(f"       - {name_col} {status_col} : {hp_col} | {atk_col} | {speed_col} | {passive_col}")
 
 def ask_next_pou(team):
     output(f"{team.owner}, choisissez un autre Pou :\n")
@@ -341,9 +356,9 @@ def make_status_message(action):
 
     match status_name:
         case 'burn':
-            return f"\n{action['comp_name']} infligera {int(action['amount']*100)}% des hp de {action['target_name'].name} pendant {action['duration']} tours !"
+            return f"\n{action['comp_name']} infligera {int(action['amount']*100)}% des hp de {action['target'].name} pendant {action['duration']} tours !"
         case 'poison':
-            return f"\n{action['comp_name']} infligera de plus en plus de dégats chaque tours pendant {action['duration']} tours ! En commencant par {int(action['amount']*100)}% des hp de {action['target_name'].name}"
+            return f"\n{action['comp_name']} infligera de plus en plus de dégats chaque tours pendant {action['duration']} tours ! En commencant par {int(action['amount']*100)}% des hp de {action['target'].name}"
         case _ :
             return f"Unknown status : {status_name}"
 

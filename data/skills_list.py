@@ -54,6 +54,17 @@ SKILLS = {
             priority=2,
             multiplier=1.0,
         ),
+        "Poing_Poison" : AttackSkill(
+            name = "Poing Poison",
+            description="Empoisonne l'ennemi",
+            priority=0,
+            duration = 4,
+            multiplier = 1.25,
+            amount = 0.05,
+            accuracy = 1,
+            chance_apply_status = 0.5,
+            type_effect = "poison"
+        ),
     },
     "TimedBuffAttack": { #----------------------------------------------------------------------------------------------
         "Danse Lame" : TimedBuffSkill(
