@@ -12,7 +12,7 @@ PouModels = {
         "rarity": 'commun',
         "elem" : 'Gluant',
         "color": LIGHTGREEN,
-        "skills": [SKILLS["Attack"]["Jab"], SKILLS["Heal"]["Soin"], SKILLS["Attack"]["Poison"], SKILLS["Attack"]["Brûlure"]],
+        "skills": [SKILLS["Attack"]["Jab"], SKILLS["Heal"]["Soin"], SKILLS["Status"]["Poison"], SKILLS["Status"]["Brûlure"]],
         "passive": '',
     },
     "Pou Soldat": {
@@ -23,7 +23,7 @@ PouModels = {
         "rarity": 'commun',
         "elem" : 'Gluant',
         "color": LIGHTGREEN,
-        "skills": [SKILLS["Attack"]["Jab"], SKILLS["Heal"]["Soin"], SKILLS["Attack"]["Tape Fort"], SKILLS["Attack"]["Brûlure"]],
+        "skills": [SKILLS["Attack"]["Jab"], SKILLS["Heal"]["Soin"], SKILLS["Attack"]["Tape Fort"], SKILLS["Status"]["Brûlure"]],
         "passive": '',
     },
     "Pou Sergent": {

@@ -198,8 +198,13 @@ def display_skill(action):
         case 'timed_heal':
             msg_fin = f": régénère {action['amount']} PV par tours, pendant {action['duration']} tours !"
             message.append(msg_debut + msg_fin)
+        case 'status':
+            if action['hit'] == True:
+                msg_fin = (make_status_message(action))
+                message.append(msg_debut + msg_fin)
+            else:
+                message.append("raté!")
         case 'attack':
-            direct_damage = True #Si attaque status pure ex Brûlure, direct_damage -> False pour pas print un message qui sert à rien (...à infligé 0 dégats à...)
             for events in action['events']:
                 match events['type_events']:
                     case 'announce':
@@ -219,9 +224,8 @@ def display_skill(action):
                                     user = action.get('target', 'user_inconnu')
                                     target = action.get('user', 'target_inconnu')
                             message.append(display_passive(user = user, action = passive, target = target ))
-                    case 'status':
-                        direct_damage, msg = make_status_message(events, action)
-                        message.append(msg)
+                    #case 'status':
+                        #message.append(make_status_message(events, action))
                     case 'hits_and_crits':
                         if events['hits'] > 1:
                             message.append(f"Coup {events['i'] + 1}: {events['damage']} dmg{YELLOW}{events['crit_txt']}{RESET}")
@@ -231,14 +235,11 @@ def display_skill(action):
                     case 'self_damage':
                         message.append(f"Il prend {events['self_damage']} de dégats de contre coup... Tdc va \n")
                     case 'elem_efficacity':
-                        if direct_damage:
-                            if events['elem_efficacity'] == 'effective':
-                                message.append(f"\n{BOLD}c'est super efficace !{RESET}\n")
-                            else:
+                        if events['elem_efficacity'] == 'effective':
+                            message.append(f"\n{BOLD}c'est super efficace !{RESET}\n")
+                        else:
                                 message.append(f"\n{BOLD}ce n'est pas très efficace...{RESET}\n")
-            #Si le flag direct_damage est False on ne viendra donc pas append le text en dessous
-            if direct_damage:
-                message.append(f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} à infligé {RED}{action['total_damage']}{RESET} dégâts à {BOLD}{action['target'].name}{RESET} de {BOLD}{action['target'].owner}{RESET}.")
+            message.append(f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} à infligé {RED}{action['total_damage']}{RESET} dégâts à {BOLD}{action['target'].name}{RESET} de {BOLD}{action['target'].owner}{RESET}.")
         case _:
             message = f"erreur starfoullah : {action['type_skill']}"
     return message
@@ -333,22 +334,17 @@ def display_passive(user, action, target=None):
         case _:
             return "Unknown_passive"
         
-def make_status_message(events, action):
-    status_name = events.get('status_name')
-    damage = action.get('total_damage')
-    direct_damage = True
+def make_status_message(action):
+    status_name = action.get('status_name')
 
     #Dans cette fonction on viendra donc return ce dont on a besoin  pour bien formater notre texte de sorti dans display_skill
-    #Càd définir si c'est une attaque direct ou pas, puis retourner le message adéquat concernant le statut
 
     match status_name:
         case 'burn':
-            if damage == 0:
-                direct_damage = False
-            return direct_damage, f"\n{action['comp_name']} infligera {int(events['amount']*100)}% des hp de {events['target_name']} pendant {events['duration']} tours !"
+            return f"\n{action['comp_name']} infligera {int(action['amount']*100)}% des hp de {action['target_name'].name} pendant {action['duration']} tours !"
         case 'poison':
-            if damage == 0:
-                direct_damage = False
-            return direct_damage, f"\n{action['comp_name']} infligera de plus en plus de dégats chaque tours pendant {events['duration']} tours ! En commencant par {int(events['amount']*100)}% des hp de {events['target_name']}"
+            return f"\n{action['comp_name']} infligera de plus en plus de dégats chaque tours pendant {action['duration']} tours ! En commencant par {int(action['amount']*100)}% des hp de {action['target_name'].name}"
+        case _ :
+            return f"Unknown status : {status_name}"
 
 

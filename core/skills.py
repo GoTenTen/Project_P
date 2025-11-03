@@ -174,3 +174,36 @@ class TimedHealSkill(Skill):
             "duration": duration,
         }
     
+class StatusSkill(Skill):
+    def __init__(self, name, description, priority, **kwargs):
+        super().__init__(name, description, priority, **kwargs)
+    
+    def apply(self, user, target):
+        type_effect = self.kwargs.get("type_effect", None)
+        duration = self.kwargs.get("duration", 0)
+        amount = self.kwargs.get("amount", 0)
+        accuracy = self.kwargs.get("accuracy", 1.0)
+
+        if random.random() < accuracy:
+            target.add_status_effect(
+                type_effect,
+                duration, 
+                amount
+            )
+            return {
+                "type_skill": "status",
+                "hit" : True,
+                "user": user,
+                "target_name": target,
+                "comp_name": self.name,
+                "status_name": type_effect,
+                "duration": duration,
+                "amount": amount
+            }
+        else:
+            return {
+                "type_skill": "status",
+                "hit" : False,
+                "user": user,
+                "comp_name": self.name
+            }
