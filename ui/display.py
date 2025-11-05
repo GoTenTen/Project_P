@@ -175,6 +175,7 @@ def display_update_buff(action):
             case 'regen':
                 return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} récupère {LIGHTGREEN}{events['amount']}{RESET} PV\n"
             case 'burned':
+                print("Brûlure appliqué\n")
                 return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} perd {LIGHTGREEN}{events['turn_damage']}{RESET} dégats de brûlure...\n"
             case 'poisoned':
                 if not events['turn_damage']:
@@ -226,9 +227,8 @@ def display_skill(action):
                                     user = action.get('target', 'user_inconnu')
                                     target = action.get('user', 'target_inconnu')
                             message.append(display_passive(user = user, action = passive, target = target ))
-                    case 'status':
-                        print(f"allez l'om")
-                        #message.append(make_status_message(events, action))
+                    #case 'status':
+                        #message.append(f"\nà travers son attaque, {action['user'].name} applique l'effet de status {events['status_name']} à son adversaire...")
                     case 'hits_and_crits':
                         if events['hits'] > 1:
                             message.append(f"Coup {events['i'] + 1}: {events['damage']} dmg{YELLOW}{events['crit_txt']}{RESET}")
@@ -271,14 +271,20 @@ def display_show_all_pou_stats(team):
         dead = "" if pou.hp > 0 else GREY
         actif = CYAN if i == team.active_index else ""
         status = ""
-        if pou.active_buffs:
-            status_type = ""
-            if pou.active_buffs == 'burn':
-                status_type = RED
-            elif pou.active_buffs == 'poison':
-                status_type = MAGENTA
-            status_type = status_type if status_type else ""
+        status_type = ""
+
+        for type, buff in pou.active_buffs.items():
+            if buff.get('type') == 'status':
+                if type == 'burn':
+                    status_type = RED
+                elif type == 'poison':
+                    status_type = MAGENTA
+                break
+
+        if status_type:
             status = f"{status_type}●{RESET}"
+        else:
+            status = ""
         
 
         name_col = f"{actif}{dead}{pou.name} ({pou.elem}){RESET}"
