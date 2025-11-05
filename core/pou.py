@@ -196,6 +196,15 @@ class Pou:
                             "turn_damage" : poison_damage,
                         })
 
+                case 'sleep':
+                    if random.random() < buff['chance_to_stop']:
+                        expired.append(effect_type)
+                    if buff["duration"] <= 0:
+                            expired.append(effect_type)
+                    events.append({
+                            "type_buff": "asleep"
+                        })
+
         # Supprimer les buffs expirés
         for effect_type in expired:
             del self.active_buffs[effect_type]

@@ -111,5 +111,11 @@ SKILLS = {
             priority=0,
             status_to_apply = 'poison'
         ),
+        "Bâillement" : StatusSkill(
+            name = "Bâillement",
+            description="Endort l'ennemi",
+            priority=0,
+            status_to_apply = 'sleep'
+        ),
     }
 }

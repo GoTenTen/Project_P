@@ -12,7 +12,7 @@ PouModels = {
         "rarity": 'commun',
         "elem" : 'Gluant',
         "color": LIGHTGREEN,
-        "skills": [SKILLS["Attack"]["Poing Poison"], SKILLS["Heal"]["Soin"], SKILLS["Status"]["Poison"], SKILLS["Status"]["Brûlure"]],
+        "skills": [SKILLS["Attack"]["Poing Poison"], SKILLS["Heal"]["Soin"], SKILLS["Status"]["Bâillement"], SKILLS["Status"]["Brûlure"]],
         "passive": '',
     },
     "Pou Soldat": {

@@ -74,7 +74,7 @@ class AttackSkill(Skill):
                     target.add_status_effect(status_to_apply, status_data)
                     events.append({
                         "type_events" : "status",
-                        "status_name" : status_to_apply,
+                        "name" : status_to_apply,
                         "target_name" : target.name,
                         "duration" : status_data['duration'],
                         "amount" : status_data['amount']
@@ -186,21 +186,35 @@ class StatusSkill(Skill):
 
         if status_name and (random.random() < accuracy):
                 status_data = STATUS.get(status_name)
+                amount = status_data.get('amount', 0)
                 target.add_status_effect(
                     status_name,
                     status_data
                 )
-                return {
-                    "type_skill": "status",
-                    "hit" : True,
-                    "user": user,
-                    "target": target,
-                    "comp_name": self.name,
-                    "status_id": status_name, 
-                    "status_name": status_data['status_name'],
-                    "duration": status_data['duration'],
-                    "amount": status_data['amount']
-                }
+                if amount > 0:
+                    return {
+                        "type_skill": "status",
+                        "hit" : True,
+                        "user": user,
+                        "target": target,
+                        "comp_name": self.name,
+                        "status_id": status_name, 
+                        "name": status_data['name'],
+                        "duration": status_data['duration'],
+                        "amount": amount
+                    }
+                else :
+                    return {
+                        "type_skill": "status",
+                        "hit" : True,
+                        "user": user,
+                        "target": target,
+                        "comp_name": self.name,
+                        "status_id": status_name, 
+                        "name": status_data['name'],
+                        "duration": status_data['duration'],
+                        "chance_to_stop": status_data['chance_to_stop']
+                    }
         else:
             return {
                 "type_skill": "status",

@@ -181,6 +181,9 @@ def display_update_buff(action):
                 if not events['turn_damage']:
                     return f"Poison appliqué"
                 return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} perd {LIGHTGREEN}{events['turn_damage']}{RESET} dégats de poison...\n"
+            case 'asleep':
+                print("Sleep appliqué\n")
+                return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} {LIGHTBLUE}dort{RESET} toujours...\n"
             case _:
                 print(f"{events['type_buff']}")
                 return f"erreur"
@@ -365,6 +368,8 @@ def make_status_message(action):
             return f"\n{action['comp_name']} infligera {int(action['amount']*100)}% des hp de {action['target'].name} pendant {action['duration']} tours !"
         case 'poison':
             return f"\n{action['comp_name']} infligera de plus en plus de dégats chaque tours pendant {action['duration']} tours ! En commencant par {int(action['amount']*100)}% des hp de {action['target'].name}"
+        case 'sleep':
+            return f"\n{action['comp_name']} endort {action['target'].name} pendant {action['duration']} tours, à moins qu'il ne se réveille avant..."
         case _ :
             return f"Unknown status : {status_id}"
 
