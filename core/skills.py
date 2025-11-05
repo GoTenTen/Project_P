@@ -1,5 +1,6 @@
 #skills.py
 import random
+from Project_P.data.status_list import STATUS
 
 class Skill:
     def __init__(self, name, description, priority, **kwargs):
@@ -28,10 +29,9 @@ class AttackSkill(Skill):
         bonus_message = self.kwargs.get("bonus_message", None)
         accuracy = self.kwargs.get("accuracy", 1.0)
         self_damage = self.kwargs.get("self_damage", 0)
-        type_effect = self.kwargs.get("type_effect", None)
+        status_to_apply = self.kwargs.get("status_to_apply", None)
+        status_data = STATUS.get(status_to_apply)
         chance_apply_status = self.kwargs.get('chance_apply_status', 0)
-        duration = self.kwargs.get("duration", 0)
-        amount = self.kwargs.get("amount", 0)
 
         # On prépare une liste "d’événements"
         events = []
@@ -69,15 +69,15 @@ class AttackSkill(Skill):
 
 
         if successful_hit:
-            if type_effect:
+            if status_to_apply:
                 if random.random() < chance_apply_status:
-                    target.add_status_effect(type_effect, duration,amount)
+                    target.add_status_effect(status_to_apply, status_data)
                     events.append({
                         "type_events" : "status",
-                        "status_name" : type_effect,
+                        "status_name" : status_to_apply,
                         "target_name" : target.name,
-                        "duration" : duration,
-                        "amount" : amount
+                        "duration" : status_data['duration'],
+                        "amount" : status_data['amount']
                     })
 
         if deal_damage:
@@ -181,31 +181,30 @@ class StatusSkill(Skill):
         super().__init__(name, description, priority, **kwargs)
     
     def apply(self, user, target):
-        type_effect = self.kwargs.get("type_effect", None)
-        duration = self.kwargs.get("duration", 0)
-        amount = self.kwargs.get("amount", 0)
+        status_name = self.kwargs.get('status_to_apply')
         accuracy = self.kwargs.get("accuracy", 1.0)
 
-        if random.random() < accuracy:
-            target.add_status_effect(
-                type_effect,
-                duration, 
-                amount
-            )
-            return {
-                "type_skill": "status",
-                "hit" : True,
-                "user": user,
-                "target": target,
-                "comp_name": self.name,
-                "status_name": type_effect,
-                "duration": duration,
-                "amount": amount
-            }
+        if status_name and (random.random() < accuracy):
+                status_data = STATUS.get(status_name)
+                target.add_status_effect(
+                    status_name,
+                    status_data
+                )
+                return {
+                    "type_skill": "status",
+                    "hit" : True,
+                    "user": user,
+                    "target": target,
+                    "comp_name": self.name,
+                    "status_id": status_name, 
+                    "status_name": status_data['status_name'],
+                    "duration": status_data['duration'],
+                    "amount": status_data['amount']
+                }
         else:
             return {
                 "type_skill": "status",
                 "hit" : False,
                 "user": user,
                 "comp_name": self.name
-            }
+                }

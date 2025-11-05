@@ -217,10 +217,7 @@ class Pou:
             "skill_name": skill_name #sinon je vois pas comment récup le nom de la compétence ici, si tu sais faire modifies
         }
 
-    def add_status_effect(self, type_effect, duration, amount, **kwargs):
-        self.active_buffs[type_effect] = {
-            "duration" : duration,
-            "type" : "status",
-            "amount" : amount,
-            **kwargs
-        }
+    def add_status_effect(self, status_name, status_data):
+        buff_data= status_data.copy()
+        buff_data['type'] = 'status'
+        self.active_buffs[status_name] = buff_data

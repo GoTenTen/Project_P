@@ -1,4 +1,4 @@
-# skills_list.py
+#skills_list.py
 from Project_P.core.skills import *
 
 SKILLS = {
@@ -54,16 +54,14 @@ SKILLS = {
             priority=2,
             multiplier=1.0,
         ),
-        "Poing_Poison" : AttackSkill(
+        "Poing Poison" : AttackSkill(
             name = "Poing Poison",
             description="Empoisonne l'ennemi",
             priority=0,
-            duration = 4,
             multiplier = 1.25,
-            amount = 0.05,
             accuracy = 1,
-            chance_apply_status = 0.5,
-            type_effect = "poison"
+            chance_apply_status = 1.0,
+            status_to_apply = 'poison'
         ),
     },
     "TimedBuffAttack": { #----------------------------------------------------------------------------------------------
@@ -105,21 +103,13 @@ SKILLS = {
             name = "Brûlure",
             description="Brûle l'ennemi",
             priority=0,
-            duration = 3,
-            multiplier = 0,
-            amount = 0.05,
-            accuracy = 1,
-            type_effect = "burn"
+            status_to_apply = 'burn'
         ),
         "Poison" : StatusSkill(
             name = "Poison",
             description="Empoisonne l'ennemi",
             priority=0,
-            duration = 4,
-            multiplier = 0,
-            amount = 0.05,
-            accuracy = 1,
-            type_effect = "poison"
+            status_to_apply = 'poison'
         ),
     }
 }

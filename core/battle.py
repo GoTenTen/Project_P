@@ -106,7 +106,7 @@ def select_attack(attacker, defender):
         elif choice == '5':
             return None
         else:
-            display_manager('invalid')
+            display_manager('invalid', cas=1)
 
 def execute_actions(pou_team1, pou_team2, actions):
     # Gestion des switches : si un joueur switch, l'autre attaque en priorité

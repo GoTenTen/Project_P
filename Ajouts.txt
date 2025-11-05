@@ -48,3 +48,6 @@ Ajouts:                                                                         
                 ajustement de display_skill et display_update_buff ((battle, pou, skills, skills_list, display).py)
 ----------
 [02/11/25]  - +degats_direct afin de pas print des mauvais messages sur les degats des status, ajout du poison et d'un pou de test ((pou, pou_list, skills_list, display).py)
+----------
+[05/11/25]  - +status_list.py, centralisation des status via la liste (MVC), modification des fonctions utilisant les status et correction petit problème dans battle
+                (display_manager avec un cas non déclaré dans select_attack)                                              ((battle, pou, skills, pou_list, skills_list, display).py)

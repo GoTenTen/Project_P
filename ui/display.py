@@ -356,16 +356,16 @@ def display_passive(user, action, target=None):
             return "Unknown_passive"
         
 def make_status_message(action):
-    status_name = action.get('status_name')
+    status_id = action.get('status_id')
 
     #Dans cette fonction on viendra donc return ce dont on a besoin  pour bien formater notre texte de sorti dans display_skill
 
-    match status_name:
+    match status_id:
         case 'burn':
             return f"\n{action['comp_name']} infligera {int(action['amount']*100)}% des hp de {action['target'].name} pendant {action['duration']} tours !"
         case 'poison':
             return f"\n{action['comp_name']} infligera de plus en plus de dégats chaque tours pendant {action['duration']} tours ! En commencant par {int(action['amount']*100)}% des hp de {action['target'].name}"
         case _ :
-            return f"Unknown status : {status_name}"
+            return f"Unknown status : {status_id}"
 
 
