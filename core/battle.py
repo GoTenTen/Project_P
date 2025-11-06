@@ -109,6 +109,7 @@ def select_attack(attacker, defender):
             display_manager('invalid', cas=1)
 
 def execute_actions(pou_team1, pou_team2, actions):
+    status_skip = ['sleep']
     # Gestion des switches : si un joueur switch, l'autre attaque en priorité
     if pou_team1.flags['switched_pou'] or pou_team2.flags['switched_pou']:
         if pou_team1.flags['switched_pou'] and not pou_team2.flags['switched_pou']:
@@ -133,7 +134,9 @@ def execute_actions(pou_team1, pou_team2, actions):
                 random.shuffle(order)
         for idx in order:
             if actions[idx] is not None:
-                action_final = actions[idx]['attacker'].comp[actions[idx]['comp_idx']].apply(actions[idx]['attacker'], actions[idx]['defender'])
+                if any(s in actions[idx].active_buffs for s in status_skip):
+                    continue
+                action_final = actions[idx]['attacker'].comp[actions[idx]['comp_idx']].apply(actions[idx], actions[idx]['defender'])
                 display_manager('display_skill', action=action_final)
 
 #appeler -> display_comp
