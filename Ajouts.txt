@@ -51,3 +51,5 @@ Ajouts:                                                                         
 ----------
 [05/11/25]  - +status_list.py, centralisation des status via la liste (MVC), modification des fonctions utilisant les status et correction petit problème dans battle
                 (display_manager avec un cas non déclaré dans select_attack)                                              ((battle, pou, skills, pou_list, skills_list, display).py)
+----------
+[06/11/25]  - +skip tours selon le status                                                                                 (battle.py)
