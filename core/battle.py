@@ -134,9 +134,10 @@ def execute_actions(pou_team1, pou_team2, actions):
                 random.shuffle(order)
         for idx in order:
             if actions[idx] is not None:
-                if any(s in actions[idx].active_buffs for s in status_skip):
+                current_attacker = actions[idx]['attacker']
+                if any(s in current_attacker.active_buffs for s in status_skip):
                     continue
-                action_final = actions[idx]['attacker'].comp[actions[idx]['comp_idx']].apply(actions[idx], actions[idx]['defender'])
+                action_final = actions[idx]['attacker'].comp[actions[idx]['comp_idx']].apply(current_attacker, actions[idx]['defender'])
                 display_manager('display_skill', action=action_final)
 
 #appeler -> display_comp
