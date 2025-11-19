@@ -1,9 +1,3 @@
 A ajouter:
 
-    - Ajouter la possibilité de laisser le joueur choisir les poux qu'il souhaite;
-    - Ajouter une rareté pour les poux;
-    - Ajouter plus de poux avec des compétences signature cohérente;
-    - Ajouter une compétence de heal qui agit sur plusieurs tours;
-    - Modifier battle.py qui gère encore du print et du input() : il faudra séparer la logique du rendu plus tard.
-    - Passif + 3 comps
-    - Pour toi kevin si tu codes sans que je sois là et que tu comprends pas ce que j'ai fais, commence la séparation 'rendu/logique' de tes fonctions teams
+    - TOUT les affichages lié à l'ia et faire un jolie menu de choix de mode de jeux

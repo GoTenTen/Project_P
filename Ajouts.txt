@@ -53,3 +53,5 @@ Ajouts:                                                                         
                 (display_manager avec un cas non déclaré dans select_attack)                                              ((battle, pou, skills, pou_list, skills_list, display).py)
 ----------
 [06/11/25]  - +skip tours selon le status                                                                                 (battle.py)
+----------
+[19/11/25]  - fonction ia "bête", modif de tout ce que ça implique                                                        ((battle, ai_function, main, team_creation).py)

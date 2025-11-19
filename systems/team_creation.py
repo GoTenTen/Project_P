@@ -12,16 +12,20 @@ TAUX_DROP={
     'légendaire':0.05
 }
 
-def create_team(owner_name):
+def create_team(owner_name, ai):
     len_team = 3
     while True:
-        display_manager('display_input_create_team', player=owner_name)
-        display_manager('display_input', cas=1)
-        choice = str(input())
-        while choice not in ('1', '2'):
-            display_manager('invalid', cas=1)
+        if ai:
+            choice = '2'
+            break
+        else:
+            display_manager('display_input_create_team', player=owner_name)
+            display_manager('display_input', cas=1)
             choice = str(input())
-        break
+            while choice not in ('1', '2'):
+                display_manager('invalid', cas=1)
+                choice = str(input())
+            break
     basic_list = [Pou.from_model(owner_name, model) for model in PouModels.values()]
     match choice:
         case '1':
@@ -32,7 +36,7 @@ def create_team(owner_name):
                 if modif_confirm_team():
                     break
         case '2':
-            poupou_list = create_random_team(owner_name, basic_list, len_team)
+            poupou_list = create_random_team(basic_list, len_team, ai)
     return Team(owner_name, poupou_list)
 
 
@@ -79,9 +83,10 @@ def create_manual_team(choice_list, lenT):
     return res
 
 
-def create_random_team(owner_name, pou_list, lenT):
+def create_random_team(pou_list, lenT, ai):
     random_list = random_team(pou_list, TAUX_DROP, lenT)
-    display_manager('show_more', pou_list=random_list, cas=1)
+    if not ai:
+        display_manager('show_more', pou_list=random_list, cas=1)
     return random_list
 
 
