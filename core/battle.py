@@ -2,7 +2,7 @@
 from Project_P.ui.display import display_manager
 import random
 
-def game_turn(team1, team2):
+def game_turn(team1, team2, mode_player1, mode_player2):
     # Pous actifs
     pou_team1 = team1.get_active_pou()
     pou_team2 = team2.get_active_pou()
@@ -19,8 +19,8 @@ def game_turn(team1, team2):
 
     # Récupérer les actions des joueurs
     action = [
-        get_player_action(pou_team1, pou_team2, team1),
-        get_player_action(pou_team2, pou_team1, team2)
+        mode_player1(pou_team1, pou_team2, team1),
+        mode_player2(pou_team2, pou_team1, team2)
     ]
 
     # Appliquer switches si demandés
@@ -109,7 +109,6 @@ def select_attack(attacker, defender):
             display_manager('invalid', cas=1)
 
 def execute_actions(pou_team1, pou_team2, actions):
-    status_skip = ['sleep']
     # Gestion des switches : si un joueur switch, l'autre attaque en priorité
     if pou_team1.flags['switched_pou'] or pou_team2.flags['switched_pou']:
         if pou_team1.flags['switched_pou'] and not pou_team2.flags['switched_pou']:
@@ -135,7 +134,7 @@ def execute_actions(pou_team1, pou_team2, actions):
         for idx in order:
             if actions[idx] is not None:
                 current_attacker = actions[idx]['attacker']
-                if any(s in current_attacker.active_buffs for s in status_skip):
+                if any(s in current_attacker.active_buffs for s in ["sleep"]):
                     continue
                 action_final = actions[idx]['attacker'].comp[actions[idx]['comp_idx']].apply(current_attacker, actions[idx]['defender'])
                 display_manager('display_skill', action=action_final)

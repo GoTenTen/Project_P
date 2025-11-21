@@ -1,7 +1,7 @@
 # main.py
 from Project_P.systems.team_creation import create_team
 from Project_P.core.battle import game_turn, select_switch_pou, get_player_action
-from Project_P.core.ai_function import get_ai_action
+from Project_P.core.ai_function import get_ai_action_easy
 from Project_P.core.team import *
 from Project_P.ui.display import display_manager
 import random
@@ -9,7 +9,7 @@ from Project_P.ui.colors import *
 
 def start():
     #choix du mode de jeu
-    print("kel mod tu jou ?\n\n     -1 jcj\n\n      -2 jcai\n")
+    print("Choisissez le mode de jeu que vous souhaitez : \n\n     1 : Joueur contre Joueur\n\n     2 : Joueur contre Ordinateur\n")
     #définit si un joueur est une ia ou pas, false de base -> true que lorsqu'on a besoin
     ai1, ai2 = False, False
     #pareil ici étant donné que le mode de base est jcj la valeur de base est get_player_action
@@ -25,17 +25,17 @@ def start():
             display_manager('clear', delay=0)
             mode_player1,mode_player2 = get_player_action, get_player_action
         case 2:
-            ai2 = True
+            #ai2 = True -> en commentaire car pour les tests c'eest plus simple de choisir sa team
             name_list = ["caca", "gros_caca", "pipi", "gros_pipi"]
             display_manager('clear', delay=0)
             display_manager('display_name_player', number_player=1)
             player1 = input()
             player2 = random.choice(name_list)
-            print(f"Tu affronteras {player2}")
+            print(f"\nTu affronteras {player2}")
             input()
             display_manager('clear', delay=0)
-            mode_player1 = get_player_action
-            mode_player2 = get_ai_action
+            mode_player2 =  get_ai_action_easy
+            
 
     team1 = create_team(player1, ai1)
     choice_start_pou(team1)
