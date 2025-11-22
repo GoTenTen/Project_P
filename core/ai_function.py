@@ -1,6 +1,8 @@
 #ai_function
-from Project_P.core.skills import *
-from Project_P.data.elem_list import *
+from Project_P.core.skills import TimedHealSkill, HealSkill, BuffSkill, AttackSkill, StatusSkill, Skill, TimedBuffSkill
+from Project_P.data.elem_list import ELEMENT
+from Project_P.data.skills_list import *
+from Project_P.core.pou import *
 import random
 
 #v1 -> aléatoire, "bête" car peut se heal alors qu'il est full hp etc
@@ -83,24 +85,17 @@ def element_comparison(attacker, defender):
             return "effective"
 
 def sort_comp(attacker):
-    heal_list = []
-    attack_list = []
-    buff_list = []
-    status_list = []
-    for comp_idx in range(len(attacker.comp)):
-        if isinstance(attacker.comp[comp_idx], (TimedHealSkill, HealSkill)):
-            heal_list.append(comp_idx)
-        elif isinstance(attacker.comp[comp_idx], AttackSkill):
-            attack_list.append(comp_idx)
-        elif isinstance(attacker.comp[comp_idx], BuffSkill):
-            buff_list.append(comp_idx)
-        elif isinstance(attacker.comp[comp_idx], StatusSkill):
-            status_list.append(comp_idx)
-
-    return{
-        "heal_list" : heal_list,
-        "attack_list" : attack_list,
-        "buff_list" : buff_list,
-        "status_list" : status_list
+    list_comp = {
+    "HealSkill" : [],
+    "TimedHealSkill" : [],
+    "AttackSkill" : [],
+    "BuffSkill" : [],
+    "TimedBuffSkill" : [],
+    "StatusSkill" : []
     }
+    for comp_idx in range(len(attacker.comp)):
+        for key, value in list_comp.items():
+            if type(attacker.comp[comp_idx]).__name__ == key:
+                value.append(comp_idx)
+    return list_comp
     
