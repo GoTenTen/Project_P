@@ -15,17 +15,17 @@ TAUX_DROP={
 def create_team(owner_name, ai):
     len_team = 3
     while True:
-        if ai:
-            choice = '2'
+        '''if ai:
+            choice = '2' #je mets en com pour pouvoir créer la team et faire les tests comme je le souhaites
             break
-        else:
-            display_manager('display_input_create_team', player=owner_name)
-            display_manager('display_input', cas=1)
+        else:'''
+        display_manager('display_input_create_team', player=owner_name)
+        display_manager('display_input', cas=1)
+        choice = str(input())
+        while choice not in ('1', '2'):
+            display_manager('invalid', cas=1)
             choice = str(input())
-            while choice not in ('1', '2'):
-                display_manager('invalid', cas=1)
-                choice = str(input())
-            break
+        break
     basic_list = [Pou.from_model(owner_name, model) for model in PouModels.values()]
     match choice:
         case '1':
@@ -37,7 +37,7 @@ def create_team(owner_name, ai):
                     break
         case '2':
             poupou_list = create_random_team(basic_list, len_team, ai)
-    return Team(owner_name, poupou_list)
+    return Team(owner_name, poupou_list, ai)
 
 
 #show_more et recup_flag purement optionnel mais rajoute un petit truc quand tu random_team

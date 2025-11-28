@@ -1,8 +1,9 @@
 # battle.py
 from Project_P.ui.display import display_manager
+from Project_P.core.temp_ai import Ai
 import random
 
-def game_turn(team1, team2, mode_player1, mode_player2):
+def game_turn(team1, team2):
     # Pous actifs
     pou_team1 = team1.get_active_pou()
     pou_team2 = team2.get_active_pou()
@@ -19,8 +20,8 @@ def game_turn(team1, team2, mode_player1, mode_player2):
 
     # Récupérer les actions des joueurs
     action = [
-        mode_player1(pou_team1, pou_team2, team1),
-        mode_player2(pou_team2, pou_team1, team2)
+        get_player_action(pou_team1, pou_team2, team1),
+        get_player_action(pou_team2, pou_team1, team2)
     ]
 
     # Appliquer switches si demandés
@@ -48,6 +49,12 @@ def game_turn(team1, team2, mode_player1, mode_player2):
 # ---------------------- FONCTIONS ------------------------
 
 def get_player_action(attacker, defender, team):
+    if team.is_ai:
+        return Ai.get_ai_action(attacker, defender, team)
+    else:
+        return get_human_action(attacker, defender, team)
+
+def get_human_action(attacker, defender, team):
     while True:
         display_manager('choose_action', attacker=attacker, team_attacker=team, cas=2)
         choice = input()
