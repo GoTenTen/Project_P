@@ -9,7 +9,7 @@ class Ai:
     def __init__(self):
         self.situation = {} #Ici, on vient stocker tout les flags décrivant la situation (Ex : attacker_low = True)
 
-    def get_ai_action(self, attacker, defender, team):
+    def get_action(self, attacker, defender, team):
         comp_idx = self.get_random_comp(attacker)
         return {
             "attacker" : attacker,
@@ -21,13 +21,13 @@ class Ai:
         ...
 
 #----------------------------------------------------FONCTIONS----------------------------------------------------
-
-    def get_random_comp(self, attacker):
+    @staticmethod
+    def get_random_comp(attacker):
         choice_comp = random.randint(0,len(attacker.comp)-1)
         return choice_comp
 
-
-    def check_health(self, attacker, defender):
+    @staticmethod
+    def check_health(attacker, defender):
         attacker_state = attacker.hp <= attacker.max_hp * 0.33
         defender_state = defender.hp <= defender.max_hp * 0.33
 
@@ -47,8 +47,8 @@ class Ai:
         }
 
 
-
-    def element_comparison(self, attacker, defender):
+    @staticmethod
+    def element_comparison(attacker, defender):
         elem_efficacity = ELEMENT.get(attacker.elem).get(defender.elem, 1)
         match elem_efficacity:
             case 0.5:
@@ -58,7 +58,8 @@ class Ai:
             case _:
                 return {"element_comparison" : "effective"}
 
-    def sort_skill(self, attacker):
+    @staticmethod
+    def sort_skill(attacker):
         list_comp = {
                 "HealSkill" : [],
                 "TimedHealSkill" : [],

@@ -197,10 +197,8 @@ class Pou:
                         })
 
                 case 'sleep':
-                    if random.random() < buff['chance_to_stop']:
+                    if (random.random() < buff['chance_to_stop']) or (buff["duration"] <= 0):
                         expired.append(effect_type)
-                    if buff["duration"] <= 0:
-                            expired.append(effect_type)
                     events.append({
                             "type_buff": "asleep"
                         })
