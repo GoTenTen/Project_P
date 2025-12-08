@@ -100,6 +100,41 @@ class Ai:
             return list_skill
         else:
             return None
+        
+    @staticmethod
+    def get_best_damage(attacker, defender, sort_skill):
+        min_remaining_hp = float('inf')
+        skill_idx = None
+        atk = attacker.atk
+        def_hp = defender.hp
+        if "AttackSkill" not in sort_skill:
+            return None
+        for i in sort_skill["AttackSkill"]:
+            argument = attacker.comp[i].kwargs
+            remaining_hp = def_hp
+            if "set_target_hp" in argument:
+                remaining_hp = argument["set_target_hp"]
+            else:
+                multiplier = argument.get("multiplier", 1)
+                multi_hit_range = argument.get("multi_hit_range", (1,1))
+                average_hit = (multi_hit_range[0] + multi_hit_range[1])/2
+                base_damage_skill = atk * multiplier * (ELEMENT.get(attacker.elem, {}).get(defender.elem, 1))
+                total_damage = base_damage_skill * average_hit
+                remaining_hp = def_hp - total_damage
+
+            if remaining_hp < min_remaining_hp:
+                min_remaining_hp = remaining_hp
+                skill_idx = i
+
+        return skill_idx
+    
+    #essayer de reduire les get car similaire et alourdit le code DRY !
+
+    @staticmethod
+    def get_best_switch(attacker, defender, team):
+        ...
+
+
 
 
 #-------------------------------------------------------Zone de Test-------------------------------------------------
