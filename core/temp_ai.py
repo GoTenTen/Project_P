@@ -1,6 +1,9 @@
 from Project_P.data.elem_list import ELEMENT
 from Project_P.data.skills_list import *
+from Project_P.data.pou_list import PouModels
+from Project_P.data.skills import SKILL
 from Project_P.core.pou import *
+
 import random
 
 #Idée, analyse_situation stock les inputs à faire dans une liste
@@ -9,13 +12,21 @@ class Ai:
     def __init__(self):
         self.situation = {} #Ici, on vient stocker tout les flags décrivant la situation (Ex : attacker_low = True)
 
-    def get_action(self, attacker, defender, team):
-        comp_idx = self.get_random_comp(attacker)
-        return {
-            "attacker" : attacker,
-            "defender" : defender,
-            "comp_idx" : comp_idx
-        }
+    def get_action(self, attacker, defender, team, difficulty):
+        situation = self.analyse_situation(attacker, defender, team)
+        match difficulty:
+            case "easy":
+                comp_idx = self.get_random_comp(attacker)
+                return {
+                    "attacker" : attacker,
+                    "defender" : defender,
+                    "comp_idx" : comp_idx
+                }
+            case "medium":
+                sort_skill = self.sort_skill(attacker)
+            
+            case "hard":
+                ...
 
     def analyse_situation(attacker, defender, team):
         ...
@@ -60,16 +71,55 @@ class Ai:
 
     @staticmethod
     def sort_skill(attacker):
-        list_comp = {
-                "HealSkill" : [],
-                "TimedHealSkill" : [],
-                "AttackSkill" : [],
-                "BuffSkill" : [],
-                "TimedBuffSkill" : [],
-                "StatusSkill" : []
-        }
-        for comp_idx in range(len(attacker.comp)):
-            for key, value in list_comp.items():
-                if type(attacker.comp[comp_idx]).__name__ == key:
-                    value.append(comp_idx)
-        return list_comp
+        skill_list = {}
+        for skill_idx, skill in enumerate(attacker.comp):
+            name_class = type(skill).__name__
+            if name_class not in skill_list:
+                skill_list[name_class] = []
+            skill_list[name_class].append(skill_idx)
+        return skill_list
+    
+    @staticmethod
+    def kill_confirm(attacker, defender, sort_skill): #maj possible ajouter la proba du critique
+        list_skill = []
+        atk = attacker.atk
+        def_hp = defender.hp
+        if "AttackSkill" not in sort_skill:
+            return None
+        for i in sort_skill["AttackSkill"]:
+            argument = attacker.comp[i].kwargs
+            multiplier = argument.get("multiplier", 1)
+            multi_hit_range = argument.get("multi_hit_range", (1,1))
+            average_hit = (multi_hit_range[0] + multi_hit_range[1])/2
+            base_damage_skill = atk * multiplier * (ELEMENT.get(attacker.elem, {}).get(defender.elem, 1))
+            total_damage = base_damage_skill * average_hit
+            if "set_target_hp" in argument:
+                continue
+            elif total_damage >= def_hp:
+                list_skill.append(i)
+        if list_skill:
+            return list_skill
+        else:
+            return None
+
+
+#-------------------------------------------------------Zone de Test-------------------------------------------------
+pou_ia = Pou(
+    owner="Ordinateur",
+    name="Terminator",
+    hp=50,
+    atk=20,
+    speed=15,
+    comp_list=[
+        SKILLS["Attack"]["Jab"], 
+        SKILLS["Heal"]["Soin"], 
+        SKILLS["TimedBuffAttack"]["Danse Lame"], 
+        SKILLS["Heal"]["Soin"]
+    ],
+    passive='',
+    rarity="rare",
+    elem="Gluant",
+    color=''
+)
+
+print(Ai.sort_skill(pou_ia))
