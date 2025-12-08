@@ -1,7 +1,6 @@
 from Project_P.data.elem_list import ELEMENT
 from Project_P.data.skills_list import *
 from Project_P.data.pou_list import PouModels
-from Project_P.data.skills import SKILL
 from Project_P.core.pou import *
 
 import random

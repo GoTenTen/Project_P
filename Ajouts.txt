@@ -55,3 +55,5 @@ Ajouts:                                                                         
 [06/11/25]  - +skip tours selon le status                                                                                 (battle.py)
 ----------
 [19/11/25]  - fonction ia "bête", modif de tout ce que ça implique                                                        ((battle, ai_function, main, team_creation).py)
+----------
+[08/12/25]  - fonction kill_confirm et opti différentes fonctions de temp_ai                                              (temp_ai.py)
