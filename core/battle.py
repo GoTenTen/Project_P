@@ -51,7 +51,7 @@ def game_turn(team1, team2):
 def get_player_action(attacker, defender, team):
     if team.is_ai:
         ai_big_motherfuckin_big_dih_brain_nyaa = Ai()
-        return Ai.get_action(ai_big_motherfuckin_big_dih_brain_nyaa, attacker, defender, team)
+        return Ai.get_action(ai_big_motherfuckin_big_dih_brain_nyaa, attacker, defender, team, "Easy")
     else:
         return get_human_action(attacker, defender, team)
 
