@@ -14,7 +14,7 @@ class Ai:
     def get_action(self, attacker, defender, team, difficulty):
         #L'idée que j'avais ici, c'est de faire un situation handler pour l'ia, de lui fournir le plus de flags possible à travers les méthodes 
         # et de la laisser décider du meilleur mouv à faire, cette fonction devra être friendly à l'ajout des "récompenses" et à la gestion du niveau de l'ia
-        situation = self.analyse_situation(attacker, defender, team)
+        #situation = self.analyse_situation(attacker, defender, team)
         match difficulty:
             case "easy":
                 comp_idx = self.get_random_comp(attacker)
@@ -24,7 +24,8 @@ class Ai:
                     "comp_idx" : comp_idx
                 }
             case "medium":
-                sort_skill = self.sort_skill(attacker)
+                ...
+                '''sort_skill = self.sort_skill(attacker)'''
             
             case "hard":
                 ...
