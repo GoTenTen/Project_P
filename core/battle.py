@@ -1,6 +1,6 @@
 # battle.py
 from Project_P.ui.display import display_manager
-from Project_P.core.temp_ai import Ai
+from Project_P.core.ai_function_maitre_yoda import bot
 import random
 
 def game_turn(team1, team2):
@@ -49,35 +49,31 @@ def game_turn(team1, team2):
 # ---------------------- FONCTIONS ------------------------
 
 def get_player_action(attacker, defender, team):
-    if team.is_ai:
-        ai_big_motherfuckin_big_dih_brain_nyaa = Ai()
-        return Ai.get_action(ai_big_motherfuckin_big_dih_brain_nyaa, attacker, defender, team, "Easy")
+    if not team.is_ai:
+        while True:
+            display_manager('choose_action', attacker=attacker, team_attacker=team, cas=2)
+            choice = input()
+            display_manager('display_space')
+            step = select_action(choice)
+            match step['next_step']:
+                case 'attaquer':
+                    resultat_attack = select_attack(attacker, defender)
+                    if resultat_attack is None:
+                        continue
+                    return resultat_attack
+                case 'changer_pou':
+                    if select_switch_pou(team) == 'go_back':
+                        continue
+                    attacker.flags['switch_pou'] = True
+                    return None
+                case 'description':
+                    display_manager('description', attacker=attacker)
+                    continue
+                case _:
+                    display_manager('invalid', cas=1)
+                    continue
     else:
-        return get_human_action(attacker, defender, team)
-
-def get_human_action(attacker, defender, team):
-    while True:
-        display_manager('choose_action', attacker=attacker, team_attacker=team, cas=2)
-        choice = input()
-        display_manager('display_space')
-        step = select_action(choice)
-        match step['next_step']:
-            case 'attaquer':
-                resultat_attack = select_attack(attacker, defender)
-                if resultat_attack is None:
-                    continue
-                return resultat_attack
-            case 'changer_pou':
-                if select_switch_pou(team) == 'go_back':
-                    continue
-                attacker.flags['switch_pou'] = True
-                return None
-            case 'description':
-                display_manager('description', attacker=attacker)
-                continue
-            case _:
-                display_manager('invalid', cas=1)
-                continue
+        return team.controller.get_action(attacker, defender)
 
 def select_switch_pou(team, cas=1):
     while True:
