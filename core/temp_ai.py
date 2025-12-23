@@ -14,7 +14,7 @@ class Ai:
     def get_action(self, attacker, defender, team, difficulty):
         #L'idée que j'avais ici, c'est de faire un situation handler pour l'ia, de lui fournir le plus de flags possible à travers les méthodes 
         # et de la laisser décider du meilleur mouv à faire, cette fonction devra être friendly à l'ajout des "récompenses" et à la gestion du niveau de l'ia
-        situation = self.analyse_situation(attacker, defender, team)
+        #situation = self.analyse_situation(attacker, defender, team)
         match difficulty:
             case "easy":
                 comp_idx = self.get_random_comp(attacker)
@@ -24,7 +24,8 @@ class Ai:
                     "comp_idx" : comp_idx
                 }
             case "medium":
-                sort_skill = self.sort_skill(attacker)
+                ...
+                '''sort_skill = self.sort_skill(attacker)'''
             
             case "hard":
                 ...
@@ -85,60 +86,56 @@ class Ai:
         return skill_list
     
     @staticmethod
-    def kill_confirm(attacker, defender, sort_skill): 
+    def get_optimal_damage(attacker, defender, sort_skill): 
         #maj possible ajouter la proba du critique et peut être classé par ordre du plus probable par rapport à l'accuracy
         list_skill = []
         atk = attacker.atk
         def_hp = defender.hp
         if "AttackSkill" not in sort_skill:
-            return None
+            return list_skill
         for i in sort_skill["AttackSkill"]:
+            final_damage = 0
+            is_lethal = False
             #Ici on vient récupérer toutes les infos dont à besoin pour calculer et comparer les compétences
             argument = attacker.comp[i].kwargs
+
+            #Les gets principaux qui servent de base pour calculer tous les degats
+            accuracy = argument.get("accuracy", 0)
             multiplier = argument.get("multiplier", 1)
             multi_hit_range = argument.get("multi_hit_range", (1,1))
-            average_hit = (multi_hit_range[0] + multi_hit_range[1])/2
-            base_damage_skill = atk * multiplier * (ELEMENT.get(attacker.elem, {}).get(defender.elem, 1))
-            total_damage = base_damage_skill * average_hit
-            #Ici on vient va venir tout simplement effectuer la comparaison de qui tue
+            
+            #Cas exceptionnel, "set_target_hp"
             if "set_target_hp" in argument:
-                continue
-            elif total_damage >= def_hp:
-                list_skill.append(i)
-        if list_skill:
-            return list_skill
-        else:
-            return None
-        
-    @staticmethod
-    def get_best_damage(attacker, defender, sort_skill):
-        #Dans cette fonction ci, même déroulé que el kill confirm donc peut être pensé à fusionner les deux et retourner 2 flags au lieu d'un dans le kill confirm
-        min_remaining_hp = float('inf')
-        skill_idx = None
-        atk = attacker.atk
-        def_hp = defender.hp
-        if "AttackSkill" not in sort_skill:
-            return None
-        for i in sort_skill["AttackSkill"]:
-            argument = attacker.comp[i].kwargs
-            remaining_hp = def_hp
-            if "set_target_hp" in argument:
-                remaining_hp = argument["set_target_hp"]
+                target_hp_goal = argument["set_target_hp"]
+                #Ici on verif si la target n'est pas égale ou en dessous du set_hp
+                final_damage = def_hp - target_hp_goal
+
+                if final_damage < 0:
+                    final_damage = 0
+
+                #evidemment si on set hp à 0 et bien l'attaque est lethal, pour l'instant aucune compétences fait ça, mais au moins la fonction est futur-proof
+                is_lethal = (target_hp_goal == 0)
             else:
-                multiplier = argument.get("multiplier", 1)
-                multi_hit_range = argument.get("multi_hit_range", (1,1))
+                #Moyenne des coups si range (1,6) -> 3 etc...
                 average_hit = (multi_hit_range[0] + multi_hit_range[1])/2
+
+                #Calcul des degats d'unn coup en prenant en compte l'element
                 base_damage_skill = atk * multiplier * (ELEMENT.get(attacker.elem, {}).get(defender.elem, 1))
-                total_damage = base_damage_skill * average_hit
-                remaining_hp = def_hp - total_damage
 
-            if remaining_hp < min_remaining_hp:
-                min_remaining_hp = remaining_hp
-                skill_idx = i
+                #Calcul de la moyenne des degats si c'est une attaque multi coups, sinon, juste *1 soit un seul coup
+                final_damage = base_damage_skill * average_hit
 
-        return skill_idx
-    
-    #essayer de reduire les get car similaire et alourdit le code DRY
+                is_lethal = (final_damage >= def_hp)
+
+            #Ici on vient ajouter la compétence sous forme de dictionnaire dans la liste, avec le flag is_lethal qui dit si oui ou non elle est léthal (logique)
+            list_skill.append({
+                "index" : i,
+                "name": attacker.comp[i].name,
+                "damage" : final_damage,
+                "accuracy" : accuracy,
+                "is_lethal" : is_lethal
+            })
+        return list_skill
 
     @staticmethod
     def get_best_switch(attacker, defender, team):
