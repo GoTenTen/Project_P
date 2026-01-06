@@ -3,11 +3,11 @@ import time
 
 
 class Team:
-    def __init__(self, owner_name, pou_list, is_ai=False):
+    def __init__(self, owner_name, pou_list, controller=None):
         self.owner = owner_name
         self.pous = pou_list
         self.active_index = 0 #index de quel pou est actif dans la liste
-        self.is_ai = is_ai
+        self.is_ai = controller
 
     def get_active_pou(self):
         return self.pous[self.active_index]
