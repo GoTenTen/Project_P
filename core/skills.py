@@ -14,10 +14,6 @@ class Skill:
 
 
 class AttackSkill(Skill):
-    def __init__(self, name, description, priority, **kwargs):
-        super().__init__(name, description, priority)
-        self.kwargs = kwargs  # stocke les paramètres de dégâts
-
     def get_multi_hit(self):
         if self.kwargs.get('multi_hit_range', 1):
             return random.randint(*self.kwargs.get('multi_hit_range', (1,1)))  # "*" est utilisé pour débaler l'argument "(1,5)" devient "1,5"
@@ -146,12 +142,10 @@ class TimedBuffSkill(BuffSkill):
 
 class HealSkill(Skill):
     """Compétence de soin."""
-    def __init__(self, name, description, priority, amount):
-        super().__init__(name, description, priority)
-        self.amount = amount
 
     def apply(self, user, target=None):
         #return user.heal(self.amount)
+        self.amount = self.kwargs.get("amount", 1)
         healed = min(self.amount, user.max_hp - user.hp)
         user.hp += healed
         return {
@@ -163,7 +157,7 @@ class HealSkill(Skill):
         }
         
 class TimedHealSkill(Skill):
-    def apply(self, user, target=None):  #un truc que j'ai pas compris c'est tes init et super init, ici ça fonctionne ça, si tu penses que c'est mieux avec modifies
+    def apply(self, user, target=None):
         amount = self.kwargs.get("amount", 0)
         duration = self.kwargs.get("duration", 0)
         stat = self.kwargs.get("stat", "hp")
@@ -177,48 +171,32 @@ class TimedHealSkill(Skill):
         }
     
 class StatusSkill(Skill):
-    def __init__(self, name, description, priority, **kwargs):
-        super().__init__(name, description, priority, **kwargs)
-    
+    #Compétences de status (Poison, brûlure, etc...)
     def apply(self, user, target):
         status_name = self.kwargs.get('status_to_apply')
         accuracy = self.kwargs.get("accuracy", 1.0)
 
+        result = {
+            "type_skill": "status",
+            "hit" : False,
+            "user": user,
+            "target": target,
+            "comp_name": self.name
+        }
+
         if status_name and (random.random() < accuracy):
-                status_data = STATUS.get(status_name)
-                amount = status_data.get('amount', 0)
-                target.add_status_effect(
-                    status_name,
-                    status_data
-                )
-                if amount > 0:
-                    return {
-                        "type_skill": "status",
-                        "hit" : True,
-                        "user": user,
-                        "target": target,
-                        "comp_name": self.name,
-                        "status_id": status_name, 
-                        "name": status_data['name'],
-                        "duration": status_data['duration'],
-                        "amount": amount
-                    }
-                else :
-                    return {
-                        "type_skill": "status",
-                        "hit" : True,
-                        "user": user,
-                        "target": target,
-                        "comp_name": self.name,
-                        "status_id": status_name, 
-                        "name": status_data['name'],
-                        "duration": status_data['duration'],
-                        "chance_to_stop": status_data['chance_to_stop']
-                    }
-        else:
-            return {
-                "type_skill": "status",
-                "hit" : False,
-                "user": user,
-                "comp_name": self.name
-                }
+            status_data = STATUS.get(status_name)
+
+            if status_data:
+                target.add_status_effect(status_name, status_data)
+
+                result.update({
+                    "hit" : True,
+                    "status_id": status_name, 
+                    "name": status_data.get('name', "Unknown_STATUS"),
+                    "duration": status_data.get('duration'),
+                    "amount": status_data.get('amount', 0), 
+                    "chance_to_stop" : status_data.get('chance_to_stop')
+                })
+
+        return result

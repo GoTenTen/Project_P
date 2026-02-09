@@ -58,4 +58,6 @@ Ajouts:                                                                         
 ----------
 [08/12/25]  - fonction kill_confirm et opti différentes fonctions de temp_ai                                              (temp_ai.py)
 ----------
-[08/12/25]  - fonction get_best_damage et opti                                                                            (temp_ai.py)
+[08/12/25]  - fonction get_best_damage et opti                                                                           (temp_ai.py)
+----------
+[09/02/26]  - Correction erreur de "compilation" du main (il manquait un ai = False) + factorisation et supression des déchets dans skills              ((main, skills).py)

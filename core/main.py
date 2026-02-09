@@ -13,6 +13,7 @@ def start():
     #définit si un joueur est une ia ou pas, false de base -> true que lorsqu'on a besoin
     #pareil ici étant donné que le mode de base est jcj la valeur de base est get_player_action
     mode=int(input())
+    ai = False
     match mode:
         case 1:
             display_manager('clear', delay=0)
