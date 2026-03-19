@@ -24,13 +24,13 @@ def start():
             display_manager('clear', delay=0)
         case 2:
             ai = True
-            name_list = ["caca", "gros caca", "pipi", "gros pipi", "enorme zgeg", "suceur de nichons", "bardella_fan_club", "un mec qui sait coincé une balle de tenis dans le baltrou"]
+            name_list = ["caca", "gros caca", "pipi", "gros pipi", "enorme zgeg", "suceur de nichons", "bardella fan club", "un mec qui s'est coincé une balle de tenis dans le baltrou", "ta grosse tante"]
             display_manager('clear', delay=0)
             display_manager('display_name_player', number_player=1)
             player1 = input()
             player2 = random.choice(name_list)
-            print(f"\nTu affronteras {player2}")
-            input()
+            print(f"\nTu affronteras {BOLD}{RED}{player2}{RESET}")
+            input('\n(appuyer sur entrer pour continuer)')
             display_manager('clear', delay=0)
             
 

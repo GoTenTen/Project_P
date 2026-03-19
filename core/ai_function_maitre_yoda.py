@@ -6,5 +6,9 @@ class bot:
         self.difficulty = difficulty
 
     def get_action(self, attacker, defender):
-        idx = random.randint(0, 3)
+        idx = 1
+        print(attacker.comp[idx].__class__.__name__)
         return {"attacker": attacker, "defender": defender, "comp_idx": idx}
+
+
+
