@@ -140,7 +140,7 @@ def execute_actions(pou_team1, pou_team2, actions):
             if actions[idx] is not None:
                 current_attacker = actions[idx]['attacker']
                 if current_attacker.is_alive():
-                    if any(s in current_attacker.active_buffs for s in ["sleep"]):
+                    if any(s in current_attacker.effects["major_status"] for s in ["sleep"]):
                         continue
                     action_final = actions[idx]['attacker'].comp[actions[idx]['comp_idx']].apply(current_attacker, actions[idx]['defender'])
                     display_manager('display_skill', action=action_final)

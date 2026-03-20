@@ -171,25 +171,28 @@ def display_description(attacker):
     display_all(text)
 
 def display_update_buff(action):
+    result = []
     for events in action['events']:
+        print(f"DEBUG DISPLAY - type_buff: {events.get('type_buff')} | status: {events.get('status')}")
         match events.get('type_buff') or events.get('status'):
             case 'atk':
-                return f"L’effet de d'augmentation de l'{LIGHTRED}ATT{RESET} du {BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} s’est dissipé.\n"
+                result.append(f"L’effet de d'augmentation de l'{LIGHTRED}ATT{RESET} du {BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} s’est dissipé.\n")
             case 'regen':
-                return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} récupère {LIGHTGREEN}{events['amount']}{RESET} PV\n"
+                result.append(f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} récupère {LIGHTGREEN}{events['amount']}{RESET} PV\n")
             case 'burn':
                 print("Brûlure appliqué\n")
-                return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} perd {LIGHTGREEN}{events['turn_damage']}{RESET} dégats de brûlure...\n"
+                result.append(f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} perd {LIGHTGREEN}{events['turn_damage']}{RESET} dégats de brûlure...\n")
             case 'poison':
                 if not events['turn_damage']:
                     return f"Poison appliqué"
-                return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} perd {LIGHTGREEN}{events['turn_damage']}{RESET} dégats de poison...\n"
+                result.append(f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} perd {LIGHTGREEN}{events['turn_damage']}{RESET} dégats de poison...\n")
             case 'sleep':
                 print("Sleep appliqué\n")
-                return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} {LIGHTBLUE}dort{RESET} toujours...\n"
+                result.append(f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} {LIGHTBLUE}dort{RESET} toujours...\n")
             case _:
                 print(f"{events['type_buff']}")
                 return f"erreur"
+    return "\n".join(result)
 
 def display_skill(action):
     msg_debut = f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} utilise {LIGHTMAGENTA}{action['comp_name']}{RESET} "
@@ -279,13 +282,17 @@ def display_show_all_pou_stats(team):
         status = ""
         status_type = ""
 
-        for type, buff in pou.active_buffs.items():
-            if buff.get('type') == 'status':
-                if type == 'burn':
+        major = pou.effects.get("major_status", {})
+
+        if major:
+            status_name = major[0]["name"]
+            match status_name:
+                case 'burn':
                     status_type = RED
-                elif type == 'poison':
+                case 'poison':
                     status_type = MAGENTA
-                break
+                case 'sleep':
+                    status_type = GREY
 
         if status_type:
             status = f"{status_type}●{RESET}"

@@ -19,9 +19,8 @@ class Pou:
         self.elem = elem
         self.color = color
         self.flags = {'passive_ignored': False, 'switch_pou': False, 'switched_pou': False}
-        self.active_buffs = {}  # stocke les buffs temporaires
-        self.majeur_status = {}
-        self.mineur_status = {}
+        #Major_status devrait être un dictionnaire seul, pour des soucis de complexité de code inutile, il sera une liste contenant qu'un seul élément 
+        self.effects = {"buffs" : [], "debuffs" : [], "major_status" : [], "minor_status" : []}
 
     @classmethod
     def from_model(cls, owner, model_data):
@@ -130,11 +129,13 @@ class Pou:
         setattr(self, stat, int(new_value))
 
         # Stocke le buff actif
-        self.active_buffs[stat] = {
+        self.effects["buffs"].append({
+            "name": stat,
+            "stat": stat,
             "factor": factor,
             "duration": duration,
             "original": original
-        }
+        })
 
 
     def update_buffs_status(self):
@@ -142,48 +143,60 @@ class Pou:
         expired = []
         events = []
 
-        for effect_type, buff in self.active_buffs.items():
-            buff["duration"] -= 1
-            amount = buff.get('amount', 0)
-            
-            if self.hp <= 0:
-                expired.append(effect_type)
+        for effects, data in self.effects.items():
+            if not (data):
                 continue
 
-            match effect_type:    
-                case 'atk':
-                    if buff["duration"] <= 0:
-                        setattr(self, effect_type, buff["original"])
-                        events.append({"type_buff": "atk"})
+            #Parcours de chaque listes  pour enlever 1 à la duration de chaque élément en ayant une
+            for effect in data:
+                effect["duration"] -= 1
 
-                case 'regen':
-                    self.hp = min(self.hp + amount, self.max_hp)
-                    events.append({"type_buff": "regen", "amount": amount})
-                
-                case _:
-                    status_ev = self.handle_status(effect_type, buff)
-                    if status_ev:
-                        events.extend(status_ev)
+                match effects:
+                    case "major_status" | "minor_status":
+                        status_ev = self.handle_status(effect["name"], effect)
+                        #verif de secu pour ajouter quelque chose de vide
+                        if status_ev:
+                            events.extend(status_ev)
 
-            if buff["duration"] <= 0:
-                if effect_type not in expired:
-                    expired.append(effect_type)
+                    case "buffs":
+                        match effect["name"]:
+                            case "regen":
+                                self.hp = min(self.hp + effect["amount"], self.max_hp)
+                                events.append({"amount": effect["amount"]})
+                                
+                            case 'atk':
+                                if effect["duration"] <= 0:
+                                    buff_ev = self.handle_buffs(effect)
+                                    if buff_ev:
+                                        events.append(buff_ev)
+                if effect["duration"] <= 0:
+                    if effects not in expired:
+                        expired.append((effects, effect))
 
         # Supprimer les buffs expirés
-        for effect_type in set(expired):
-            if effect_type in self.active_buffs:
-                del self.active_buffs[effect_type]
+        for effects, effect in expired:
+            self.effects[effects].remove(effect)
 
         return {
             "events": events,
             "user": self,
         }
     
+    def handle_buffs(self, buff):
+        #récup le nom du buff
+        buff_name = buff.get('stat')
+
+        #Mesure de sécu, on vérifie bien si original est là ainsi que le buff en question, si oui -> on reset
+        if buff_name and "original" in buff:
+            setattr(self, buff_name, buff["original"])
+
+        return {"type_buff" : buff_name}
+
+
     def handle_status(self, status, values):
         status_events = []
 
         amount = values.get('amount', 0)
-        status_damage = int(self.max_hp * amount)
         event_data = {
             "status" : status,
         }
@@ -196,16 +209,19 @@ class Pou:
             case "poison":
                 if "toxic_cpt" not in values:
                     values["toxic_cpt"] = 1
-                status_damage *= values["toxic_cpt"]
                 amount = amount*values["toxic_cpt"]
+                values["toxic_cpt"] += 1
 
             case 'sleep':
                 if (random.random() < values['chance_to_stop']):
                     values["duration"] = 0
         
+        status_damage = int(self.max_hp * amount)
+        
+        #création des valeurs de bases du dictionnaire sauf cas excpetionnel
         if event_data:
             if amount > 0:
-                event_data.setdefault("amount", amount)
+                event_data.setdefault("amount", int(amount))
             if status_damage > 0:
                 event_data["turn_damage"] = status_damage
                 self.take_damage(status_damage)
@@ -219,13 +235,16 @@ class Pou:
         if stat not in ["stat", "hp"]:
                     return
         
-        self.active_buffs['regen'] = {
+        self.effects["buffs"].append({
+            "name": "regen",
             "amount": amount,
             "duration": duration,
-            "skill_name": skill_name #sinon je vois pas comment récup le nom de la compétence ici, si tu sais faire modifies
-        }
+            "skill_name": skill_name
+        })
 
     def add_status_effect(self, status_name, status_data):
         buff_data= status_data.copy()
         buff_data['type'] = 'status'
-        self.active_buffs[status_name] = buff_data
+        buff_data["name"] = status_name
+        if status_name in ["poison", "burn", "sleep"]:
+            self.effects["major_status"].append(buff_data)
