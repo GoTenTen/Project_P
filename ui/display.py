@@ -24,7 +24,7 @@ def display_manager(event, **kwargs):
         case 'description':
             display_description(kwargs['attacker'])
         
-        case 'invalid':            
+        case 'invalid':
             display_invalid(kwargs['cas'])
 
         case 'display_comp':
@@ -59,6 +59,9 @@ def display_manager(event, **kwargs):
 
         case 'display_space':
             output("")
+
+        case 'display_dead_pou':
+            output(f"{kwargs["team"].get_active_pou().name} de {BOLD}{kwargs["team"].get_active_pou().owner}{RESET} perd connaissance.\n")
 
         case 'display_dead_team':
             output(f"Toute l'équipe de {BOLD}{kwargs['team'].owner}{RESET} est KO.")
@@ -169,19 +172,19 @@ def display_description(attacker):
 
 def display_update_buff(action):
     for events in action['events']:
-        match events['type_buff']:
+        match events.get('type_buff') or events.get('status'):
             case 'atk':
                 return f"L’effet de d'augmentation de l'{LIGHTRED}ATT{RESET} du {BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} s’est dissipé.\n"
             case 'regen':
                 return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} récupère {LIGHTGREEN}{events['amount']}{RESET} PV\n"
-            case 'burned':
+            case 'burn':
                 print("Brûlure appliqué\n")
                 return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} perd {LIGHTGREEN}{events['turn_damage']}{RESET} dégats de brûlure...\n"
-            case 'poisoned':
+            case 'poison':
                 if not events['turn_damage']:
                     return f"Poison appliqué"
                 return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} perd {LIGHTGREEN}{events['turn_damage']}{RESET} dégats de poison...\n"
-            case 'asleep':
+            case 'sleep':
                 print("Sleep appliqué\n")
                 return f"{BOLD}{action['user'].name}{RESET} de {BOLD}{action['user'].owner}{RESET} {LIGHTBLUE}dort{RESET} toujours...\n"
             case _:

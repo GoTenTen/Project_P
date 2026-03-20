@@ -20,6 +20,8 @@ class Pou:
         self.color = color
         self.flags = {'passive_ignored': False, 'switch_pou': False, 'switched_pou': False}
         self.active_buffs = {}  # stocke les buffs temporaires
+        self.majeur_status = {}
+        self.mineur_status = {}
 
     @classmethod
     def from_model(cls, owner, model_data):
@@ -135,82 +137,81 @@ class Pou:
         }
 
 
-    def update_buffs(self):
+    def update_buffs_status(self):
         """À appeler à chaque tour pour diminuer la durée des buffs."""
         expired = []
         events = []
 
         for effect_type, buff in self.active_buffs.items():
             buff["duration"] -= 1
-            #Passage à match/case pour rendre l'ajout d'effets (buffs, soins, états spéciaux) plus flexible
-            #Ex : new effect -> burn -> case 'burn' et c'est finit, pas de nouveaux param à rentrer ou quoi
+            amount = buff.get('amount', 0)
+            
+            if self.hp <= 0:
+                expired.append(effect_type)
+                continue
+
             match effect_type:    
                 case 'atk':
                     if buff["duration"] <= 0:
-                        # Expiration → on restaure la valeur d’origine
                         setattr(self, effect_type, buff["original"])
-                        expired.append(effect_type)
-                        events.append({
-                            "type_buff": "atk",
-                        })
+                        events.append({"type_buff": "atk"})
 
                 case 'regen':
-                    amount = buff['amount']
-                    #Pour éviter de dépasser la limite d'hp
-                    if self.hp > 0:
-                        self.hp = min(self.hp + amount, self.max_hp)
-                        if buff["duration"] <= 0:
-                            expired.append(effect_type)
-                        events.append({
-                            "type_buff": "regen",
-                            "amount": amount,
-                        })
+                    self.hp = min(self.hp + amount, self.max_hp)
+                    events.append({"type_buff": "regen", "amount": amount})
                 
-                case 'burn':
-                    amount = buff['amount']
-                    if self.hp > 0:
-                        burn_damage = int((self.max_hp * amount)+0.5)
-                        self.take_damage(burn_damage)
-                        if buff["duration"] <= 0:
-                            expired.append(effect_type)
-                        events.append({
-                            "type_buff": "burned",
-                            "amount": amount,
-                            "turn_damage" : burn_damage,
-                        })
+                case _:
+                    status_ev = self.handle_status(effect_type, buff)
+                    if status_ev:
+                        events.extend(status_ev)
 
-                case 'poison':
-                    amount = buff['amount']
-                    if 'toxic_cpt' not in buff:
-                        buff['toxic_cpt'] = 0
-                    cpt = buff['toxic_cpt']
-                    if self.hp > 0:
-                        poison_damage = int((self.max_hp * amount * cpt)+0.5)
-                        buff['toxic_cpt'] += 1
-                        self.take_damage(poison_damage)
-                        if buff["duration"] <= 0:
-                            expired.append(effect_type)
-                        events.append({
-                            "type_buff": "poisoned",
-                            "amount": amount*cpt,
-                            "turn_damage" : poison_damage,
-                        })
-
-                case 'sleep':
-                    if (random.random() < buff['chance_to_stop']) or (buff["duration"] <= 0):
-                        expired.append(effect_type)
-                    events.append({
-                            "type_buff": "asleep"
-                        })
+            if buff["duration"] <= 0:
+                if effect_type not in expired:
+                    expired.append(effect_type)
 
         # Supprimer les buffs expirés
-        for effect_type in expired:
-            del self.active_buffs[effect_type]
+        for effect_type in set(expired):
+            if effect_type in self.active_buffs:
+                del self.active_buffs[effect_type]
 
         return {
             "events": events,
             "user": self,
         }
+    
+    def handle_status(self, status, values):
+        status_events = []
+
+        amount = values.get('amount', 0)
+        status_damage = int(self.max_hp * amount)
+        event_data = {
+            "status" : status,
+        }
+
+        match status:
+            case "burn":
+                #to do : divise l'attaque par 2
+                pass
+
+            case "poison":
+                if "toxic_cpt" not in values:
+                    values["toxic_cpt"] = 1
+                status_damage *= values["toxic_cpt"]
+                amount = amount*values["toxic_cpt"]
+
+            case 'sleep':
+                if (random.random() < values['chance_to_stop']):
+                    values["duration"] = 0
+        
+        if event_data:
+            if amount > 0:
+                event_data.setdefault("amount", amount)
+            if status_damage > 0:
+                event_data["turn_damage"] = status_damage
+                self.take_damage(status_damage)
+            status_events.append(event_data)
+
+        return status_events
 
 
     def add_heal(self, stat, amount, duration, skill_name=""):

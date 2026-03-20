@@ -103,7 +103,7 @@ class Ai:
             accuracy = argument.get("accuracy", 0)
             multiplier = argument.get("multiplier", 1)
             multi_hit_range = argument.get("multi_hit_range", (1,1))
-            
+
             #Cas exceptionnel, "set_target_hp"
             if "set_target_hp" in argument:
                 target_hp_goal = argument["set_target_hp"]
@@ -163,5 +163,3 @@ pou_ia = Pou(
     elem="Gluant",
     color=''
 )
-
-print(Ai.sort_skill(pou_ia))

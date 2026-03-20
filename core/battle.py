@@ -12,7 +12,7 @@ def game_turn(team1, team2):
     for pou in (pou_team1, pou_team2):
         pou.flags['switched_pou'] = False
 
-    # Passives OnTurnStart
+    # Display Passives OnTurnStart
     for attacker, defender in [(pou_team1, pou_team2), (pou_team2, pou_team1)]:
         passive = attacker.verif_passive('OnTurnStart', target=defender)
         if passive:
@@ -33,7 +33,7 @@ def game_turn(team1, team2):
 
     # mettre à jour les buffs des deux Pous
     for pou in [pou_team1, pou_team2]:
-        update_buff = pou.update_buffs()
+        update_buff = pou.update_buffs_status()
         if update_buff['events']:
             display_manager('display_update_buff', update_buff=update_buff)
 
@@ -42,8 +42,8 @@ def game_turn(team1, team2):
         if not team.is_alive_team():
             display_manager('display_dead_team', team=team)
             return
-        step = team.handle_death_and_switch()
-        if step['next_step'] == 'switch_pou':
+        if not (team.get_active_pou().is_alive()):
+            display_manager('display_dead_pou', team=team)
             select_switch_pou(team)
 
 # ---------------------- FONCTIONS ------------------------
@@ -113,7 +113,7 @@ def select_attack(attacker, defender):
             display_manager('invalid', cas=1)
 
 def execute_actions(pou_team1, pou_team2, actions):
-    # Gestion des switches : si un joueur switch, l'autre attaque en priorité
+    # Gestion des switches : si un joueur switch il n'attaquera pas
     if pou_team1.flags['switched_pou'] or pou_team2.flags['switched_pou']:
         if pou_team1.flags['switched_pou'] and not pou_team2.flags['switched_pou']:
             action_final = pou_team2.comp[actions[1]['comp_idx']].apply(pou_team2, pou_team1)
@@ -122,8 +122,8 @@ def execute_actions(pou_team1, pou_team2, actions):
             action_final = pou_team1.comp[actions[0]['comp_idx']].apply(pou_team1, pou_team2)
             display_manager('display_skill', action=action_final)
     else:
-        prio1 = pou_team1.comp[actions[0]['comp_idx']].priority if actions[0] else 0
-        prio2 = pou_team2.comp[actions[1]['comp_idx']].priority if actions[1] else 0
+        prio1 = pou_team1.comp[actions[0]['comp_idx']].priority #if actions[0] else 0
+        prio2 = pou_team2.comp[actions[1]['comp_idx']].priority #if actions[1] else 0
 
         # Ordre par priorité de comp
         if prio1 > prio2:
@@ -135,20 +135,21 @@ def execute_actions(pou_team1, pou_team2, actions):
             order = [0, 1] if pou_team1.speed >= pou_team2.speed else [1, 0]
             if pou_team1.speed == pou_team2.speed:
                 random.shuffle(order)
+        print(order)
         for idx in order:
             if actions[idx] is not None:
                 current_attacker = actions[idx]['attacker']
-                if any(s in current_attacker.active_buffs for s in ["sleep"]):
-                    continue
-                action_final = actions[idx]['attacker'].comp[actions[idx]['comp_idx']].apply(current_attacker, actions[idx]['defender'])
-                display_manager('display_skill', action=action_final)
+                if current_attacker.is_alive():
+                    if any(s in current_attacker.active_buffs for s in ["sleep"]):
+                        continue
+                    action_final = actions[idx]['attacker'].comp[actions[idx]['comp_idx']].apply(current_attacker, actions[idx]['defender'])
+                    display_manager('display_skill', action=action_final)
 
 #appeler -> display_comp
 def choose_comp(choice, attacker, defender):
     idx = int(choice)-1
     if 0 <= idx < 4:
         return {"attacker": attacker, "defender": defender, "comp_idx": idx}
-        #return attacker.comp[idx].apply(attacker, defender)
     elif idx == 5:
         return {'next_step ' : 'go_back'}
     return None
