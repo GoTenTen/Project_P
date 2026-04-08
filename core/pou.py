@@ -130,7 +130,6 @@ class Pou:
 
         # Stocke le buff actif
         self.effects["buffs"].append({
-            "name": stat,
             "stat": stat,
             "factor": factor,
             "duration": duration,
@@ -159,7 +158,7 @@ class Pou:
                             events.extend(status_ev)
 
                     case "buffs":
-                        match effect["name"]:
+                        match effect["stat"]:
                             case "regen":
                                 self.hp = min(self.hp + effect["amount"], self.max_hp)
                                 events.append({"amount": effect["amount"]})

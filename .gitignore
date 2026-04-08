@@ -1,0 +1,23 @@
+# --- Environnements Virtuels ---
+.venv/
+venv/
+env/
+ENV/
+
+# --- Cache Python (Fichiers temporaires) ---
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Outils de Tests (Pytest) ---
+.pytest_cache/
+.tox/
+.coverage
+htmlcov/
+
+# --- Configuration Éditeur & Système ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
