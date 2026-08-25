@@ -43,7 +43,7 @@ PouModels = {
         "atk": 15,
         "speed": 18,
         "rarity": 'rare',
-        "elem" : 'Antisémite',
+        "elem" : 'Haineux',
         "color": LIGHTBLUE,
         "skills": [SKILLS["Attack"]["Jab"], SKILLS["TimedBuffAttack"]["Danse Lame"], SKILLS["Attack"]["Twin Tower"], SKILLS["Heal"]["Soin"]],
         "passive": '',
